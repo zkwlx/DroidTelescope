@@ -1,0 +1,22 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+group='monitor.plugin'
+version='1.0.0'
+
+dependencies {
+    compile gradleApi()
+    compile 'com.android.tools.build:gradle:2.2.3'
+    compile 'org.ow2.asm:asm:5.0'
+    compile localGroovy()
+}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
+    }
+}

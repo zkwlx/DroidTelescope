@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "plugin.gradle.my"
+        minSdkVersion 23
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+    compile project(':AndrPerfMonitor')
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url uri('../repo')
+        }
+    }
+    dependencies {
+        classpath 'monitor.plugin:InjectPlugin:1.0.0'
+    }
+}
+
+apply plugin: 'perf_monitor'
+
+//打印preDexTask和dexTask的inputs和outputs
+//android.applicationVariants.all { variant->
+//    def dexTask = project.tasks.findByName("transformClassesWithDexForDebug")
+//    def preDexTask = project.tasks.findByName("transformClassesWithPreDexForDebug")
+//    if(preDexTask) {
+//        project.logger.error "======preDexTask======"
+//        preDexTask.inputs.files.files.each {file ->
+//            project.logger.error "inputs =$file.absolutePath"
+//        }
+//
+//        preDexTask.outputs.files.files.each {file ->
+//            project.logger.error "outputs =$file.absolutePath"
+//        }
+//    }
+//    if(dexTask) {
+//        project.logger.error "======dexTask======"
+//        dexTask.inputs.files.files.each {file ->
+//            project.logger.error "inputs =$file.absolutePath"
+//        }
+//
+//        dexTask.outputs.files.files.each {file ->
+//            project.logger.error "outputs =$file.absolutePath"
+//        }
+//    }
+//}
