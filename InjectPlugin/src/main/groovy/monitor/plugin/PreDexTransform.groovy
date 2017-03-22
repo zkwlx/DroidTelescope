@@ -84,7 +84,7 @@ public class PreDexTransform extends Transform {
                 //获得产物的目录
                 File dest = outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY);
                 //TODO 这里进行我们的处理
-                project.logger.error "Copying ${directoryInput.name} to ${dest.absolutePath}"
+//                project.logger.error "Copying ${directoryInput.name} to ${dest.absolutePath}"
                 Injector.injectDir(project, directoryInput.file.absolutePath)
                 // 处理完后拷到目标文件
                 FileUtils.copyDirectory(directoryInput.file, dest);
@@ -104,7 +104,7 @@ public class PreDexTransform extends Transform {
                 //TODO 处理jar进行字节码注入处理
 
                 FileUtils.copyFile(jarInput.file, dest);
-                project.logger.error "Copying ${jarInput.file.absolutePath} to ${dest.absolutePath}"
+//                project.logger.error "Copying ${jarInput.file.absolutePath} to ${dest.absolutePath}"
             }
         }
     }

@@ -1,10 +1,7 @@
 package monitor.plugin.asm_inject
 
 import jdk.internal.org.objectweb.asm.Opcodes
-import org.objectweb.asm.AnnotationVisitor
-import org.objectweb.asm.Attribute
 import org.objectweb.asm.ClassVisitor
-import org.objectweb.asm.FieldVisitor
 import org.objectweb.asm.MethodVisitor
 
 /**
@@ -21,17 +18,18 @@ class ActivityClassVisitor extends ClassVisitor {
     @Override
     void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         printLog("visit version: ${version}, name: ${name}, superName: ${superName}")
-        isActivitySubClass = "Activity".equals(superName)
+        isActivitySubClass = "android/support/v7/app/AppCompatActivity".equals(superName)
         super.visit(version, access, name, signature, superName, interfaces)
     }
 
     @Override
     MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        printLog("visitMethod name: ${name}, desc: ${desc}")
-        if (isActivitySubClass) {
-
+        MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
+        if (mv != null) {
+            printLog("visitMethod name: ${name}, desc: ${desc}")
+            mv = new CpuInjectVisitor(mv, name)
         }
-        return super.visitMethod(access, name, desc, signature, exceptions)
+        return mv
     }
 
     @Override

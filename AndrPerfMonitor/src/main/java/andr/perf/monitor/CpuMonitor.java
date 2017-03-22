@@ -10,8 +10,9 @@ public class CpuMonitor {
 
     private static final String TAG = "CpuMonitor";
 
-    public static void startMethodMonitor() {
-        Log.i(TAG, "start monitor>>>>>>..........");
+    public static void startMethodMonitor(long startTime) {
+        long useTime = System.currentTimeMillis() - startTime;
+        Log.i(TAG, "useTime =========" + useTime);
     }
 
 }

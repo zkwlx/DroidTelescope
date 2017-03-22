@@ -31,7 +31,8 @@ class AsmHandler {
 
     private static byte[] injectMonitorCode(InputStream inputStream) {
         ClassReader cr = new ClassReader(inputStream);
-        ClassWriter cw = new ClassWriter(cr, 0);
+        //使用COMPUTE_MAXS，自动计算栈帧大小，略微影响性能
+        ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
         ClassVisitor cv = new ActivityClassVisitor(cw)
 //        ClassVisitor cv = new ClassVisitor(Opcodes.ASM4, cw) {
 //            @Override
@@ -42,8 +43,9 @@ class AsmHandler {
 //                mv = new MethodVisitor(Opcodes.ASM4, mv) {
 //                    @Override
 //                    void visitInsn(int opcode) {
-//                        if ("<init>".equals(name) && opcode == Opcodes.RETURN) {
-//                            super.visitLdcInsn(Type.getType("Lcn/jiajixin/nuwa/Hack;"));
+//                        AsmHandler.printLog("name: ${name}, opcode: ${opcode}")
+//                        if ("someM" == name && (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN)) {
+//                            super.visitLdcInsn(Type.getType("Ljava/lang/String;"));
 //                        }
 //                        super.visitInsn(opcode);
 //                    }
@@ -54,6 +56,10 @@ class AsmHandler {
 //        };
         cr.accept(cv, 0);
         return cw.toByteArray();
+    }
+
+    private static void printLog(String content) {
+        System.out.println(content)
     }
 
 }
