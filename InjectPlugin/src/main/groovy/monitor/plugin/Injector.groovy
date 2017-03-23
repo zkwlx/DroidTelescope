@@ -1,6 +1,7 @@
 package monitor.plugin
 
 import monitor.plugin.asm_inject.AsmHandler
+import monitor.plugin.javassist_inject.JavassistHandler
 import org.gradle.api.Project
 
 /**
@@ -8,16 +9,19 @@ import org.gradle.api.Project
  */
 public class Injector {
 
-    public static void injectDir(Project project, String path) {
+    public static void setClassPathForJavassist(Set<File> files) {
+        JavassistHandler.setClassPath(files)
+    }
 
-        File classDir = new File(path)
-        if (classDir.isDirectory()) {
-            classDir.eachFileRecurse { File file ->
+    public static void injectDir(Project project, File dirFile) {
+
+        if (dirFile.isDirectory()) {
+            dirFile.eachFileRecurse { File file ->
                 String filePath = file.absolutePath
                 if (filePath.endsWith(".class") && !filePath.contains('R$') && !filePath.contains('R.class') &&
                         !filePath.contains("BuildConfig.class")) {
                     project.logger.error "======>>>>name::> ${filePath}"
-                    AsmHandler.handleClass(file)
+                    JavassistHandler.handleClass(file)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package monitor.plugin
 
 import com.android.build.api.transform.*
+import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.android.build.gradle.internal.pipeline.TransformManager
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
@@ -46,47 +47,42 @@ public class PreDexTransform extends Transform {
                    Collection<TransformInput> referencedInputs,
                    TransformOutputProvider outputProvider, boolean isIncremental)
             throws IOException, TransformException, InterruptedException {
-        project.logger.error "================自定义插件成功！=========="
-        // inputs就是输入文件的集合
-        // outputProvider可以获取outputs的路径
-//        inputs.each { TransformInput input ->
-//            input.directoryInputs.each { DirectoryInput directoryInput ->
-//                //TODO 这里可以对input的文件做处理，比如代码注入！
-//                // 获取output目录
-//                def dest = outputProvider.getContentLocation(directoryInput.name,
-//                        directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
-//                // 将input的目录复制到output指定目录
-//                FileUtils.copyDirectory(directoryInput.file, dest)
-//            }
-//
-//            input.jarInputs.each { JarInput jarInput ->
-//                //TODO 这里可以对input的文件做处理，比如代码注入！
-//                // 重命名输出文件（同目录copyFile会冲突）
-//                def jarName = jarInput.name
-//                def md5Name = DigestUtils.md5Hex(jarInput.file.getAbsolutePath())
-//                if (jarName.endsWith(".jar")) {
-//                    jarName = jarName.substring(0, jarName.length() - 4)
-//                }
-//                def dest = outputProvider.getContentLocation(jarName + md5Name, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-//                FileUtils.copyFile(jarInput.file, dest)
-//            }
-//
-//        }
+        project.logger.error "================开始装换================"
 
+        Set<File> classPath = new HashSet<>()
+        Set<File> carePath  = new HashSet<>()
         //TODO 获取配置参数
-
         /**
-         * 遍历输入文件
+         * 遍历输入文件，用于初始化相应参数
          */
         inputs.each { TransformInput input ->
             // 遍历目录
             input.directoryInputs.each { DirectoryInput directoryInput ->
-                //获得产物的目录
+                classPath.add(directoryInput.file)
+                carePath.add(directoryInput.file)
+            }
+            //遍历jar
+            input.jarInputs.each { JarInput jarInput ->
+                classPath.add(jarInput.file)
+            }
+        }
+        ApplicationVariantImpl applicationVariant = project.android.applicationVariants.getAt(0);
+        classPath.addAll(applicationVariant.androidBuilder.computeFullBootClasspath())
+        //进行代码注入
+        Injector.setClassPathForJavassist(classPath)
+        carePath.each {File file ->
+            Injector.injectDir(project, file)
+        }
+
+        /**
+         * 再次遍历输入文件，进行input到output的拷贝，包括修改后的代码
+         */
+        inputs.each { TransformInput input ->
+            // 遍历目录
+            input.directoryInputs.each { DirectoryInput directoryInput ->
+                //获得产物的目标目录
                 File dest = outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY);
-                //TODO 这里进行我们的处理
-//                project.logger.error "Copying ${directoryInput.name} to ${dest.absolutePath}"
-                Injector.injectDir(project, directoryInput.file.absolutePath)
-                // 处理完后拷到目标文件
+                // 将input文件拷到目标文件
                 FileUtils.copyDirectory(directoryInput.file, dest);
             }
 
@@ -100,13 +96,11 @@ public class PreDexTransform extends Transform {
                 }
                 // 获得输出文件
                 File dest = outputProvider.getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR);
-
-                //TODO 处理jar进行字节码注入处理
-
+                //将input文件拷到目标文件
                 FileUtils.copyFile(jarInput.file, dest);
-//                project.logger.error "Copying ${jarInput.file.absolutePath} to ${dest.absolutePath}"
             }
         }
+
     }
 
     //TODO 代码注入：

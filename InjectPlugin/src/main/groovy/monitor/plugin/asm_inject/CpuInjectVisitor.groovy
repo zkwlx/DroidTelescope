@@ -11,7 +11,7 @@ public class CpuInjectVisitor extends MethodVisitor {
 
     private String methodName;
 
-    private String tempM = "g2"
+    private String tempM = "gogo"
 
     private boolean isFirstVisitFrame = true;
 
@@ -24,13 +24,14 @@ public class CpuInjectVisitor extends MethodVisitor {
     public void visitCode() {
         super.visitCode();
         if (tempM == methodName) {
-            super.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+            super.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "nanoTime", "()J", false);
             super.visitVarInsn(Opcodes.LSTORE, 1);
         }
     }
 
     @Override
     void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack) {
+        printLog("type:> ${type}, nLocal:${nLocal}, nStack:${nStack}")
         if (tempM == methodName && isFirstVisitFrame) {
             //修改帧数据Frame，增加我们添加的long
             isFirstVisitFrame = false

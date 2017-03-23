@@ -2,7 +2,9 @@ package monitor.plugin.asm_inject
 
 import jdk.internal.org.objectweb.asm.Opcodes
 import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.util.CheckMethodAdapter
 
 /**
  * Created by ZhouKeWen on 17/3/17.
@@ -26,7 +28,7 @@ class ActivityClassVisitor extends ClassVisitor {
     MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
         if (mv != null) {
-            printLog("visitMethod name: ${name}, desc: ${desc}")
+            printLog("visitMethod name: ${name}, desc: ${desc}, signature: ${signature}")
             mv = new CpuInjectVisitor(mv, name)
         }
         return mv
