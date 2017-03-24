@@ -28,7 +28,11 @@ public class MethodInfo {
 
     private LinkedList<MethodInfo> invokeTrace = new LinkedList<>();
 
-    public void addMethodInvode(MethodInfo subMethod) {
+    public MethodInfo getCurrentMethod() {
+        return invokeTrace.peekLast();
+    }
+
+    public void addMethodInvoke(MethodInfo subMethod) {
         invokeTrace.add(subMethod);
     }
 
