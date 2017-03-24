@@ -1,6 +1,5 @@
 package monitor.plugin
 
-import monitor.plugin.asm_inject.AsmHandler
 import monitor.plugin.javassist_inject.JavassistHandler
 import org.gradle.api.Project
 
@@ -28,6 +27,9 @@ public class Injector {
     }
 
     public static void injectJar(Project project, String jarPath) {
+        if (jarPath.endsWith(".jar")) {
+
+        }
     }
 
 }

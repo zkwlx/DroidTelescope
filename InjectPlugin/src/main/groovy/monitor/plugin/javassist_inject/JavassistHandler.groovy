@@ -83,9 +83,6 @@ class JavassistHandler {
 
     static void insertSamplerCode(CtClass clazz, CtBehavior ctBehavior) {
         printLog("inecjt method:::>>>> ${clazz.name}.${ctBehavior.name}")
-//        if (ctBehavior.name != "onCreate") {
-//            return
-//        }
         ctBehavior.addLocalVariable("__bl_stn", CtClass.longType);
         ctBehavior.addLocalVariable("__bl_stt", CtClass.longType);
         ctBehavior.addLocalVariable("__bl_icl", CtClass.booleanType);
@@ -93,7 +90,7 @@ class JavassistHandler {
                 """
                   __bl_stn = 0L;
                   __bl_stt = 0L;
-                  __bl_icl = andr.perf.monitor.CpuMonitor.shouldMonitor();
+                  __bl_icl = andr.perf.monitor.MethodSampler.shouldMonitor();
                   if(__bl_icl) {
                       __bl_stn = java.lang.System.nanoTime();
                       __bl_stt = android.os.SystemClock.currentThreadTimeMillis();
@@ -102,7 +99,7 @@ class JavassistHandler {
         ctBehavior.insertAfter(
                 """
                    if(__bl_icl) {
-                       andr.perf.monitor.CpuMonitor.startMethodMonitor(__bl_stn, __bl_stt, "${clazz.name}", "${
+                       andr.perf.monitor.MethodSampler.methodExit(__bl_stn, __bl_stt, "${clazz.name}", "${
                     ctBehavior.name
                 }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                    }

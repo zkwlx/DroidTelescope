@@ -47,7 +47,7 @@ public class PreDexTransform extends Transform {
                    Collection<TransformInput> referencedInputs,
                    TransformOutputProvider outputProvider, boolean isIncremental)
             throws IOException, TransformException, InterruptedException {
-        project.logger.error "================开始装换================"
+        project.logger.error "================开始转换================"
 
         Set<File> classPath = new HashSet<>()
         Set<File> carePath  = new HashSet<>()
