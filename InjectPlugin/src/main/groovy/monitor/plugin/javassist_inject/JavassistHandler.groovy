@@ -94,12 +94,17 @@ class JavassistHandler {
                   if(__bl_icl) {
                       __bl_stn = java.lang.System.nanoTime();
                       __bl_stt = android.os.SystemClock.currentThreadTimeMillis();
+                      andr.perf.monitor.MethodSampler.methodEnter("${clazz.name}", "${
+                    ctBehavior.name
+                }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                   }
                 """)
         ctBehavior.insertAfter(
                 """
                    if(__bl_icl) {
-                       andr.perf.monitor.MethodSampler.methodExit(__bl_stn, __bl_stt, "${clazz.name}", "${
+                       andr.perf.monitor.MethodSampler.methodExit(__bl_stn, __bl_stt, "${
+                    clazz.name
+                }", "${
                     ctBehavior.name
                 }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                    }

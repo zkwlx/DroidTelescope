@@ -1,6 +1,7 @@
 package andr.perf.monitor.cpu;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -28,12 +29,16 @@ public class MethodInfo {
 
     private LinkedList<MethodInfo> invokeTrace = new LinkedList<>();
 
+    public List<MethodInfo> getInvokeTraceList() {
+        return invokeTrace;
+    }
+
     public MethodInfo getCurrentMethod() {
         return invokeTrace.peekLast();
     }
 
-    public void addMethodInvoke(MethodInfo subMethod) {
-        invokeTrace.add(subMethod);
+    public void addInnerMethod(MethodInfo innerMethod) {
+        invokeTrace.addLast(innerMethod);
     }
 
     public String getSignature() {
@@ -62,6 +67,6 @@ public class MethodInfo {
 
     @Override
     public String toString() {
-        return signature + ":nanoTime>" + useNanoTime + " ___ :threadTime>" + useThreadTime;
+        return signature + ":nanoTime>" + useNanoTime + " :threadTime>" + useThreadTime;
     }
 }

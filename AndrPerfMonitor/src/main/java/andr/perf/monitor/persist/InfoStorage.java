@@ -14,7 +14,25 @@ public class InfoStorage {
 
     public static void onStorageForMethod(List<MethodInfo> methodInfos) {
         for (MethodInfo info : methodInfos) {
-            Log.i("", info.toString());
+            showMethodTrace(info, 0);
+        }
+    }
+
+    private static void showMethodTrace(MethodInfo rootMethod, int depth) {
+        StringBuilder tab = new StringBuilder();
+        int d = depth;
+        while (d > 0) {
+            tab.append("===");
+            d--;
+        }
+        tab.append(">");
+
+        Log.i("zkw", tab.toString() + rootMethod.toString());
+
+        List<MethodInfo> list = rootMethod.getInvokeTraceList();
+        depth++;
+        for (MethodInfo method : list) {
+            showMethodTrace(method, depth);
         }
     }
 

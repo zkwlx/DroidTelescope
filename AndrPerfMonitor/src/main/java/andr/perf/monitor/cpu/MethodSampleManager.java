@@ -16,7 +16,7 @@ public class MethodSampleManager {
     private List<MethodInfo> methodInfoList = new ArrayList<>();
 
     //TODO 注意不同线程的调用！
-    private MethodInfo rootMethod = null;
+    private Deque<MethodInfo> rootMethodStack = new LinkedList<>();
 
     public static MethodSampleManager getInstance() {
         return ourInstance;
@@ -29,22 +29,22 @@ public class MethodSampleManager {
     public void recordMethodEnter(String cls, String method, String argTypes) {
         MethodInfo info = new MethodInfo();
         info.setSignature(cls + "." + method + "(" + argTypes + ")");
-        if (rootMethod == null) {
-            //说明进入的是root方法
-            rootMethod = info;
-        } else {
-            rootMethod.addMethodInvoke(info);
+        if (!rootMethodStack.isEmpty()) {
+            MethodInfo rootMethod = rootMethodStack.peekFirst();
+            rootMethod.addInnerMethod(info);
         }
+        rootMethodStack.push(info);
     }
 
     public void recordMethodExit(long useNanoTime, long useThreadTime, String cls, String method,
-            String argTypes) {
-        MethodInfo subMethod = rootMethod.getCurrentMethod();
-
-        MethodInfo info = new MethodInfo();
-        info.setUseNanoTime(useNanoTime);
-        info.setUseThreadTime(useThreadTime);
-        info.setSignature(cls + "." + method + "(" + argTypes + ")");
+                                 String argTypes) {
+        MethodInfo exitMethod = rootMethodStack.pop();
+        exitMethod.setUseNanoTime(useNanoTime);
+        exitMethod.setUseThreadTime(useThreadTime);
+        //TODO 写注释！！
+        if (rootMethodStack.isEmpty()) {
+            methodInfoList.add(exitMethod);
+        }
     }
 
     public List<MethodInfo> getMethodInfoList() {
