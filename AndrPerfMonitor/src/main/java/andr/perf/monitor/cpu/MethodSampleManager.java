@@ -7,10 +7,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -33,7 +30,7 @@ public class MethodSampleManager {
 
     private MethodSampleManager() {
         threadMethodStack = new ConcurrentHashMap<>();
-        methodInfoList = new ArrayBlockingQueue<MethodInfo>();
+        methodInfoList = new ArrayList<>();
     }
 
     public void recordMethodEnter(String cls, String method, String argTypes) {
@@ -92,7 +89,9 @@ public class MethodSampleManager {
     }
 
     public void clean() {
-        methodInfoList.clear();
+        synchronized (methodInfoList) {
+            methodInfoList.clear();
+        }
     }
 
     private String createSignature(String className, String methodName, String argTypes) {
