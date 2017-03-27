@@ -45,9 +45,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSlowClick(View view) {
-        SomeTest test = new SomeTest();
-        test.run();
-        test.someM();
+        try {
+            Thread.sleep(600);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            g2();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        gogo(87878787);
     }
 
     public int gogo(int c) {
@@ -64,25 +72,25 @@ public class MainActivity extends AppCompatActivity {
     public Object g2() throws IllegalAccessException {
         int a = new Random().nextInt(100);
         if (isT()) {
-            Log.i("zkw", "isT() true");
+            Log.i("g2", "isT() true");
         } else if (a > 5) {
-            Log.i("zkw", "isT() false>>> " + a);
+            Log.i("g2", "isT() false>>> " + a);
             throw new IllegalAccessException();
         }
         if (a < 5) {
-            Log.i("zkw", "a>>> " + a);
+            Log.i("g2", "a>>> " + a);
             return "aaa";
         } else {
-            Log.i("", "......." + a);
+            Log.i("g2", "......." + a);
         }
         try {
             throw new NullPointerException();
         } catch (NullPointerException e) {
-            Log.i("", "NullPointerException!!!!");
+            Log.i("g2", "NullPointerException!!!!");
         } finally {
-            Log.i("zkw", "finally");
+            Log.i("g2", "finally");
         }
-        Log.i("", ">>>>>" + a);
+        Log.i("g2", ">>>>>" + a);
         return null;
     }
 

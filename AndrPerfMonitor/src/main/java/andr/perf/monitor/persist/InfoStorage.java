@@ -12,6 +12,8 @@ import andr.perf.monitor.cpu.MethodInfo;
 
 public class InfoStorage {
 
+    private static final String TAG = "InfoStorage";
+
     public static void onStorageForMethod(List<MethodInfo> methodInfos) {
         for (MethodInfo info : methodInfos) {
             showMethodTrace(info, 0);
@@ -27,7 +29,7 @@ public class InfoStorage {
         }
         tab.append(">");
 
-        Log.i("zkw", tab.toString() + rootMethod.toString());
+        Log.i(TAG, tab.toString() + rootMethod.toString());
 
         List<MethodInfo> list = rootMethod.getInvokeTraceList();
         depth++;

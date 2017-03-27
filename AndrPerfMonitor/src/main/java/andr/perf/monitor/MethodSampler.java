@@ -27,4 +27,8 @@ public class MethodSampler {
         MethodSampleManager.getInstance().recordMethodExit(useNanoTime, threadTime, cls, method, argTypes);
     }
 
+    public static void methodExitFinally(String cls, String method, String argTypes) {
+        MethodSampleManager.getInstance().recordMethodExitFinally(cls, method, argTypes);
+    }
+
 }

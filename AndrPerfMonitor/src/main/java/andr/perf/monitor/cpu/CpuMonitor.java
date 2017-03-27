@@ -1,5 +1,7 @@
 package andr.perf.monitor.cpu;
 
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
@@ -20,7 +22,23 @@ public class CpuMonitor {
     private static final long THRESHOLD_NANO = 500000000;//500ms
     private static final long THRESHOLD_MS = THRESHOLD_NANO / 1000000;
 
-    private static final CpuMonitor ourInstance = new CpuMonitor();
+    //TODO 别忘了添加退出线程代码
+    private final HandlerThread handlerThread;
+    private final Handler cpuHandler;
+
+    public static CpuMonitor getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    private static class SingletonHolder {
+        private static CpuMonitor instance = new CpuMonitor();
+    }
+
+    private CpuMonitor() {
+        handlerThread = new HandlerThread("CpuMonitorThread");
+        handlerThread.start();
+        cpuHandler = new Handler(handlerThread.getLooper());
+    }
 
     private final BlockListener blockListener = new BlockListener() {
         @Override
@@ -60,12 +78,8 @@ public class CpuMonitor {
         }
     };
 
-    public static CpuMonitor getInstance() {
-        return ourInstance;
-    }
-
-    private CpuMonitor() {
-
+    public void postTask(Runnable task) {
+        cpuHandler.post(task);
     }
 
     public void installLooperListener() {

@@ -83,6 +83,7 @@ class JavassistHandler {
 
     static void insertSamplerCode(CtClass clazz, CtBehavior ctBehavior) {
         printLog("inecjt method:::>>>> ${clazz.name}.${ctBehavior.name}")
+        //TODO 空方法已经被Android编译器移除，所以这里无需优化
         ctBehavior.addLocalVariable("__bl_stn", CtClass.longType);
         ctBehavior.addLocalVariable("__bl_stt", CtClass.longType);
         ctBehavior.addLocalVariable("__bl_icl", CtClass.booleanType);
@@ -99,6 +100,7 @@ class JavassistHandler {
                 }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                   }
                 """)
+        //TODO 只在正常return之前插入代码，如果是异常退出，不会回调methodExit
         ctBehavior.insertAfter(
                 """
                    if(__bl_icl) {
@@ -109,15 +111,26 @@ class JavassistHandler {
                 }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                    }
                 """)
+        //TODO 方法异常退出会导致方法堆栈记录混乱，被迫注入finally代码
+        ctBehavior.insertAfter(
+                """
+                   andr.perf.monitor.MethodSampler.methodExitFinally("${
+                    clazz.name
+                }", "${
+                    ctBehavior.name
+                }", "${generateParamTypes(ctBehavior.parameterTypes)}");
+                """, true)
     }
 
     static String generateParamTypes(CtClass[] paramTypes) {
         StringBuilder argTypesBuilder = new StringBuilder();
-        for (int i = 0; i < paramTypes.length; i++) {
-            CtClass paramCls = paramTypes[i]
-            argTypesBuilder.append(paramCls.name)
-            if (i != paramTypes.length - 1) {
+        if (paramTypes.length > 0) {
+            CtClass firstParam = paramTypes[0]
+            argTypesBuilder.append(firstParam.name);
+            for (int i = 1; i < paramTypes.length; i++) {
                 argTypesBuilder.append(",")
+                CtClass paramCls = paramTypes[i]
+                argTypesBuilder.append(paramCls.name)
             }
         }
         return argTypesBuilder.toString()

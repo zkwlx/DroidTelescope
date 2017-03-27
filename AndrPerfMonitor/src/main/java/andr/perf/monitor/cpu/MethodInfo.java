@@ -27,6 +27,17 @@ public class MethodInfo {
      */
     private String signature;
 
+    /**
+     * 标示方法非正常return返回，比如throw、或者发生Exception
+     * 如果true，说明正常return
+     */
+    private boolean isNormalExit = false;
+
+    /**
+     * 方法所在的线程名字
+     */
+    private String threadName;
+
     private LinkedList<MethodInfo> invokeTrace = new LinkedList<>();
 
     public List<MethodInfo> getInvokeTraceList() {
@@ -67,6 +78,23 @@ public class MethodInfo {
 
     @Override
     public String toString() {
-        return signature + ":nanoTime>" + useNanoTime + " :threadTime>" + useThreadTime;
+        return threadName + "---->" + signature + ":nanoTime>" + useNanoTime + " :threadTime>" +
+                useThreadTime;
+    }
+
+    public boolean isNormalExit() {
+        return isNormalExit;
+    }
+
+    public void setNormalExit() {
+        isNormalExit = true;
+    }
+
+    public String getThreadName() {
+        return threadName;
+    }
+
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
     }
 }
