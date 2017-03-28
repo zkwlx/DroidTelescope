@@ -2,38 +2,30 @@ package andr.perf.monitor.cpu;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import andr.perf.monitor.cpu.models.MethodInfo;
+
 /**
+ * 详细的方法采样器，记录内容包括各自线程的方法耗时、方法调用栈。
  * Created by ZhouKeWen on 17/3/24.
  */
-
-public class MethodSampleManager {
-
-    private static final MethodSampleManager ourInstance = new MethodSampleManager();
-
-    private final Collection<MethodInfo> methodInfoList;
+public class DetailedMethodSampler extends AbstractMethodSampler {
 
     /**
      * 临时保存不同线程的方法调用栈
      */
     private final ConcurrentHashMap<String, Deque<MethodInfo>> threadMethodStack;
 
-    public static MethodSampleManager getInstance() {
-        return ourInstance;
-    }
-
-    private MethodSampleManager() {
+    public DetailedMethodSampler() {
+        super();
         threadMethodStack = new ConcurrentHashMap<>();
-        methodInfoList = new ArrayList<>();
     }
 
-    public void recordMethodEnter(String cls, String method, String argTypes) {
+    @Override
+    public void onMethodEnter(String cls, String method, String argTypes) {
         //TODO 考虑使用对象池！！！！
         String threadName = Thread.currentThread().getName();
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadName);
@@ -52,7 +44,8 @@ public class MethodSampleManager {
         methodStack.push(info);
     }
 
-    public void recordMethodExit(long useNanoTime, long useThreadTime, String cls, String method,
+    @Override
+    public void onMethodExit(long useNanoTime, long useThreadTime, String cls, String method,
             String argTypes) {
         String threadName = Thread.currentThread().getName();
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadName);
@@ -65,8 +58,8 @@ public class MethodSampleManager {
         topMethod.setNormalExit();
     }
 
-    public void recordMethodExitFinally(String cls, String method, String argTypes) {
-        //TODO 注意考虑多线程调用
+    @Override
+    public void onMethodExitFinally(String cls, String method, String argTypes) {
         //方法无论是return退出还是异常throw退出，都会回调这里
         String threadName = Thread.currentThread().getName();
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadName);
@@ -74,27 +67,12 @@ public class MethodSampleManager {
         Log.i("", "finally-----------method:" + method + " pop: " + topMethod.getSignature() + " normal?" +
                 topMethod.isNormalExit());
         if (methodStack.isEmpty()) {
-            synchronized (methodInfoList) {
-                methodInfoList.add(topMethod);
-            }
-        }
-    }
-
-    public List<MethodInfo> getMethodInfoList() {
-        ArrayList<MethodInfo> list;
-        synchronized (methodInfoList) {
-            list = new ArrayList<>(methodInfoList);
-        }
-        return list;
-    }
-
-    public void clean() {
-        synchronized (methodInfoList) {
-            methodInfoList.clear();
+            addRootMethod(topMethod);
         }
     }
 
     private String createSignature(String className, String methodName, String argTypes) {
         return className + "." + methodName + "(" + argTypes + ")";
     }
+
 }

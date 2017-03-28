@@ -1,5 +1,6 @@
-package andr.perf.monitor.cpu;
+package andr.perf.monitor.cpu.models;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,13 +8,19 @@ import java.util.List;
  * Created by ZhouKeWen on 17/3/24.
  */
 
-public class MethodInfo {
+public class MethodInfo implements Serializable {
 
     /**
      * 方法用时，使用System.nanoTime()计算
      * 单位ns，1ns = 1 * 1000 * 1000ms
      */
     private long useNanoTime;
+
+    /**
+     * 方法用时，使用{@link #useNanoTime} 换算成ms
+     * 单位ms
+     */
+    private long useMsTime = -1;
 
     /**
      * CPU线程用时，使用SystemClock.currentThreadTimeMillis()计算
@@ -42,10 +49,6 @@ public class MethodInfo {
 
     public List<MethodInfo> getInvokeTraceList() {
         return invokeTrace;
-    }
-
-    public MethodInfo getCurrentMethod() {
-        return invokeTrace.peekLast();
     }
 
     public void addInnerMethod(MethodInfo innerMethod) {
@@ -96,5 +99,13 @@ public class MethodInfo {
 
     public void setThreadName(String threadName) {
         this.threadName = threadName;
+    }
+
+    public long getUseMsTime() {
+        if (useMsTime == -1) {
+            //ms的计算延迟到需要时
+            this.useMsTime = useNanoTime / 1000000;
+        }
+        return useMsTime;
     }
 }

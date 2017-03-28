@@ -1,7 +1,5 @@
 package andr.perf.monitor.cpu;
 
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
@@ -9,22 +7,22 @@ import android.util.Printer;
 
 import java.util.List;
 
-import andr.perf.monitor.persist.InfoStorage;
+import andr.perf.monitor.AndroidMonitor;
+import andr.perf.monitor.Config;
+import andr.perf.monitor.cpu.models.BlockInfo;
+import andr.perf.monitor.cpu.models.MethodInfo;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
  */
-
 public class CpuMonitor {
 
     private static final String TAG = "CpuMonitor";
 
-    private static final long THRESHOLD_NANO = 500000000;//500ms
-    private static final long THRESHOLD_MS = THRESHOLD_NANO / 1000000;
+    private static final long THRESHOLD_MS = 100;//100ms
+    private static final long THRESHOLD_THREAD_MS = THRESHOLD_MS;
 
-    //TODO 别忘了添加退出线程代码
-    private final HandlerThread handlerThread;
-    private final Handler cpuHandler;
+    private static Config config;
 
     public static CpuMonitor getInstance() {
         return SingletonHolder.instance;
@@ -35,24 +33,29 @@ public class CpuMonitor {
     }
 
     private CpuMonitor() {
-        handlerThread = new HandlerThread("CpuMonitorThread");
-        handlerThread.start();
-        cpuHandler = new Handler(handlerThread.getLooper());
+        config = AndroidMonitor.getConfig();
     }
 
-    private final BlockListener blockListener = new BlockListener() {
+    private final InnerBlockListener innerBlockListener = new InnerBlockListener() {
         @Override
-        public void onBlock() {
+        public void onBlock(long useMsTime, long useThreadTime) {
             Log.e(TAG, "Oops!!!! block!!!");
-            List<MethodInfo> methodInfoList = MethodSampleManager.getInstance().getMethodInfoList();
-            InfoStorage.onStorageForMethod(methodInfoList);
+            List<MethodInfo> methodInfoList = SamplerFactory.getSampler().getRootMethodList();
+            BlockInfo blockInfo = new BlockInfo();
+            blockInfo.setUseThreadTime(useThreadTime);
+            blockInfo.setUseMsTime(useMsTime);
+            blockInfo.setRootMethodList(methodInfoList);
+            AndroidMonitor.BlockListener listener = AndroidMonitor.getBlockListener();
+            if (listener != null) {
+                listener.onBlock(blockInfo);
+            }
         }
     };
 
     //TODO 注意使用范围，目前是进程全局的
-    private final Printer LOOPER_LISTENER = new Printer() {
+    private final Printer looperListener = new Printer() {
 
-        private long startNanoTime;
+        private long startMsTime;
 
         private long startThreadTime;
 
@@ -62,32 +65,28 @@ public class CpuMonitor {
         public void println(String x) {
             if (isStart) {
                 isStart = false;
-                startNanoTime = System.nanoTime();
+                startMsTime = System.currentTimeMillis();
                 startThreadTime = SystemClock.currentThreadTimeMillis();
             } else {
                 isStart = true;
-                long useNanoTime = System.nanoTime() - startNanoTime;
+                long useMsTime = System.currentTimeMillis() - startMsTime;
                 long useThreadTime = SystemClock.currentThreadTimeMillis() - startThreadTime;
-                Log.i(TAG, "handle nanoTime:" + useNanoTime + " threadTime:" + useThreadTime);
-                if (useNanoTime > THRESHOLD_NANO || useThreadTime > THRESHOLD_MS) {
-                    blockListener.onBlock();
+                Log.i(TAG, "handle msTime:" + useMsTime + " threadTime:" + useThreadTime);
+                if (config.isBlock(useMsTime, useThreadTime)) {
+                    innerBlockListener.onBlock(useMsTime, useThreadTime);
                 }
                 //TODO 这里会影响性能，注意，考虑idle handler
-                MethodSampleManager.getInstance().clean();
+                SamplerFactory.getSampler().cleanRootMethodList();
             }
         }
     };
 
-    public void postTask(Runnable task) {
-        cpuHandler.post(task);
-    }
-
     public void installLooperListener() {
         //TODO 注意Looper的选择，是否考虑子线程的looper
-        Looper.getMainLooper().setMessageLogging(LOOPER_LISTENER);
+        Looper.getMainLooper().setMessageLogging(looperListener);
     }
 
-    public interface BlockListener {
-        void onBlock();
+    public interface InnerBlockListener {
+        void onBlock(long useNanoTime, long useThreadTime);
     }
 }

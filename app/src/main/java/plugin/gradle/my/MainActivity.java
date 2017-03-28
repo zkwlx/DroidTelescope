@@ -45,17 +45,71 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSlowClick(View view) {
-        try {
-            Thread.sleep(600);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         try {
             g2();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         gogo(87878787);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isT();
+                try {
+                    g2();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isT();
+                try {
+                    g2();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                gogo(259872364);
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    g2();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                gogo(444444);
+            }
+        }).start();
+
+        try {
+            Thread.sleep(600);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int gogo(int c) {

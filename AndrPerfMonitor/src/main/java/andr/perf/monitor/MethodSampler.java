@@ -2,12 +2,12 @@ package andr.perf.monitor;
 
 import android.os.SystemClock;
 
-import andr.perf.monitor.cpu.MethodSampleManager;
+import andr.perf.monitor.cpu.SamplerFactory;
 
 /**
+ * 用于代码注入的接口类
  * Created by ZhouKeWen on 17/3/16.
  */
-
 public class MethodSampler {
 
     private static final String TAG = "MethodSampler";
@@ -17,18 +17,18 @@ public class MethodSampler {
     }
 
     public static void methodEnter(String cls, String method, String argTypes) {
-        MethodSampleManager.getInstance().recordMethodEnter(cls, method, argTypes);
+        SamplerFactory.getSampler().onMethodEnter(cls, method, argTypes);
     }
 
     public static void methodExit(long startTimeNano, long startThreadTime, String cls, String method,
             String argTypes) {
         long useNanoTime = System.nanoTime() - startTimeNano;
         long threadTime = SystemClock.currentThreadTimeMillis() - startThreadTime;
-        MethodSampleManager.getInstance().recordMethodExit(useNanoTime, threadTime, cls, method, argTypes);
+        SamplerFactory.getSampler().onMethodExit(useNanoTime, threadTime, cls, method, argTypes);
     }
 
     public static void methodExitFinally(String cls, String method, String argTypes) {
-        MethodSampleManager.getInstance().recordMethodExitFinally(cls, method, argTypes);
+        SamplerFactory.getSampler().onMethodExitFinally(cls, method, argTypes);
     }
 
 }
