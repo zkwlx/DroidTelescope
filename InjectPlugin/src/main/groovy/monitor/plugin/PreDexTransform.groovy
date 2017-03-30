@@ -1,8 +1,11 @@
 package monitor.plugin
 
 import com.android.build.api.transform.*
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.android.build.gradle.internal.pipeline.TransformManager
+import monitor.plugin.config.InjectConfig
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
@@ -11,6 +14,8 @@ import org.gradle.api.Project
  * Created by ZhouKeWen on 17/3/17.
  */
 public class PreDexTransform extends Transform {
+
+    private static final String NAME = "injectPlugin"
 
     Project project
     // 添加构造，为了方便从plugin中拿到project对象，待会有用
@@ -22,7 +27,7 @@ public class PreDexTransform extends Transform {
     // TransfromClassesWithPreDexForXXXX
     @Override
     String getName() {
-        return "preDex"
+        return NAME
     }
 
     // 指定input的类型
@@ -44,13 +49,23 @@ public class PreDexTransform extends Transform {
 
     @Override
     void transform(Context context, Collection<TransformInput> inputs,
-                   Collection<TransformInput> referencedInputs,
-                   TransformOutputProvider outputProvider, boolean isIncremental)
+            Collection<TransformInput> referencedInputs,
+            TransformOutputProvider outputProvider, boolean isIncremental)
             throws IOException, TransformException, InterruptedException {
         project.logger.error "================开始转换================"
 
+        def hasApp = project.plugins.withType(AppPlugin)
+        def hasLib = project.plugins.withType(LibraryPlugin)
+
+        if (!hasApp && !hasLib) {
+            throw new IllegalStateException("'android' or 'android-library' plugin required.")
+        }
+
+        project.extensions.create("andr_pref_monitor", InjectConfig)
+        InjectConfig monitorConfig = project.andr_pref_monitor;
+
         Set<File> classPath = new HashSet<>()
-        Set<File> carePath  = new HashSet<>()
+        Set<File> carePath = new HashSet<>()
         //TODO 获取配置参数
         /**
          * 遍历输入文件，用于初始化相应参数
@@ -63,15 +78,21 @@ public class PreDexTransform extends Transform {
             }
             //遍历jar
             input.jarInputs.each { JarInput jarInput ->
+                Set<QualifiedContent.Scope> scopes = jarInput.getScopes()
+                project.logger.error ">>>>>>jar:${jarInput.file.absolutePath}"
+                scopes.each { QualifiedContent.Scope scope ->
+                    project.logger.error "scope======:${scope.name()}"
+                }
                 classPath.add(jarInput.file)
+                carePath.add(jarInput.file)
             }
         }
         ApplicationVariantImpl applicationVariant = project.android.applicationVariants.getAt(0);
         classPath.addAll(applicationVariant.androidBuilder.computeFullBootClasspath())
         //进行代码注入
         Injector.setClassPathForJavassist(classPath)
-        carePath.each {File file ->
-            Injector.injectDir(project, file)
+        carePath.each { File file ->
+            Injector.inject(project, file)
         }
 
         /**
@@ -81,7 +102,9 @@ public class PreDexTransform extends Transform {
             // 遍历目录
             input.directoryInputs.each { DirectoryInput directoryInput ->
                 //获得产物的目标目录
-                File dest = outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY);
+                File dest = outputProvider.
+                        getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes,
+                                           Format.DIRECTORY);
                 // 将input文件拷到目标文件
                 FileUtils.copyDirectory(directoryInput.file, dest);
             }
@@ -95,7 +118,9 @@ public class PreDexTransform extends Transform {
                     destName = destName.substring(0, destName.length() - 4);
                 }
                 // 获得输出文件
-                File dest = outputProvider.getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR);
+                File dest = outputProvider.
+                        getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes,
+                                           Format.JAR);
                 //将input文件拷到目标文件
                 FileUtils.copyFile(jarInput.file, dest);
             }

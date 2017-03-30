@@ -4,7 +4,9 @@ import javassist.ClassPool
 import javassist.CtBehavior
 import javassist.CtClass
 import javassist.CtConstructor
+import javassist.CtMember
 import javassist.CtMethod
+import javassist.CtNewMethod
 import javassist.Modifier
 
 /**
@@ -16,6 +18,8 @@ class JavassistHandler {
 
     static void setClassPath(Set<File> files) {
         classPool = new ClassPool(true);
+        //TODO 实验选项，能节省编译时的内存消耗
+        ClassPool.doPruning = true;
         for (File file : files) {
             if (file.exists()) {
                 if (file.isDirectory()) {
@@ -33,7 +37,11 @@ class JavassistHandler {
         FileInputStream inputStream = new FileInputStream(file);
         FileOutputStream outputStream = new FileOutputStream(optClass)
 
-        def bytes = injectMonitorCode(inputStream);
+        def bytes = handleMemoryCareClass(inputStream)
+//        inputStream.close()
+//
+//        inputStream = new FileInputStream(file);
+//        def bytes = handleClass(inputStream);
         outputStream.write(bytes)
         inputStream.close()
         outputStream.close()
@@ -44,7 +52,33 @@ class JavassistHandler {
         return bytes
     }
 
-    static byte[] injectMonitorCode(InputStream inputStream) {
+    public static byte[] handleMemoryCareClass(InputStream inputStream) {
+        CtClass clazz = classPool.makeClass(inputStream);
+        CtClass superClazz = clazz.getSuperclass();
+        if ("android.support.v7.app.AppCompatActivity" == superClazz.name) {
+            CtMethod[] ctMethods = clazz.getDeclaredMethods();
+            boolean hasOnCreateMethod = false
+            for (CtMethod ctMethod : ctMethods) {
+                CtClass bundleClazz = classPool.makeClass("android.os.Bundle")
+                if ("onCreate" == ctMethod.name && ctMethod.parameterTypes.size() == 1 && ctMethod.parameterTypes[0] ==
+                        bundleClazz) {
+                    printLog(">>>>>>>>>>>>>>>>>>>>>>>>isonCreate!~!!!!!!!>>> ${clazz.name}.${ctMethod.name}")
+                    hasOnCreateMethod = true
+                    break
+                }
+            }
+            if (!hasOnCreateMethod) {
+                printLog("don't have onCreate#########################")
+                CtMethod m = CtNewMethod.make(
+                        "protected void onCreate(android.os.Bundle s) {super.onCreate(s);andr.perf.monitor.MethodSampler.shouldMonitor(\$0);}",
+                        clazz)
+                clazz.addMethod(m)
+            }
+        }
+        return clazz.toBytecode()
+    }
+
+    public static byte[] handleClass(InputStream inputStream) {
         CtClass clazz = classPool.makeClass(inputStream);
         if (clazz.isInterface() || clazz.isAnnotation() || clazz.isEnum() || clazz.isArray()) {
             return clazz.toBytecode();
@@ -62,10 +96,10 @@ class JavassistHandler {
             injectConstructorSamplerCode(clazz, classInitializer)
         }
         def bytes = clazz.toBytecode()
-        clazz.defrost()
+        //TODO 这里为何还要解冻？
+//        clazz.defrost()
         return bytes
     }
-
 
     static void injectMethodSamplerCode(CtClass clazz, CtMethod ctMethod) {
         if (ctMethod.isEmpty() || Modifier.isNative(ctMethod.getModifiers())) {
@@ -82,8 +116,12 @@ class JavassistHandler {
     }
 
     static void insertSamplerCode(CtClass clazz, CtBehavior ctBehavior) {
-        printLog("inecjt method:::>>>> ${clazz.name}.${ctBehavior.name}")
-        //TODO 空方法已经被Android编译器移除，所以这里无需优化
+        printLog("inject method:::>>>> ${clazz.name}.${ctBehavior.name}")
+        int m = ctBehavior.getModifiers();
+        if (java.lang.reflect.Modifier.isStatic(m) || ctBehavior instanceof CtConstructor) {
+            printLog("static or constructor!!!!! method=--========----------- ${clazz.name}.${ctBehavior.name}")
+            return
+        }
         ctBehavior.addLocalVariable("__bl_stn", CtClass.longType);
         ctBehavior.addLocalVariable("__bl_stt", CtClass.longType);
         ctBehavior.addLocalVariable("__bl_icl", CtClass.booleanType);

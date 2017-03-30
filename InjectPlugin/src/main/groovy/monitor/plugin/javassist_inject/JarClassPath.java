@@ -22,38 +22,36 @@ final class JarClassPath implements ClassPath {
     JarClassPath(String pathname) throws NotFoundException {
         try {
             jarfile = new JarFile(pathname);
-            jarfileURL = new File(pathname).getCanonicalFile()
-                    .toURI().toURL().toString();
+            jarfileURL = new File(pathname).getCanonicalFile().toURI().toURL().toString();
             return;
+        } catch (IOException e) {
         }
-        catch (IOException e) {}
         throw new NotFoundException(pathname);
     }
 
-    public InputStream openClassfile(String classname)
-            throws NotFoundException
-    {
+    public InputStream openClassfile(String classname) throws NotFoundException {
         try {
             String jarname = classname.replace('.', '/') + ".class";
             JarEntry je = jarfile.getJarEntry(jarname);
-            if (je != null)
+            if (je != null) {
                 return jarfile.getInputStream(je);
-            else
+            } else {
                 return null;    // not found
+            }
+        } catch (IOException e) {
         }
-        catch (IOException e) {}
-        throw new NotFoundException("broken jar file?: "
-                + jarfile.getName());
+        throw new NotFoundException("broken jar file?: " + jarfile.getName());
     }
 
     public URL find(String classname) {
         String jarname = classname.replace('.', '/') + ".class";
         JarEntry je = jarfile.getJarEntry(jarname);
-        if (je != null)
+        if (je != null) {
             try {
                 return new URL("jar:" + jarfileURL + "!/" + jarname);
+            } catch (MalformedURLException e) {
             }
-            catch (MalformedURLException e) {}
+        }
 
         return null;            // not found
     }
@@ -62,8 +60,8 @@ final class JarClassPath implements ClassPath {
         try {
             jarfile.close();
             jarfile = null;
+        } catch (IOException e) {
         }
-        catch (IOException e) {}
     }
 
     public String toString() {

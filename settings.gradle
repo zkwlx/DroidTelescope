@@ -1,1 +1,1 @@
-include ':app', ':InjectPlugin', ':AndrPerfMonitor'
+include ':app', ':InjectPlugin', ':AndrPerfMonitor', ':testlibrary'

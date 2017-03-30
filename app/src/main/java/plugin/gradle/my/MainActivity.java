@@ -1,26 +1,32 @@
 package plugin.gradle.my;
 
+import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.shit.testlibrary.TestLibraryClass;
+
+import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        try {
-            g2();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        gogo(100);
+    private TestLibraryClass test;
 
-    }
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//        try {
+//            g2();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+//        gogo(100);
+//
+//    }
 
     @Override
     protected void onResume() {
@@ -56,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                isT();
+                isT("");
                 try {
                     g2();
                 } catch (IllegalAccessException e) {
@@ -70,40 +76,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                isT();
-                try {
-                    g2();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(150);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                gogo(259872364);
-            }
-        }).start();
+        if (test == null) {
+            test = new TestLibraryClass();
+        }
+        test.startTestt();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    g2();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                gogo(444444);
-            }
-        }).start();
+        new TestLibraryClass().startTestt();
 
         try {
             Thread.sleep(600);
@@ -119,13 +97,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i("zkw", "<<0");
         }
-        isT();
+        isT(new Paint());
+        isT(this);
         return a;
     }
 
     public Object g2() throws IllegalAccessException {
         int a = new Random().nextInt(100);
-        if (isT()) {
+        if (isT("")) {
             Log.i("g2", "isT() true");
         } else if (a > 5) {
             Log.i("g2", "isT() false>>> " + a);
@@ -148,7 +127,8 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private boolean isT() {
+    private boolean isT(Object o) {
+        Log.i("", "=======" + o);
         return new Random().nextInt(10) > 5;
     }
 

@@ -1,6 +1,10 @@
 package andr.perf.monitor;
 
 import android.os.SystemClock;
+import android.util.Log;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import andr.perf.monitor.cpu.SamplerFactory;
 
@@ -11,6 +15,11 @@ import andr.perf.monitor.cpu.SamplerFactory;
 public class MethodSampler {
 
     private static final String TAG = "MethodSampler";
+
+    public static boolean shouldMonitor(Object o) {
+        Log.i("66666", "thisObject>>>>>>>>>>> " + o);
+        return true;
+    }
 
     public static boolean shouldMonitor() {
         return true;

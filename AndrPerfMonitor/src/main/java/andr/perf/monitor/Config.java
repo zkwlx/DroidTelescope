@@ -9,15 +9,15 @@ public class Config {
     /**
      * judge whether the loop is blocked, you can override this to decide
      * whether it is blocked by your logic
-     *
+     * <p>
      * Note: running in none ui thread
      *
-     * @param useMsTime in millisecond
+     * @param useMsTime     in millisecond
      * @param useThreadTime in millisecond
      * @return true if blocked, else false
      */
     public boolean isBlock(long useMsTime, long useThreadTime) {
-        return useMsTime > 100 && useThreadTime > 8;
+        return useMsTime > 100 && useThreadTime > 0;//8
     }
 
 }

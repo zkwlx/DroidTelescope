@@ -1,6 +1,8 @@
 package plugin.gradle.my;
 
+import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -17,11 +19,15 @@ import andr.perf.monitor.persist.ConvertUtils;
 
 public class MyApplication extends Application {
 
+    private Config config = new AndrPerfMonitorConfig();
+
+    private AndroidMonitor.BlockListener blockListener = new MyBlockListener();
+
     @Override
     public void onCreate() {
         super.onCreate();
-        AndroidMonitor.install(new AndrPerfMonitorConfig());
-        AndroidMonitor.setBlockListener(new MyBlockListener());
+        AndroidMonitor.install(config);
+        AndroidMonitor.setBlockListener(blockListener);
     }
 
     private static class AndrPerfMonitorConfig extends Config {
