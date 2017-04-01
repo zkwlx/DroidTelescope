@@ -1,6 +1,6 @@
 package andr.perf.monitor;
 
-import andr.perf.monitor.cpu.CpuMonitor;
+import andr.perf.monitor.cpu.LooperMonitor;
 import andr.perf.monitor.cpu.models.BlockInfo;
 
 /**
@@ -22,7 +22,7 @@ public class AndroidMonitor {
 
     public static void install(Config config) {
         monitorConfig = (config == null ? new Config() : config);
-        CpuMonitor.getInstance().installLooperListener();
+        LooperMonitor.getInstance().installLooperListener();
     }
 
     public static void setBlockListener(BlockListener listener) {

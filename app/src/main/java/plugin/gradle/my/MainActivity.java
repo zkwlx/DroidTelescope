@@ -1,93 +1,104 @@
 package plugin.gradle.my;
 
+import android.content.Intent;
 import android.graphics.Paint;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
 import com.shit.testlibrary.TestLibraryClass;
 
-import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     private TestLibraryClass test;
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//        try {
-//            g2();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//        gogo(100);
-//
-//    }
-
     @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onSlowClick(View view) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         try {
             g2();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        gogo(87878787);
+        gogo(100);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                isT("");
-                try {
-                    g2();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        Fragment f = new Fragment();
+        android.app.Fragment ff = new android.app.Fragment();
 
-        if (test == null) {
-            test = new TestLibraryClass();
-        }
-        test.startTestt();
+    }
 
-        new TestLibraryClass().startTestt();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
-        try {
-            Thread.sleep(600);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        try {
+//            Thread.sleep(200);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            Thread.sleep(200);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            Thread.sleep(400);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    public void onSlowClick(View view) {
+        Intent i = new Intent(this, SecondActivity.class);
+        startActivity(i);
+        //
+        //        try {
+        //            g2();
+        //        } catch (IllegalAccessException e) {
+        //            e.printStackTrace();
+        //        }
+        //        gogo(87878787);
+        //
+        //        new Thread(new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                isT("");
+        //                try {
+        //                    g2();
+        //                } catch (IllegalAccessException e) {
+        //                    e.printStackTrace();
+        //                }
+        //                try {
+        //                    Thread.sleep(200);
+        //                } catch (InterruptedException e) {
+        //                    e.printStackTrace();
+        //                }
+        //            }
+        //        }).start();
+        //
+        //        if (test == null) {
+        //            test = new TestLibraryClass();
+        //        }
+        //        test.startTestt();
+        //
+        //        new TestLibraryClass().startTestt();
+        //
+        //        try {
+        //            Thread.sleep(600);
+        //        } catch (InterruptedException e) {
+        //            e.printStackTrace();
+        //        }
     }
 
     public int gogo(int c) {

@@ -9,30 +9,31 @@ import java.util.List;
 
 import andr.perf.monitor.AndroidMonitor;
 import andr.perf.monitor.Config;
+import andr.perf.monitor.SamplerFactory;
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.cpu.models.MethodInfo;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
  */
-public class CpuMonitor {
+public class LooperMonitor {
 
-    private static final String TAG = "CpuMonitor";
+    private static final String TAG = "LooperMonitor";
 
     private static final long THRESHOLD_MS = 100;//100ms
     private static final long THRESHOLD_THREAD_MS = THRESHOLD_MS;
 
     private static Config config;
 
-    public static CpuMonitor getInstance() {
+    public static LooperMonitor getInstance() {
         return SingletonHolder.instance;
     }
 
     private static class SingletonHolder {
-        private static CpuMonitor instance = new CpuMonitor();
+        private static LooperMonitor instance = new LooperMonitor();
     }
 
-    private CpuMonitor() {
+    private LooperMonitor() {
         config = AndroidMonitor.getConfig();
     }
 
@@ -40,7 +41,7 @@ public class CpuMonitor {
         @Override
         public void onBlock(long useMsTime, long useThreadTime) {
             Log.e(TAG, "Oops!!!! block!!!");
-            List<MethodInfo> methodInfoList = SamplerFactory.getSampler().getRootMethodList();
+            List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
             BlockInfo blockInfo = new BlockInfo();
             blockInfo.setUseThreadTime(useThreadTime);
             blockInfo.setUseMsTime(useMsTime);
@@ -76,7 +77,7 @@ public class CpuMonitor {
                     innerBlockListener.onBlock(useMsTime, useThreadTime);
                 }
                 //TODO 这里会影响性能，注意，考虑idle handler
-                SamplerFactory.getSampler().cleanRootMethodList();
+                SamplerFactory.getMethodSampler().cleanRootMethodList();
             }
         }
     };
