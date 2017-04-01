@@ -33,15 +33,8 @@ public class ObjectReferenceSampler {
         Log.i("zkw", "on destroy>>>>>---------" + object);
         MessageQueue.IdleHandler i = new GCHandler();
         Looper.getMainLooper().getQueue().addIdleHandler(i);
-        Handler h = new Handler(Looper.getMainLooper());
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-            }
-        }, 1000);
-
-        h.postDelayed(new Runnable() {
+        Runnable a = new Runnable() {
             @Override
             public void run() {
                 Log.i("zkw", "find garbage!!!!!");
@@ -62,10 +55,10 @@ public class ObjectReferenceSampler {
                     }
                 }
             }
-        }, 10000);
+        };
     }
 
-    static class GCHandler implements MessageQueue.IdleHandler {
+    private static class GCHandler implements MessageQueue.IdleHandler {
 
         @Override
         public boolean queueIdle() {
