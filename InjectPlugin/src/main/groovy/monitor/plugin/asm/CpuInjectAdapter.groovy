@@ -1,4 +1,4 @@
-package monitor.plugin.asm_inject;
+package monitor.plugin.asm;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;

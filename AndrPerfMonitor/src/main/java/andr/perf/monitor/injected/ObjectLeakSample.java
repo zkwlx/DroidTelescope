@@ -20,5 +20,7 @@ public class ObjectLeakSample {
         SamplerFactory.getReferenceSampler().onKeyObjectDestroy(object);
     }
 
+    public  static void objectTrimMemory(int level){
 
+    }
 }

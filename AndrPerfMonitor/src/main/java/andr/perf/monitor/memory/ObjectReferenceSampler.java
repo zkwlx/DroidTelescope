@@ -1,6 +1,5 @@
 package andr.perf.monitor.memory;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.MessageQueue;
 import android.util.Log;
@@ -33,7 +32,6 @@ public class ObjectReferenceSampler {
         Log.i("zkw", "on destroy>>>>>---------" + object);
         MessageQueue.IdleHandler i = new GCHandler();
         Looper.getMainLooper().getQueue().addIdleHandler(i);
-
         Runnable a = new Runnable() {
             @Override
             public void run() {

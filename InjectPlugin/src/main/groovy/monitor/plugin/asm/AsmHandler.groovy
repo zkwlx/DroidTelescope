@@ -1,11 +1,8 @@
-package monitor.plugin.asm_inject
+package monitor.plugin.asm
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.Type
 
 /**
  * Created by ZhouKeWen on 17/3/17.

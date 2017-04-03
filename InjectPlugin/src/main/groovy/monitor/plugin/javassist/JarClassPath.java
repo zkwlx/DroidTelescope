@@ -1,5 +1,5 @@
 //copy form javassist
-package monitor.plugin.javassist_inject;
+package monitor.plugin.javassist;
 
 import java.io.File;
 import java.io.IOException;

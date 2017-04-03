@@ -1,6 +1,6 @@
 package monitor.plugin
 
-import monitor.plugin.javassist_inject.JavassistHandler
+import monitor.plugin.javassist.JavassistHandler
 import org.gradle.api.Project
 
 import java.util.jar.JarEntry
