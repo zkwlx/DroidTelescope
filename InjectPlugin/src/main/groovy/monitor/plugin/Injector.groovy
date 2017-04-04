@@ -1,6 +1,7 @@
 package monitor.plugin
 
 import monitor.plugin.javassist.JavassistHandler
+import monitor.plugin.utils.LogUtils
 import org.gradle.api.Project
 
 import java.util.jar.JarEntry
@@ -28,7 +29,7 @@ public class Injector {
                 injectForJar(project, file)
             }
         } else {
-            printLog(project, "Inject error! file is null!!")
+            LogUtils.printLog("Inject error! file is null!!")
         }
     }
 
@@ -45,7 +46,7 @@ public class Injector {
     }
 
     private static void injectForJar(Project project, File file) {
-        printLog(project, "[process jar]============" + file.absolutePath)
+        LogUtils.printLog("[process jar]============" + file.absolutePath)
         if (!file.absolutePath.contains("testlibrary")) {
             return;
         }
@@ -59,7 +60,7 @@ public class Injector {
             ZipEntry zipEntry = new ZipEntry(entryName)
             InputStream inputStream = jarFile.getInputStream(entry)
             output.putNextEntry(zipEntry)
-            printLog(project, "entry name............." + entryName)
+            LogUtils.printLog("entry name............." + entryName)
             if (entryName.endsWith(".class")) {
                 def bytes = JavassistHandler.handleClass(inputStream)
                 output.write(bytes)
@@ -78,9 +79,4 @@ public class Injector {
             tempOutJar.delete()
         }
     }
-
-    private static void printLog(Project project, String content) {
-        project.logger.error content
-    }
-
 }

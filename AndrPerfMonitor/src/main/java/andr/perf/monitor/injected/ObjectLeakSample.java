@@ -1,5 +1,7 @@
 package andr.perf.monitor.injected;
 
+import android.util.Log;
+
 import andr.perf.monitor.SamplerFactory;
 
 /**
@@ -13,14 +15,17 @@ public class ObjectLeakSample {
 
     public static void objectCreate(Object object) {
         SamplerFactory.getReferenceSampler().onKeyObjectCreate(object);
-     
     }
 
     public static void objectDestroy(Object object) {
         SamplerFactory.getReferenceSampler().onKeyObjectDestroy(object);
     }
 
-    public  static void objectTrimMemory(int level){
+    public static void objectLowMemory(Object object) {
+        Log.i("zkw", "low memory>>>>>>>>>>>>>>>>>" + object);
+    }
 
+    public static void objectTrimMemory(Object object, int level) {
+        Log.i("zkw", "trim memory>>>>>>>>>>>>>>>>>" + object + " level:" + level);
     }
 }

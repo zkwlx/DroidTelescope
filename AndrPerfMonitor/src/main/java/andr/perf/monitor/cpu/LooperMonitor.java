@@ -40,7 +40,8 @@ public class LooperMonitor {
     private final InnerBlockListener innerBlockListener = new InnerBlockListener() {
         @Override
         public void onBlock(long useMsTime, long useThreadTime) {
-            Log.e(TAG, "Oops!!!! block!!!");
+            Log.e(TAG, "Oops!!!! block!!!___" + "msTime:" + useMsTime + " threadTime:" +
+                    useThreadTime);
             List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
             BlockInfo blockInfo = new BlockInfo();
             blockInfo.setUseThreadTime(useThreadTime);
@@ -72,7 +73,6 @@ public class LooperMonitor {
                 isStart = true;
                 long useMsTime = System.currentTimeMillis() - startMsTime;
                 long useThreadTime = SystemClock.currentThreadTimeMillis() - startThreadTime;
-                Log.i(TAG, "handle msTime:" + useMsTime + " threadTime:" + useThreadTime);
                 if (config.isBlock(useMsTime, useThreadTime)) {
                     innerBlockListener.onBlock(useMsTime, useThreadTime);
                 }

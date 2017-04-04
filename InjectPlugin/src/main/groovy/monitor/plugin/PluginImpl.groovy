@@ -19,33 +19,5 @@ public class PluginImpl implements Plugin<Project> {
         def android = project.extensions.getByType(AppExtension)
         def transform = new PreDexTransform(project)
         android.registerTransform(transform)
-//        }
-
-//        def isApp = project.plugins.hasPlugin(PluginImpl)
-//        if (isApp) {
-//            def android = project.extensions.getByType(AppExtension)
-//            def transform = new TransformImpl(project)
-////            android.registerTransform(transform)
-//        }
-//
-//        def testTask = project.tasks.findByName("transformClassesWithTransformImplFor${variant.name.capitalize()}")
-//
-//        if (testTask) {
-//
-//            Set<File> testTaskInputFiles = testTask.inputs.files.files
-//            Set<File> testTaskOutputFiles = testTask.inputs.files.files
-//
-//            project.logger.error "Name:transformClassesWithTransformImpl=====>${testTask.name} input"
-//            testTaskInputFiles.each { inputFile ->
-//                def path = inputFile.absolutePath
-//                project.logger.error path
-//            }
-//
-//            project.logger.error "Name:transformClassesWithTransformImpl=====>${testTask.name} output"
-//            testTaskOutputFiles.each { inputFile ->
-//                def path = inputFile.absolutePath
-//                project.logger.error path
-//            }
-//        }
     }
 }

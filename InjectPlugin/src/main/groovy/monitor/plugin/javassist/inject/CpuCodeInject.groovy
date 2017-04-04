@@ -3,6 +3,7 @@ package monitor.plugin.javassist.inject
 import javassist.CtBehavior
 import javassist.CtClass
 import javassist.Modifier
+import monitor.plugin.utils.LogUtils
 
 /**
  * <p>Created by ZhouKeWen on 17-4-3.</p>
@@ -10,7 +11,7 @@ import javassist.Modifier
 class CpuCodeInject {
 
     public static void insertCpuSampleCode(CtClass clazz, CtBehavior ctBehavior) {
-        printLog("inject method:::>>>> ${clazz.name}.${ctBehavior.name}")
+        LogUtils.printLog("inject Cpu sample code:::>>>> ${clazz.name}.${ctBehavior.name}")
         if (ctBehavior.isEmpty() || Modifier.isNative(ctBehavior.getModifiers())) {
             return;
         }
@@ -26,7 +27,9 @@ class CpuCodeInject {
                   if(__cpu_switch) {
                       __cpu_use_ns = java.lang.System.nanoTime();
                       __cpu_use_thread_ms = android.os.SystemClock.currentThreadTimeMillis();
-                      andr.perf.monitor.injected.TimeConsumingSample.methodEnter("${clazz.name}", "${
+                      andr.perf.monitor.injected.TimeConsumingSample.methodEnter("${
+                    clazz.name
+                }", "${
                     ctBehavior.name
                 }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                   }

@@ -1,16 +1,34 @@
 package monitor.plugin.javassist
 
 import javassist.*
-import monitor.plugin.javassist.DirClassPath
-import monitor.plugin.javassist.JarClassPath
-import monitor.plugin.javassist.inject.CpuCodeInject
-import monitor.plugin.javassist.inject.MemoryCodeInject
+import monitor.plugin.javassist.inject.*
+import monitor.plugin.utils.LogUtils
+
 /**
  * Created by ZhouKeWen on 17/3/23.
  */
 class JavassistHandler {
 
     private static ClassPool classPool;
+    private static ArrayList<IMethodHandler> methodHandlers;
+
+    private static void initMethodHandlers() {
+        if (!methodHandlers) {
+            methodHandlers = new ArrayList<>()
+            methodHandlers.add(new OnCreateHandler())
+            methodHandlers.add(new OnDestroyHandler())
+            methodHandlers.add(new OnLowMemoryHandler())
+            methodHandlers.add(new OnTrimMemoryHandler())
+        }
+    }
+
+    public static CtClass makeClass(String className) {
+        if (classPool) {
+            return classPool.makeClass(className)
+        } else {
+            throw IllegalAccessException("classPoll not initialize")
+        }
+    }
 
     static void setClassPath(Set<File> files) {
         classPool = new ClassPool(true);
@@ -81,42 +99,34 @@ class JavassistHandler {
         if ("android.support.v7.app.AppCompatActivity" != superClazz.name) {
             return
         }
-        boolean hasCreateMethod = false
-        boolean hasDestroyMethod = false
+        //初始化
+        initMethodHandlers()
+
         CtMethod[] ctMethods = clazz.getDeclaredMethods();
-        CtClass bundleClazz = classPool.makeClass("android.os.Bundle")
+        int successCount = 0
         for (CtMethod ctMethod : ctMethods) {
+            LogUtils.printLog("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
             int modifiers = ctMethod.getModifiers();
             if (Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)) {
-                printLog("static or native!!!!! method=--========----------- ${clazz.name}.${ctMethod.name}")
+                LogUtils.printLog(
+                        "static or native!!!!! method=--========----------- ${clazz.name}.${ctMethod.name}")
                 continue
             }
-            //TODO 方法匹配代码写好点，各种情况都要考虑，例如不同Fragment和不同Activity
-            if ("onCreate" == ctMethod.name && ctMethod.parameterTypes.size() == 1 && ctMethod.parameterTypes[0] ==
-                    bundleClazz) {
-               MemoryCodeInject.insertCreateSampleCode(clazz, ctMethod)
-                hasCreateMethod = true
-            } else if ("onDestroy" == ctMethod.name && ctMethod.parameterTypes.size() == 0) {
-                MemoryCodeInject.insertDestroySampleCode(clazz, ctMethod)
-                hasDestroyMethod = true
+            for (IMethodHandler handler : methodHandlers) {
+                if (handler.handleMethod(clazz, ctMethod)) {
+                    LogUtils.printLog("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
+                    successCount++
+                }
             }
-            if (hasCreateMethod && hasDestroyMethod) {
+            if (successCount == methodHandlers.size()) {
+                //所有关键方法注入成功，不再处理后续方法
                 break
             }
         }
-        //TODO 子类没有onCreate或onDestroy方法
-        if (!hasCreateMethod) {
-            printLog("没有create方法！！！！！>>>>>> ${clazz.name}")
-            MemoryCodeInject.addObjectCreateMethod(clazz)
-        }
-        if (!hasDestroyMethod) {
-            printLog("没有destroy方法？？？？>>>>>> ${clazz.name}")
-            MemoryCodeInject.addObjectDestroyMethod(clazz)
+
+        //如果发现关键method没有实现，则add这个method
+        for (IMethodHandler handler : methodHandlers) {
+            handler.checkMethodAndAdd(clazz)
         }
     }
-
-    private static void printLog(String content) {
-        System.out.println(content)
-    }
-
 }

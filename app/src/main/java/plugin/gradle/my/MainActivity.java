@@ -59,6 +59,17 @@ public class MainActivity extends AppCompatActivity {
 //        }
     }
 
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Log.i("zkw", "----------------_>>>on trim memory:"+level);
+    }
+
     public void onSlowClick(View view) {
         Intent i = new Intent(this, SecondActivity.class);
         startActivity(i);
