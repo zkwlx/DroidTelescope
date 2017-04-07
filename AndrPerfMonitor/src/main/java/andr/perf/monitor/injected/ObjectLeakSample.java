@@ -23,9 +23,11 @@ public class ObjectLeakSample {
 
     public static void objectLowMemory(Object object) {
         Log.i("zkw", "low memory>>>>>>>>>>>>>>>>>" + object);
+        SamplerFactory.getReferenceSampler().onLowMemory(object);
     }
 
     public static void objectTrimMemory(Object object, int level) {
         Log.i("zkw", "trim memory>>>>>>>>>>>>>>>>>" + object + " level:" + level);
+        SamplerFactory.getReferenceSampler().onTrimMemory(object, level);
     }
 }

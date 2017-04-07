@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import andr.perf.monitor.AndroidMonitor;
 import andr.perf.monitor.Config;
 import andr.perf.monitor.cpu.models.BlockInfo;
+import andr.perf.monitor.memory.models.LeakInfo;
 import andr.perf.monitor.persist.ConvertUtils;
 
 /**
@@ -22,12 +23,14 @@ public class MyApplication extends Application {
     private Config config = new AndrPerfMonitorConfig();
 
     private AndroidMonitor.BlockListener blockListener = new MyBlockListener();
+    private AndroidMonitor.LeakListener leakListener = new MyLeakListener();
 
     @Override
     public void onCreate() {
         super.onCreate();
         AndroidMonitor.install(config);
         AndroidMonitor.setBlockListener(blockListener);
+        AndroidMonitor.setLeakListener(leakListener);
     }
 
     private static class AndrPerfMonitorConfig extends Config {
@@ -47,6 +50,24 @@ public class MyApplication extends Application {
             //可以将json数据上传服务器，或者保存到本地
             if (blockInfoJson != null) {
                 Log.i("MyApplication", blockInfoJson.toString());
+            }
+
+        }
+    }
+
+    private static class MyLeakListener implements AndroidMonitor.LeakListener {
+        @Override
+        public void onLeak(LeakInfo leakInfo) {
+            JSONObject leakInfoJson = null;
+            //使用框架提供的转换工具，将BlockInfo对象转换成Json格式
+            try {
+                leakInfoJson = ConvertUtils.convertLeakInfoToJson(leakInfo);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //可以将json数据上传服务器，或者保存到本地
+            if (leakInfoJson != null) {
+                Log.i("MyApplication", leakInfoJson.toString());
             }
 
         }

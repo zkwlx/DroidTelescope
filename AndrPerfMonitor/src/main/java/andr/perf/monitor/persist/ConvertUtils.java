@@ -14,6 +14,8 @@ import java.util.List;
 
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.cpu.models.MethodInfo;
+import andr.perf.monitor.memory.SuspectWeakReference;
+import andr.perf.monitor.memory.models.LeakInfo;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -37,6 +39,14 @@ public class ConvertUtils {
                 blockInfo.getRootMethodList());
     }
 
+    public static JSONObject convertLeakInfoToJson(LeakInfo leakInfo) throws JSONException {
+        if (leakInfo == null) {
+            return null;
+        }
+        List<SuspectWeakReference> referenceList = leakInfo.getReferenceList();
+        return innerConvertToJson(referenceList);
+    }
+
     private static void showMethodTrace(MethodInfo rootMethod, int depth) {
         StringBuilder tab = new StringBuilder();
         int d = depth;
@@ -53,6 +63,44 @@ public class ConvertUtils {
         for (MethodInfo method : list) {
             showMethodTrace(method, depth);
         }
+    }
+
+    private static JSONObject innerConvertToJson(List<SuspectWeakReference> referenceList) throws
+            JSONException {
+        JSONObject jsonObject = null;
+        if (referenceList != null && !referenceList.isEmpty()) {
+            JSONArray referenceArray = new JSONArray();
+            for (SuspectWeakReference reference : referenceList) {
+                JSONObject referenceJson = createReferenceJSONObject(reference);
+                if (referenceJson != null) {
+                    referenceArray.put(referenceJson);
+                }
+            }
+            if (referenceArray.length() > 0) {
+                jsonObject = new JSONObject();
+                jsonObject.put("garbage_reference_list", referenceArray);
+            }
+        }
+        return jsonObject;
+    }
+
+    private static JSONObject createReferenceJSONObject(SuspectWeakReference reference) throws JSONException {
+        Object obj = reference.get();
+        if (obj == null) {
+            return null;
+        }
+        JSONObject referenceJson = new JSONObject();
+        referenceJson.put("objectId", obj.toString());
+        String[] createStack = reference.getCreateStack();
+        if (createStack != null && createStack.length > 0) {
+            StringBuilder sb = new StringBuilder(createStack[createStack.length - 1]);
+            for (int i = createStack.length - 2; i >= 0; i--) {
+                String createObjectId = createStack[i];
+                sb.append("->").append(createObjectId);
+            }
+            referenceJson.put("object_create_chain", sb.toString());
+        }
+        return referenceJson;
     }
 
     private static JSONObject innerConvertToJson(long useMsTime, long useThreadTime,
