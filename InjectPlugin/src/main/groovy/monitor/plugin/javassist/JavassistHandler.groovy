@@ -12,6 +12,9 @@ class JavassistHandler {
     private static ClassPool classPool;
     private static ArrayList<IMethodHandler> methodHandlers;
 
+    private final
+    static String[] ACTIVITY_CLASSES = ["android.app.Activity", "android.app.ActivityGroup", "android.support.v7.app.AppCompatActivity", "android.accounts.AccountAuthenticatorActivity"]
+
     private static void initMethodHandlers() {
         if (!methodHandlers) {
             methodHandlers = new ArrayList<>()
@@ -68,7 +71,6 @@ class JavassistHandler {
         }
 
         injectForCpu(clazz)
-        //TODO 同一个方法是否可以修改两次？
         //TODO 判断是否开启泄露监控功能
         injectForMemory(clazz)
 
@@ -96,7 +98,7 @@ class JavassistHandler {
     private static void injectForMemory(CtClass clazz) {
         CtClass superClazz = clazz.getSuperclass();
         //TODO 类过滤代码在这里添加，注意Activity、Fragment、Service等都要考虑
-        if ("android.support.v7.app.AppCompatActivity" != superClazz.name) {
+        if (!ACTIVITY_CLASSES.contains(superClazz.name)) {
             return
         }
         //初始化

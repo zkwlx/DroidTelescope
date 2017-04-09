@@ -60,7 +60,7 @@ public class ObjectReferenceSampler {
                 }
             }
             AndroidMonitor.LeakListener listener = AndroidMonitor.getLeakListener();
-            if (listener != null) {
+            if (listener != null && !leakInfo.getReferenceList().isEmpty()) {
                 listener.onLeak(leakInfo);
             }
         }
@@ -98,7 +98,8 @@ public class ObjectReferenceSampler {
             @Override
             public void run() {
                 SuspectWeakReference reference = new SuspectWeakReference(object);
-                String[] objectIdStack = objectCreateStack.toArray(new String[objectCreateStack.size()]);
+                String[] objectIdStack = objectCreateStack.toArray(new String[objectCreateStack
+                        .size()]);
                 reference.setCreateStack(objectIdStack);
                 suspectObjects.add(reference);
                 //防止堆栈混乱，索性直接用remove
