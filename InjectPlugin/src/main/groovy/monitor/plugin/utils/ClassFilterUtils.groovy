@@ -17,8 +17,28 @@ package monitor.plugin.utils
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-class IncludeUtils {
-    public static Set<String> fomartPath(Collection<String> paths) {
+class ClassFilterUtils {
+
+    public static boolean skipThisClassForJar(String entryName) {
+        if (!entryName.endsWith(".class"))
+            return true
+        if (entryName.contains("/R\$") || entryName.endsWith("/R.class") || entryName.endsWith("/BuildConfig.class"))
+            return true
+
+        return false
+    }
+
+    public static boolean skipThisClassForFile(String filePath) {
+        if (!filePath.endsWith(".class"))
+            return true
+        if (filePath.contains("${File.separator}R\$") || filePath.endsWith("${File.separator}R.class") ||
+                filePath.endsWith("${File.separator}BuildConfig.class"))
+            return true
+
+        return false
+    }
+
+    public static Set<String> formatPath(Collection<String> paths) {
         Set<String> theNew = new HashSet<>()
         for (String path : paths) {
             theNew.add(path.replaceAll("\\.", "/"))
@@ -32,12 +52,12 @@ class IncludeUtils {
         }
 
         for (String exclude : excludeClass) {
-            if (path.equals(exclude)) {
+            if (path == exclude) {
                 return true;
             }
         }
         for (String exclude : excludePackage) {
-            if (path.startsWith(exclude)) {
+            if (path.contains(exclude)) {
                 return true;
             }
         }
@@ -55,7 +75,7 @@ class IncludeUtils {
         }
 
         for (String include : includePackage) {
-            if (path.startsWith(include)) {
+            if (path.contains(include)) {
                 return true;
             }
         }

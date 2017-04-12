@@ -97,6 +97,7 @@ public class ObjectReferenceSampler {
         JobManager.getInstance().postWorkerThread(new Runnable() {
             @Override
             public void run() {
+                //记录object的create栈，并存入reference对象，一个Reference对应一个调用栈
                 SuspectWeakReference reference = new SuspectWeakReference(object);
                 String[] objectIdStack = objectCreateStack.toArray(new String[objectCreateStack
                         .size()]);
@@ -106,7 +107,7 @@ public class ObjectReferenceSampler {
                 objectCreateStack.remove(object.toString());
             }
         });
-        //TODO 考虑记录object的create栈，并存入reference对象，一个Reference对应一个调用栈
+
         triggerGC();
     }
 

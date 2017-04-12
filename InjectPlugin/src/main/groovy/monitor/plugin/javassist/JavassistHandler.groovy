@@ -11,26 +11,26 @@ class JavassistHandler {
 
     private static ClassPool classPool;
     private static ArrayList<IMethodHandler> methodHandlers;
+    private static ArrayList<IMethodHandler> v4MethodHandlers;
 
-    private final
-    static String[] ACTIVITY_CLASSES = ["android.app.Activity", "android.app.ActivityGroup", "android.support.v7.app.AppCompatActivity", "android.accounts.AccountAuthenticatorActivity"]
-
-    private static void initMethodHandlers() {
+    private static ArrayList<IMethodHandler> getMethodHandlers() {
         if (!methodHandlers) {
             methodHandlers = new ArrayList<>()
             methodHandlers.add(new OnCreateHandler())
             methodHandlers.add(new OnDestroyHandler())
-            methodHandlers.add(new OnLowMemoryHandler())
             methodHandlers.add(new OnTrimMemoryHandler())
         }
+        return methodHandlers
     }
 
-    public static CtClass makeClass(String className) {
-        if (classPool) {
-            return classPool.makeClass(className)
-        } else {
-            throw IllegalAccessException("classPoll not initialize")
+    private static ArrayList<IMethodHandler> getV4MethodHandlers() {
+        if (!v4MethodHandlers) {
+            v4MethodHandlers = new ArrayList<>()
+            v4MethodHandlers.add(new OnCreateHandler())
+            v4MethodHandlers.add(new OnDestroyHandler())
+            v4MethodHandlers.add(new OnLowMemoryHandler())
         }
+        return v4MethodHandlers
     }
 
     static void setClassPath(Set<File> files) {
@@ -96,13 +96,16 @@ class JavassistHandler {
     }
 
     private static void injectForMemory(CtClass clazz) {
-        CtClass superClazz = clazz.getSuperclass();
-        //TODO 类过滤代码在这里添加，注意Activity、Fragment、Service等都要考虑
-        if (!ACTIVITY_CLASSES.contains(superClazz.name)) {
+        if (MemoryCodeInject.classNotCare(clazz)) {
+            //不是内存监控模块关心的类，不注入
             return
         }
-        //初始化
-        initMethodHandlers()
+        List<IMethodHandler> methodHandlers;
+        if (MemoryCodeInject.isV4Class(clazz)) {
+            methodHandlers = getV4MethodHandlers()
+        } else {
+            methodHandlers = getMethodHandlers()
+        }
 
         CtMethod[] ctMethods = clazz.getDeclaredMethods();
         int successCount = 0

@@ -9,10 +9,10 @@ version='1.0.0'
 
 dependencies {
     compile gradleApi()
+    compile localGroovy()
     compile 'com.android.tools.build:gradle:2.2.3'
     compile 'org.ow2.asm:asm:5.0'
     compile "org.javassist:javassist:3.21.0-GA"
-    compile localGroovy()
 }
 uploadArchives {
     repositories {

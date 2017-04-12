@@ -22,8 +22,11 @@ public class SecondActivity extends AppCompatActivity implements BlankFragment.O
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction tx = fm.beginTransaction();
-        tx.add(R.id.id_content, new BlankFragment(),"ONE");
+        BlankFragment blankFragment = new BlankFragment();
+        tx.add(R.id.id_content, blankFragment, "ONE");
         tx.commit();
+
+        blankFragment.onLowMemory();
     }
 
     @Override

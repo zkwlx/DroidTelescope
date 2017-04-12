@@ -34,7 +34,7 @@ class CpuCodeInject {
                 }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                   }
                 """)
-        //TODO 只在正常return之前插入代码，如果是异常退出，不会回调methodExit
+        //只在正常return之前插入代码，如果是异常退出，不会回调methodExit
         ctBehavior.insertAfter(
                 """
                    if(__cpu_switch) {
@@ -45,7 +45,7 @@ class CpuCodeInject {
                 }", "${generateParamTypes(ctBehavior.parameterTypes)}");
                    }
                 """)
-        //TODO 方法异常退出会导致方法堆栈记录混乱，被迫注入finally代码
+        //方法异常退出会导致方法堆栈记录混乱，被迫注入finally代码
         ctBehavior.insertAfter(
                 """
                    andr.perf.monitor.injected.TimeConsumingSample.methodExitFinally("${

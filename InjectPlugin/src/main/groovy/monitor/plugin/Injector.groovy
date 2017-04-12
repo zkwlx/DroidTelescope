@@ -1,6 +1,7 @@
 package monitor.plugin
 
 import monitor.plugin.javassist.JavassistHandler
+import monitor.plugin.utils.ClassFilterUtils
 import monitor.plugin.utils.LogUtils
 import org.gradle.api.Project
 
@@ -15,6 +16,18 @@ import java.util.zip.ZipEntry
  * Created by ZhouKeWen on 17/3/17.
  */
 public class Injector {
+
+    private static Set<String> excludePackage
+    private static Set<String> includePackage
+    private static Set<String> excludeClass
+
+    public static void setPackagesConfig(List<String> excludePackage, List<String> includePackage,
+            List<String> excludeClass) {
+        this.excludePackage = ClassFilterUtils.formatPath(excludePackage)
+        this.includePackage = ClassFilterUtils.formatPath(includePackage)
+        this.excludeClass = ClassFilterUtils.formatPath(excludeClass)
+
+    }
 
     public static void setClassPathForJavassist(Set<File> files) {
         JavassistHandler.setClassPath(files)
@@ -36,10 +49,8 @@ public class Injector {
     private static void injectForDir(Project project, File dirFile) {
         dirFile.eachFileRecurse { File file ->
             String filePath = file.absolutePath
-            //TODO 这里是过滤代码，统一搞
-            if (filePath.endsWith(".class") && !filePath.contains('R$') && !filePath.contains('R.class') &&
-                    !filePath.contains("BuildConfig.class")) {
-                project.logger.error "======>>>>name::> ${filePath}"
+            if (shouldInjectFileClass(filePath)) {
+                LogUtils.printLog("======>>>>name::> ${filePath}")
                 JavassistHandler.handleClass(file)
             }
         }
@@ -47,9 +58,6 @@ public class Injector {
 
     private static void injectForJar(Project project, File file) {
         LogUtils.printLog("[process jar]============" + file.absolutePath)
-        if (!file.absolutePath.contains("testlibrary")) {
-            return;
-        }
         JarFile jarFile = new JarFile(file)
         Enumeration enumeration = jarFile.entries()
         File tempOutJar = new File(file.getParent(), file.getName() + ".tmp")
@@ -60,8 +68,7 @@ public class Injector {
             ZipEntry zipEntry = new ZipEntry(entryName)
             InputStream inputStream = jarFile.getInputStream(entry)
             output.putNextEntry(zipEntry)
-            LogUtils.printLog("entry name............." + entryName)
-            if (entryName.endsWith(".class")) {
+            if (shouldInjectJarClass(entryName)) {
                 def bytes = JavassistHandler.handleClass(inputStream)
                 output.write(bytes)
             } else {
@@ -78,5 +85,23 @@ public class Injector {
         if (tempOutJar.exists()) {
             tempOutJar.delete()
         }
+    }
+
+    //过滤Jar包中的Class实体
+    private static boolean shouldInjectJarClass(String entryName) {
+        if (ClassFilterUtils.skipThisClassForJar(entryName)) {
+            return false
+        }
+        return ClassFilterUtils.isIncluded(entryName, includePackage) &&
+                !ClassFilterUtils.isExcluded(entryName, excludePackage, excludeClass)
+    }
+
+    //过滤Class文件
+    private static boolean shouldInjectFileClass(String filePath) {
+        if (ClassFilterUtils.skipThisClassForFile(filePath)) {
+            return false
+        }
+        return ClassFilterUtils.isIncluded(filePath, includePackage) &&
+                !ClassFilterUtils.isExcluded(filePath, excludePackage, excludeClass)
     }
 }

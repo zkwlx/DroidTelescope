@@ -3,10 +3,56 @@ package monitor.plugin.javassist.inject
 import javassist.CtClass
 import javassist.CtMethod
 import javassist.CtNewMethod
+
 /**
  * <p>Created by ZhouKeWen on 17-4-3.</p>
  */
 class MemoryCodeInject {
+
+    /**
+     * 内存监控模块关心的Activity相关类
+     */
+    private final static String[] ACTIVITY_CLASSES = ["android.app.Activity",
+                                                      "android.app.ActivityGroup",
+                                                      "android.support.v7.app.AppCompatActivity",
+                                                      "android.accounts.AccountAuthenticatorActivity",
+                                                      "android.support.v7.app.ActionBarActivity",
+                                                      "android.app.ActivityGroup",
+                                                      "android.app.AliasActivity",
+                                                      "android.support.v7.app.AppCompatActivity",
+                                                      "android.app.ExpandableListActivity",
+                                                      "android.support.v4.app.FragmentActivity",
+                                                      "android.app.LauncherActivity",
+                                                      "android.app.ListActivity",
+                                                      "android.app.NativeActivity",
+                                                      "android.preference.PreferenceActivity",
+                                                      "android.support.v4.app.SupportActivity",
+                                                      "android.app.TabActivity"]
+
+    /**
+     * 内存监控模块关心的Fragment相关类
+     */
+    private final static String[] FRAGMENT_CLASSES = ["android.app.Fragment",
+                                                      "android.app.DialogFragment",
+                                                      "android.app.ListFragment",
+                                                      "android.preference.PreferenceFragment",
+                                                      "android.webkit.WebViewFragment",
+                                                      "android.support.v4.app.Fragment",
+                                                      "android.support.v7.app.AppCompatDialogFragment",
+                                                      "android.support.v4.app.DialogFragment",
+                                                      "android.support.v4.app.ListFragment"]
+
+
+    public static boolean classNotCare(CtClass ctClass) {
+        CtClass superClazz = ctClass.getSuperclass();
+        //TODO 类过滤代码在这里添加，注意Activity、Fragment、Service等都要考虑
+        return !ACTIVITY_CLASSES.contains(superClazz.name) && !FRAGMENT_CLASSES.contains(superClazz.name)
+    }
+
+    public static boolean isV4Class(CtClass ctClass) {
+        CtClass superClazz = ctClass.getSuperclass();
+        return superClazz.name.startsWith("android.support.v4")
+    }
 
     public static void addObjectCreateMethod(CtClass clazz) {
         CtMethod m = CtNewMethod.make(
