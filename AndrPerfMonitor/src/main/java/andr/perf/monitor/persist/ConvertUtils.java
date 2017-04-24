@@ -6,10 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 
 import andr.perf.monitor.cpu.models.BlockInfo;
@@ -122,7 +118,7 @@ public class ConvertUtils {
     private static JSONObject createMethodJSONObject(MethodInfo method) throws JSONException {
         JSONObject methodJson = new JSONObject();
         methodJson.put("method_signature", method.getSignature());
-        methodJson.put("thread", method.getThreadName());
+        methodJson.put("thread_id", method.getThreadId());
         methodJson.put("nano_time", method.getUseNanoTime());
         methodJson.put("ms_time", method.getUseMsTime());
         methodJson.put("thread_time", method.getUseThreadTime());

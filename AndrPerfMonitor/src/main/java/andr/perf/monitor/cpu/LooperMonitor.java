@@ -40,8 +40,7 @@ public class LooperMonitor {
     private final InnerBlockListener innerBlockListener = new InnerBlockListener() {
         @Override
         public void onBlock(long useMsTime, long useThreadTime) {
-            Log.e(TAG, "Oops!!!! block!!!___" + "msTime:" + useMsTime + " threadTime:" +
-                    useThreadTime);
+            Log.e(TAG, "Oops!!!! block!!!___" + "msTime:" + useMsTime + " threadTime:" + useThreadTime);
             List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
             BlockInfo blockInfo = new BlockInfo();
             blockInfo.setUseThreadTime(useThreadTime);
@@ -66,10 +65,12 @@ public class LooperMonitor {
         @Override
         public void println(String x) {
             if (isStart) {
+                //                Log.i("zkw", "----------------loop start-----------------");
                 isStart = false;
                 startMsTime = System.currentTimeMillis();
                 startThreadTime = SystemClock.currentThreadTimeMillis();
             } else {
+                //                Log.i("zkw", "----------------loop end-----------------");
                 isStart = true;
                 long useMsTime = System.currentTimeMillis() - startMsTime;
                 long useThreadTime = SystemClock.currentThreadTimeMillis() - startThreadTime;

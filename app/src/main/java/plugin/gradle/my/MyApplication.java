@@ -8,6 +8,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import andr.perf.monitor.AndroidMonitor;
 import andr.perf.monitor.Config;
 import andr.perf.monitor.cpu.models.BlockInfo;
@@ -49,7 +51,11 @@ public class MyApplication extends Application {
             }
             //可以将json数据上传服务器，或者保存到本地
             if (blockInfoJson != null) {
-                Log.i("MyApplication", blockInfoJson.toString());
+                FileUtils fileUtils = new FileUtils();
+                String s = blockInfoJson.toString();
+
+                fileUtils.write2SDFromInput("", "wwwwwwww", s);
+                Log.i("zkw", "on block, save to file!!!!");
             }
 
         }

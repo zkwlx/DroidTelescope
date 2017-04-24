@@ -30,6 +30,11 @@ public class SecondActivity extends AppCompatActivity implements BlankFragment.O
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.i("zkw", "second activity destroy!!!!!!!!!!!");

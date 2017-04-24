@@ -4,14 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import andr.perf.monitor.SamplerFactory;
+import andr.perf.monitor.memory.ObjectReferenceSampler;
+import plugin.gradle.my.dummy.DummyThread;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,10 +83,48 @@ public class BlankFragment extends Fragment {
         }
     }
 
+    private Button btn;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blank, container, false);
+        View v = inflater.inflate(R.layout.fragment_blank, container, false);
+        btn = (Button) v.findViewById(R.id.fragment_test_btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long n = System.nanoTime();
+                long m = SystemClock.currentThreadTimeMillis();
+                //                for (int i = 0; i < 200; i++) {
+                //                    //                    SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
+                //                    //                    SamplerFactory.getMethodSampler()
+                //                    //                            .onMethodExit(System.nanoTime(), System.currentTimeMillis(), "Classssss", "goooo",
+                //                    //                                    "int,String");
+                //                    //                    SamplerFactory.getMethodSampler().onMethodExitFinally("Classssss", "goooo", "int,String");
+                //                    Object o = new Object();
+                //                    SamplerFactory.getReferenceSampler().onKeyObjectCreate(o);
+                //                    SamplerFactory.getReferenceSampler().onKeyObjectDestroy(o);
+                //                    SamplerFactory.getReferenceSampler().onLowMemory(o);
+                //                }
+                try {
+                    new DummyThread().start();
+                    try {
+                        Thread.sleep(600);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } finally {
+                    Log.i("zkw", "==========thread::>>" + Thread.currentThread().getName());
+                }
+
+                n = System.nanoTime() - n;
+                m = SystemClock.currentThreadTimeMillis() - m;
+                n = n / 1000000;
+                Log.i("zkw", "--------->nano:" + n + " thread::>>" + m);
+            }
+        });
+        return v;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

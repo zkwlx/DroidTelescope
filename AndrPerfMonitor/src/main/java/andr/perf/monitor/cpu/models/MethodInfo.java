@@ -41,9 +41,9 @@ public class MethodInfo implements Serializable {
     private boolean isNormalExit = false;
 
     /**
-     * 方法所在的线程名字
+     * 方法所在的线程的id
      */
-    private String threadName;
+    private long threadId;
 
     private LinkedList<MethodInfo> invokeTrace = new LinkedList<>();
 
@@ -81,7 +81,7 @@ public class MethodInfo implements Serializable {
 
     @Override
     public String toString() {
-        return threadName + "---->" + signature + ":nanoTime>" + useNanoTime + " :threadTime>" +
+        return threadId + "---->" + signature + ":nanoTime>" + useNanoTime + " :threadTime>" +
                 useThreadTime;
     }
 
@@ -93,12 +93,12 @@ public class MethodInfo implements Serializable {
         isNormalExit = true;
     }
 
-    public String getThreadName() {
-        return threadName;
+    public long getThreadId() {
+        return threadId;
     }
 
-    public void setThreadName(String threadName) {
-        this.threadName = threadName;
+    public void setThreadId(long threadId) {
+        this.threadId = threadId;
     }
 
     public long getUseMsTime() {
