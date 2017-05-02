@@ -6,6 +6,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import andr.perf.monitor.AndroidMonitor;
+import andr.perf.monitor.Config;
 import andr.perf.monitor.cpu.models.MethodInfo;
 
 /**
@@ -41,11 +43,6 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         MethodInfo info = new MethodInfo();
         info.setThreadId(threadId);
         info.setSignature(createSignature(cls, method, argTypes));
-        //如果当前调用栈不为空，说明此方法是个子方法，于是添加到rootMethod的调用队列当中
-        if (!methodStack.isEmpty()) {
-            MethodInfo rootMethod = methodStack.peekFirst();
-            rootMethod.addInnerMethod(info);
-        }
         //将当前方法添加到线程的临时调用栈
         methodStack.push(info);
     }
@@ -71,9 +68,20 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         //threadMethodStack无需remove，有两个原因：一是通线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         MethodInfo topMethod = methodStack.pop();
-        //弹出当前线程的栈顶Method，如果栈为空了，说明这个栈顶Method是个rootMethod，保存到root列表
-        if (methodStack.isEmpty()) {
-            addRootMethod(topMethod);
+        Config config = AndroidMonitor.getConfig();
+        if (config == null) {
+            //TODO 还未初始化好，一般发生在Application.<init>方法中
+            return;
+        }
+        if (config.shouldRecordMethod(topMethod.getUseNanoTime(), topMethod.getUseThreadTime())) {
+            //弹出当前线程的栈顶Method，如果栈为空了，说明这个栈顶Method是个rootMethod，保存到root列表
+            if (methodStack.isEmpty()) {
+                addRootMethod(topMethod);
+            } else {
+                //如果当前调用栈不为空，说明此方法是个子方法，于是添加到rootMethod的调用队列当中
+                MethodInfo rootMethod = methodStack.peekFirst();
+                rootMethod.addInnerMethod(topMethod);
+            }
         }
     }
 

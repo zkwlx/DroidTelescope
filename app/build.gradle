@@ -43,11 +43,11 @@ buildscript {
         }
     }
     dependencies {
-//        classpath 'monitor.plugin:InjectPlugin:0.9.0'
+        classpath 'monitor.plugin:InjectPlugin:0.9.0'
     }
 }
 
-//apply plugin: 'perf_monitor'
+apply plugin: 'perf_monitor'
 
 //injectConfig {
 //    debugEnabled = true //enable MethodSampler when debug mode, default true

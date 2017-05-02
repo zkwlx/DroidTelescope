@@ -4,6 +4,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Printer;
+import android.view.Choreographer;
 
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class LooperMonitor {
         public void onBlock(long useMsTime, long useThreadTime) {
             Log.e(TAG, "Oops!!!! block!!!___" + "msTime:" + useMsTime + " threadTime:" + useThreadTime);
             List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
+            if (methodInfoList.isEmpty()) {
+                return;
+            }
             BlockInfo blockInfo = new BlockInfo();
             blockInfo.setUseThreadTime(useThreadTime);
             blockInfo.setUseMsTime(useMsTime);
@@ -77,14 +81,14 @@ public class LooperMonitor {
                 if (config.isBlock(useMsTime, useThreadTime)) {
                     innerBlockListener.onBlock(useMsTime, useThreadTime);
                 }
-                //TODO 这里会影响性能，注意，考虑idle handler
+                //TODO 这里会影响性能，注意优化
                 SamplerFactory.getMethodSampler().cleanRootMethodList();
             }
         }
     };
 
     public void installLooperListener() {
-        //TODO 注意Looper的选择，是否考虑子线程的looper
+        //TODO 注意Looper的选择，是否考虑其他线程的looper
         Looper.getMainLooper().setMessageLogging(looperListener);
     }
 

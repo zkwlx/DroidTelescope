@@ -123,12 +123,12 @@ public class ConvertUtils {
         methodJson.put("ms_time", method.getUseMsTime());
         methodJson.put("thread_time", method.getUseThreadTime());
 
-        JSONArray traceArray = new JSONArray();
-        methodJson.put("invoke_trace", traceArray);
         List<MethodInfo> invokeTraceList = method.getInvokeTraceList();
         if (invokeTraceList == null || invokeTraceList.isEmpty()) {
             return methodJson;
         } else {
+            JSONArray traceArray = new JSONArray();
+            methodJson.put("invoke_trace", traceArray);
             for (MethodInfo subMethod : invokeTraceList) {
                 JSONObject subMethodJson = createMethodJSONObject(subMethod);
                 traceArray.put(subMethodJson);

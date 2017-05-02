@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import plugin.gradle.my.dummy.DummyContent;
+
 /**
  * Created by ZhouKeWen on 17/3/31.
  */
@@ -32,6 +34,8 @@ public class SecondActivity extends AppCompatActivity implements BlankFragment.O
     @Override
     protected void onResume() {
         super.onResume();
+        DummyContent d = new DummyContent();
+        d.fuck();
     }
 
     @Override

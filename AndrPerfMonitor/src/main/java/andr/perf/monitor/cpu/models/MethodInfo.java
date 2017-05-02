@@ -45,13 +45,22 @@ public class MethodInfo implements Serializable {
      */
     private long threadId;
 
-    private LinkedList<MethodInfo> invokeTrace = new LinkedList<>();
+    private LinkedList<MethodInfo> invokeTrace;
 
+    /**
+     * 返回当前方法的所有子方法，按其调用顺序排序
+     * <p><b>注意，可能返回NULL!!<b/><p/>
+     *
+     * @return
+     */
     public List<MethodInfo> getInvokeTraceList() {
         return invokeTrace;
     }
 
     public void addInnerMethod(MethodInfo innerMethod) {
+        if (invokeTrace == null) {
+            invokeTrace = new LinkedList<>();
+        }
         invokeTrace.addLast(innerMethod);
     }
 
@@ -81,8 +90,7 @@ public class MethodInfo implements Serializable {
 
     @Override
     public String toString() {
-        return threadId + "---->" + signature + ":nanoTime>" + useNanoTime + " :threadTime>" +
-                useThreadTime;
+        return threadId + "---->" + signature + ":nanoTime>" + useNanoTime + " :threadTime>" + useThreadTime;
     }
 
     public boolean isNormalExit() {

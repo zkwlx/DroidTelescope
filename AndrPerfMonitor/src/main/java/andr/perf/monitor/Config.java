@@ -12,12 +12,22 @@ public class Config {
      * <p>
      * Note: running in none ui thread
      *
-     * @param useMsTime     in millisecond
-     * @param useThreadTime in millisecond
+     * @param useMsTime       in millisecond
+     * @param useThreadMsTime in millisecond
      * @return true if blocked, else false
      */
-    public boolean isBlock(long useMsTime, long useThreadTime) {
-        return useMsTime > 100 && useThreadTime > 0;//8
+    public boolean isBlock(long useMsTime, long useThreadMsTime) {
+        return useMsTime > 100 && useThreadMsTime > 0;//8
+    }
+
+    /**
+     * 判断一个方法是否应该记录。如果方法执行时间很短，则不记录，节省内存
+     * @param useNanoTime
+     * @param useThreadMsTime
+     * @return
+     */
+    public boolean shouldRecordMethod(long useNanoTime, long useThreadMsTime) {
+        return useNanoTime > 1000000 || useThreadMsTime > 1;
     }
 
 }

@@ -27,19 +27,19 @@ public class MainActivity extends AppCompatActivity {
 
     private TestLibraryClass test;
 
-    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
     private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        try {
-//            g2();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//        gogo(100);
+        //        try {
+        //            g2();
+        //        } catch (IllegalAccessException e) {
+        //            e.printStackTrace();
+        //        }
+        //        gogo(100);
 
         Fragment f = new Fragment();
         android.app.Fragment ff = new android.app.Fragment();
@@ -200,43 +200,43 @@ public class MainActivity extends AppCompatActivity {
     public void onSlowClick(View view) {
         Intent i = new Intent(this, SecondActivity.class);
         startActivity(i);
-        //
-        //        try {
-        //            g2();
-        //        } catch (IllegalAccessException e) {
-        //            e.printStackTrace();
-        //        }
-        //        gogo(87878787);
-        //
-        //        new Thread(new Runnable() {
-        //            @Override
-        //            public void run() {
-        //                isT("");
-        //                try {
-        //                    g2();
-        //                } catch (IllegalAccessException e) {
-        //                    e.printStackTrace();
-        //                }
-        //                try {
-        //                    Thread.sleep(200);
-        //                } catch (InterruptedException e) {
-        //                    e.printStackTrace();
-        //                }
-        //            }
-        //        }).start();
-        //
-        //        if (test == null) {
-        //            test = new TestLibraryClass();
-        //        }
-        //        test.startTestt();
-        //
-        //        new TestLibraryClass().startTestt();
-        //
-        //        try {
-        //            Thread.sleep(600);
-        //        } catch (InterruptedException e) {
-        //            e.printStackTrace();
-        //        }
+
+        try {
+            g2();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        gogo(87878787);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isT("");
+                try {
+                    g2();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        if (test == null) {
+            test = new TestLibraryClass();
+        }
+        test.startTestt();
+
+        new TestLibraryClass().startTestt();
+
+        try {
+            Thread.sleep(600);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int gogo(int c) {
