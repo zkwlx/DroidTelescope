@@ -6,10 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
 
@@ -21,4 +18,14 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    userOrg = 'zkwlx'//bintray.com用户名
+    groupId = 'andr.perf.monitor'//jcenter上的路径
+    uploadName = 'AndrPerfMonitor'//项目名称
+    publishVersion = '0.9.0'//项目版本
+    desc = 'Library for android app performance monitor'//项目描述
+    website = 'https://github.com/zkwlx/AndrPerfMonitor'//项目地址
+    licences = ['Apache-2.0']
 }

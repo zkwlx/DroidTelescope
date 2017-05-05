@@ -42,3 +42,5 @@ captures/
 #repo dir
 repo/
 
+
+InjectPlugin/publish.cmd

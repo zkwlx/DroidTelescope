@@ -48,8 +48,8 @@ public class MethodInfo implements Serializable {
     private LinkedList<MethodInfo> invokeTrace;
 
     /**
-     * 返回当前方法的所有子方法，按其调用顺序排序
-     * <p><b>注意，可能返回NULL!!<b/><p/>
+     * 返回当前方法的所有子方法，按其调用顺序排序,
+     * 注意，可能返回NULL！
      *
      * @return
      */

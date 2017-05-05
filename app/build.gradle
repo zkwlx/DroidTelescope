@@ -43,16 +43,16 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'monitor.plugin:InjectPlugin:0.9.0'
+        classpath 'andr.perf.monitor:InjectPlugin:0.9.0'
     }
 }
 
-apply plugin: 'perf_monitor'
+apply plugin: 'inject_plugin'
 
 //injectConfig {
 //    debugEnabled = true //enable MethodSampler when debug mode, default true
 //    releaseEnabled = false //enable MethodSampler when release mode, default false
-//    excludePackages = ['plugin.gradle.my.dummy']
+//    excludePackages = []
 //    //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
 //    excludeClasses = [] //exclude the class you don't want to inject MethodSampler
 //    includePackages = []
