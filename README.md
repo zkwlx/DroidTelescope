@@ -4,12 +4,12 @@ AndrPerfMonitor
 
 ## 使用效果
 ### 卡顿监控
-当发生卡顿时，框架会记录相关方法的调用时间和调用栈，并生成BlockInfo对象，使用框架提供的ConvertUtils工具将BlockInfo对象转换成JSON格式的日志，如下例子：
+当发生卡顿时，框架会记录相关方法的调用时间和调用栈，并生成BlockInfo对象，使用框架提供的ConvertUtils工具将BlockInfo对象转换成JSON格式的日志，如下例子，每个字段的意义请看注释：
 ```js
 {
-    "loop_wall_clock_time":319,//一次loop所消耗的时钟时长
-    "loop_cpu_time":47,//一次loop所消耗的cpu时长
-    "invoke_trace_array":[
+    "loop_wall_clock_time":319,//表示一次loop所消耗的时钟时长，单位是ms毫秒
+    "loop_cpu_time":47,//表示一次loop所消耗的cpu时长，单位是ms毫秒
+    "invoke_trace_array":[//表示一次loop记录的耗时方法调用关系
         {
             "method_signature":"plugin.gradle.my.SecondActivity.onCreate(android.os.Bundle)",
             "thread_id":1,
@@ -23,11 +23,11 @@ AndrPerfMonitor
             "cpu_time":5
         },
         {
-            "method_signature":"plugin.gradle.my.SecondActivity.onResume()",
-            "thread_id":1,
-            "wall_clock_time":257.77,
-            "cpu_time":8,
-            "invoke_trace":[
+            "method_signature":"plugin.gradle.my.SecondActivity.onResume()",//方法的签名
+            "thread_id":1,//方法调用时所在线程id
+            "wall_clock_time":257.77,//方法调用消耗的时钟时长，单位是ms毫秒
+            "cpu_time":8,//方法调用消耗的cpu时长，单位是ms毫秒
+            "invoke_trace":[//记录在当前方法中调用的其他子方法
                 {
                     "method_signature":"plugin.gradle.my.dummy.DummyContent.<clinit>()",
                     "thread_id":1,
@@ -45,7 +45,7 @@ AndrPerfMonitor
     ]
 }
 ```
-日志中的所有time单位都是ms毫秒，触发这次卡顿的源码结构是这样的：
+框架不会记录所有方法，只有当方法耗时超过阈值时（可以配置）记录，日志中的所有time单位都是ms毫秒，触发这次卡顿的源码结构是这样的：
 ```java
 public class SecondActivity extends AppCompatActivity {
 
@@ -84,7 +84,7 @@ public class DummyContent {
 }
 ```
 ### 内存泄露监控
-下面模拟一个内存泄露的环境，MainActivity启动SecondActivity，SecondActivity添加一个BlankFragment，BlankFragment的泄露代码如下：
+下面模拟一个内存泄露的环境：MainActivity启动SecondActivity，SecondActivity添加一个BlankFragment，BlankFragment会导致泄露，泄露代码如下：
 ```java
 public class BlankFragment extends Fragment {
 
@@ -97,12 +97,14 @@ public class BlankFragment extends Fragment {
     }
 }
 ```
-当发生内存泄露时（目前只支持监控Activity和Fragment的引用泄露），会创建LeakInfo对象，使用框架提供的ConvertUtils工具将LeakInfo对象转换成Json格式，日志格式如下：
+当发生内存泄露时（目前只支持监控Activity和Fragment的引用泄露），会创建LeakInfo对象，使用框架提供的ConvertUtils工具将LeakInfo对象转换成Json格式，如下例子，每个字段的意义请看注释：
 ```js
 {
-    "garbage_reference_list":[
+    "garbage_reference_list":[//怀疑是泄露对象的列表
         {
+            //泄露对象的id，通过Object.toString()生成
             "objectId":"BlankFragment{1324e62}",
+            //泄露对象的调用链，只记录Activity、Fragment之间的调用关系
             "object_create_chain":"plugin.gradle.my.MainActivity@2695ae7->plugin.gradle.my.SecondActivity@6cce780->BlankFragment{1324e62 #0 id=0x7f0b006f ONE}"
         },
         {
