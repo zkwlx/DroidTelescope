@@ -1,7 +1,5 @@
 package andr.perf.monitor.cpu;
 
-import android.util.Log;
-
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,15 +46,15 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
     }
 
     @Override
-    public void onMethodExit(final long useNanoTime, final long useThreadTime, final String cls,
+    public void onMethodExit(final long wallClockTimeNs, final long cpuTimeMs, final String cls,
             final String method, String argTypes) {
         final long threadId = Thread.currentThread().getId();
         //当方法非return语句退出时，不会回调onMethodExit()
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         //获取当前线程调用栈的栈顶方法，并更新记录数据
         MethodInfo topMethod = methodStack.peekFirst();
-        topMethod.setUseNanoTime(useNanoTime);
-        topMethod.setUseThreadTime(useThreadTime);
+        topMethod.setWallClockTimeNs(wallClockTimeNs);
+        topMethod.setCpuTimeMs(cpuTimeMs);
         //进入这里的方法都是正常退出的方法
         topMethod.setNormalExit();
     }
@@ -73,7 +71,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
             //TODO 还未初始化好，一般发生在Application.<init>方法中
             return;
         }
-        if (config.shouldRecordMethod(topMethod.getUseNanoTime(), topMethod.getUseThreadTime())) {
+        if (config.shouldRecordMethod(topMethod.getWallClockTimeNs(), topMethod.getCpuTimeMs())) {
             //弹出当前线程的栈顶Method，如果栈为空了，说明这个栈顶Method是个rootMethod，保存到root列表
             if (methodStack.isEmpty()) {
                 addRootMethod(topMethod);

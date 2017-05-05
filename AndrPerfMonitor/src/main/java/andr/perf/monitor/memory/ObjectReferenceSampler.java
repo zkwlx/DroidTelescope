@@ -75,7 +75,8 @@ public class ObjectReferenceSampler {
             }
             //在UI线程回调
             AndroidMonitor.LeakListener listener = AndroidMonitor.getLeakListener();
-            if (listener != null && !leakInfo.getReferenceList().isEmpty()) {
+            if (listener != null && leakInfo.getReferenceList() != null &&
+                    !leakInfo.getReferenceList().isEmpty()) {
                 listener.onLeak(leakInfo);
             }
             return false;

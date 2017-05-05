@@ -31,7 +31,7 @@ public class ConvertUtils {
         if (blockInfo == null) {
             return null;
         }
-        return innerConvertToJson(blockInfo.getUseMsTime(), blockInfo.getUseThreadTime(),
+        return innerConvertToJson(blockInfo.getWallClockTimeMs(), blockInfo.getCpuTimeMs(),
                 blockInfo.getRootMethodList());
     }
 
@@ -99,13 +99,13 @@ public class ConvertUtils {
         return referenceJson;
     }
 
-    private static JSONObject innerConvertToJson(long useMsTime, long useThreadTime,
+    private static JSONObject innerConvertToJson(long wallClockTimeMs, long cpuTimeMs,
             List<MethodInfo> methodList) throws JSONException {
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("loop_wall_clock_time", wallClockTimeMs);
+        jsonObject.put("loop_cpu_time", cpuTimeMs);
         JSONArray rootMethodArray = new JSONArray();
         jsonObject.put("invoke_trace_array", rootMethodArray);
-        jsonObject.put("ms_time", useMsTime);
-        jsonObject.put("thread_time", useThreadTime);
         if (methodList != null && !methodList.isEmpty()) {
             for (MethodInfo method : methodList) {
                 JSONObject methodJson = createMethodJSONObject(method);
@@ -119,9 +119,8 @@ public class ConvertUtils {
         JSONObject methodJson = new JSONObject();
         methodJson.put("method_signature", method.getSignature());
         methodJson.put("thread_id", method.getThreadId());
-        methodJson.put("nano_time", method.getUseNanoTime());
-        methodJson.put("ms_time", method.getUseMsTime());
-        methodJson.put("thread_time", method.getUseThreadTime());
+        methodJson.put("wall_clock_time", method.getWallClockTimeMs());
+        methodJson.put("cpu_time", method.getCpuTimeMs());
 
         List<MethodInfo> invokeTraceList = method.getInvokeTraceList();
         if (invokeTraceList == null || invokeTraceList.isEmpty()) {

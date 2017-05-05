@@ -7,27 +7,26 @@ package andr.perf.monitor;
 public class Config {
 
     /**
-     * judge whether the loop is blocked, you can override this to decide
-     * whether it is blocked by your logic
-     * <p>
-     * Note: running in none ui thread
+     * 根据一次loop的耗时，判断是否发生卡顿。
+     * <p><b>注意：尽量不要添加自己实现，因为框架内部根据不同设备动态计算了判断卡顿的阈值</b></p>
      *
-     * @param useMsTime       in millisecond
-     * @param useThreadMsTime in millisecond
+     * @param wallClockTimeMs in millisecond
+     * @param cpuTimeMs       in millisecond
      * @return true if blocked, else false
      */
-    public boolean isBlock(long useMsTime, long useThreadMsTime) {
-        return useMsTime > 100 && useThreadMsTime > 0;//8
+    public boolean isBlock(long wallClockTimeMs, long cpuTimeMs) {
+        return false;
     }
 
     /**
      * 判断一个方法是否应该记录。如果方法执行时间很短，则不记录，节省内存
-     * @param useNanoTime
-     * @param useThreadMsTime
+     *
+     * @param wallClockTimeNs
+     * @param cpuTimeMs
      * @return
      */
-    public boolean shouldRecordMethod(long useNanoTime, long useThreadMsTime) {
-        return useNanoTime > 1000000 || useThreadMsTime > 1;
+    public boolean shouldRecordMethod(long wallClockTimeNs, long cpuTimeMs) {
+        return wallClockTimeNs > 1000000 || cpuTimeMs > 1;
     }
 
 }

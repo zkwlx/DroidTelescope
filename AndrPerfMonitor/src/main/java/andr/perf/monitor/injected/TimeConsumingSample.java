@@ -20,9 +20,9 @@ public class TimeConsumingSample {
 
     public static void methodExit(long startTimeNano, long startThreadTime, String cls, String method,
             String argTypes) {
-        long useNanoTime = System.nanoTime() - startTimeNano;
-        long threadTime = SystemClock.currentThreadTimeMillis() - startThreadTime;
-        SamplerFactory.getMethodSampler().onMethodExit(useNanoTime, threadTime, cls, method, argTypes);
+        long wallClockTimeNs = System.nanoTime() - startTimeNano;
+        long cpuTimeMs = SystemClock.currentThreadTimeMillis() - startThreadTime;
+        SamplerFactory.getMethodSampler().onMethodExit(wallClockTimeNs, cpuTimeMs, cls, method, argTypes);
     }
 
     public static void methodExitFinally(String cls, String method, String argTypes) {

@@ -14,19 +14,19 @@ public class MethodInfo implements Serializable {
      * 方法用时，使用System.nanoTime()计算
      * 单位ns，1ns = 1 * 1000 * 1000ms
      */
-    private long useNanoTime;
+    private long wallClockTimeNs;
 
     /**
-     * 方法用时，使用{@link #useNanoTime} 换算成ms
+     * 方法用时，使用{@link #wallClockTimeNs} 换算成ms
      * 单位ms
      */
-    private long useMsTime = -1;
+    private double wallClockTimeMs = -1;
 
     /**
      * CPU线程用时，使用SystemClock.currentThreadTimeMillis()计算
      * 单位ms
      */
-    private long useThreadTime;
+    private long cpuTimeMs;
 
     /**
      * 方法签名，类似com.Foo.main(String,int)
@@ -72,25 +72,25 @@ public class MethodInfo implements Serializable {
         this.signature = signature;
     }
 
-    public long getUseThreadTime() {
-        return useThreadTime;
+    public long getCpuTimeMs() {
+        return cpuTimeMs;
     }
 
-    public void setUseThreadTime(long useThreadTime) {
-        this.useThreadTime = useThreadTime;
+    public void setCpuTimeMs(long cpuTimeMs) {
+        this.cpuTimeMs = cpuTimeMs;
     }
 
-    public long getUseNanoTime() {
-        return useNanoTime;
+    public long getWallClockTimeNs() {
+        return wallClockTimeNs;
     }
 
-    public void setUseNanoTime(long useNanoTime) {
-        this.useNanoTime = useNanoTime;
+    public void setWallClockTimeNs(long wallClockTimeNs) {
+        this.wallClockTimeNs = wallClockTimeNs;
     }
 
     @Override
     public String toString() {
-        return threadId + "---->" + signature + ":nanoTime>" + useNanoTime + " :threadTime>" + useThreadTime;
+        return threadId + "---->" + signature + ":nanoTime>" + wallClockTimeNs + " :threadTime>" + cpuTimeMs;
     }
 
     public boolean isNormalExit() {
@@ -109,11 +109,13 @@ public class MethodInfo implements Serializable {
         this.threadId = threadId;
     }
 
-    public long getUseMsTime() {
-        if (useMsTime == -1) {
-            //ms的计算延迟到需要时
-            this.useMsTime = useNanoTime / 1000000;
+    public double getWallClockTimeMs() {
+        //ms的计算延迟到需要时
+        if (wallClockTimeMs == -1) {
+            //这样除的目的是保留2位有效数字
+            wallClockTimeMs = wallClockTimeNs / 10000;
+            wallClockTimeMs = wallClockTimeMs / 100.0;
         }
-        return useMsTime;
+        return wallClockTimeMs;
     }
 }

@@ -32,13 +32,13 @@ public abstract class AbstractMethodSampler {
     /**
      * 当方法正常return时，回调该接口
      *
-     * @param useNanoTime
-     * @param useThreadTime
+     * @param wallClockTimeNs
+     * @param cpuTimeMs
      * @param cls
      * @param method
      * @param argTypes
      */
-    public abstract void onMethodExit(long useNanoTime, long useThreadTime, String cls, String method,
+    public abstract void onMethodExit(long wallClockTimeNs, long cpuTimeMs, String cls, String method,
             String argTypes);
 
     /**

@@ -10,13 +10,15 @@ import andr.perf.monitor.memory.SuspectWeakReference;
  */
 public class LeakInfo {
 
-    private final List<SuspectWeakReference> referenceList;
+    private List<SuspectWeakReference> referenceList;
 
     public LeakInfo() {
-        referenceList = new LinkedList<>();
     }
 
     public void addGarbageReference(SuspectWeakReference reference) {
+        if (referenceList == null) {
+            referenceList = new LinkedList<>();
+        }
         referenceList.add(reference);
     }
 

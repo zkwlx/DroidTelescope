@@ -1,9 +1,12 @@
 package plugin.gradle.my.dummy;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -32,7 +35,7 @@ public class DummyContent {
         }
     }
 
-    public void fuck() {
+    public void sleep() {
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {

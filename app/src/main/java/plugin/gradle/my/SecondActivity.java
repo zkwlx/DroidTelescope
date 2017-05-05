@@ -13,7 +13,7 @@ import plugin.gradle.my.dummy.DummyContent;
 /**
  * Created by ZhouKeWen on 17/3/31.
  */
-public class SecondActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener {
+public class SecondActivity extends AppCompatActivity {
 
     private byte[] a = new byte[8024000];
 
@@ -35,17 +35,7 @@ public class SecondActivity extends AppCompatActivity implements BlankFragment.O
     protected void onResume() {
         super.onResume();
         DummyContent d = new DummyContent();
-        d.fuck();
+        d.sleep();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i("zkw", "second activity destroy!!!!!!!!!!!");
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }

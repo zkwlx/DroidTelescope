@@ -7,9 +7,9 @@ import java.util.List;
  */
 public class BlockInfo {
 
-    private long useMsTime;
+    private long wallClockTimeMs;
 
-    private long useThreadTime;
+    private long cpuTimeMs;
 
     private List<MethodInfo> rootMethodList;
 
@@ -21,19 +21,19 @@ public class BlockInfo {
         this.rootMethodList = rootMethodList;
     }
 
-    public long getUseThreadTime() {
-        return useThreadTime;
+    public long getCpuTimeMs() {
+        return cpuTimeMs;
     }
 
-    public void setUseThreadTime(long useThreadTime) {
-        this.useThreadTime = useThreadTime;
+    public void setCpuTimeMs(long cpuTimeMs) {
+        this.cpuTimeMs = cpuTimeMs;
     }
 
-    public long getUseMsTime() {
-        return useMsTime;
+    public long getWallClockTimeMs() {
+        return wallClockTimeMs;
     }
 
-    public void setUseMsTime(long useMsTime) {
-        this.useMsTime = useMsTime;
+    public void setWallClockTimeMs(long wallClockTimeMs) {
+        this.wallClockTimeMs = wallClockTimeMs;
     }
 }

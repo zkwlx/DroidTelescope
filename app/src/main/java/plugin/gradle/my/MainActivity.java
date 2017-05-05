@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //        try {
-        //            g2();
-        //        } catch (IllegalAccessException e) {
-        //            e.printStackTrace();
-        //        }
-        //        gogo(100);
+        try {
+            g2();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        gogo(100);
 
         Fragment f = new Fragment();
         android.app.Fragment ff = new android.app.Fragment();
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 showDialogTipUserRequestPermission();
             }
         }
+
     }
 
     // 提示用户该请求权限的弹出框
