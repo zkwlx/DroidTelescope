@@ -15,7 +15,7 @@ dependencies {
 }
 
 group = rootProject.groupId
-version = '0.9.0'
+version = rootProject.publishVersion
 
 publish {
     artifactId = 'InjectPlugin'//项目名称

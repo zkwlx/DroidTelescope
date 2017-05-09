@@ -29,7 +29,6 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodEnter(final String cls, final String method, final String argTypes) {
-        //TODO 考虑使用对象池！！！！
         final long threadId = Thread.currentThread().getId();
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         if (methodStack == null) {
@@ -37,6 +36,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
             methodStack = new LinkedList<>();
             threadMethodStack.put(threadId, methodStack);
         }
+        //TODO 考虑使用对象池！！！！
         //创建新的MethodInfo
         MethodInfo info = new MethodInfo();
         info.setThreadId(threadId);

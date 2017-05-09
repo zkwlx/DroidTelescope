@@ -45,7 +45,8 @@ AndrPerfMonitor
     ]
 }
 ```
-框架不会记录所有方法，只有当方法耗时超过阈值时（可以配置）记录，日志中的所有time单位都是ms毫秒，触发这次卡顿的源码结构是这样的：
+框架不会记录所有方法，只有当方法耗时超过阈值时（可以配置）记录，日志中所有的time单位都是ms毫秒。
+触发这次卡顿的源码结构是这样的：
 ```java
 public class SecondActivity extends AppCompatActivity {
 

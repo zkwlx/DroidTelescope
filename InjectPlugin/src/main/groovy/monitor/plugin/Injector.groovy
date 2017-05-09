@@ -12,7 +12,6 @@ import java.util.zip.ZipEntry
 
 /**
  * 代码注入器
- * //TODO 过滤代码在这个类里加！
  * Created by ZhouKeWen on 17/3/17.
  */
 public class Injector {

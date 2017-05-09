@@ -30,7 +30,6 @@ public class MethodInfo implements Serializable {
 
     /**
      * 方法签名，类似com.Foo.main(String,int)
-     * TODO 暂时不细分参数之类的
      */
     private String signature;
 

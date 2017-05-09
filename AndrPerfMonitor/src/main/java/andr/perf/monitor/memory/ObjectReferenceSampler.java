@@ -30,10 +30,16 @@ public class ObjectReferenceSampler {
      */
     private Deque<String> objectCreateStack = new LinkedList<>();
 
+    /**
+     * 触发gc和引用扫描任务的最小时间间隔
+     */
+    private static final long TRIGGER_INTERVAL_TIME = 100;//100ms
+
+    private long triggerTime;
+
     private Runnable gcTask = new Runnable() {
         @Override
         public void run() {
-            //TODO 可以考虑判断时间间隔是否过小
             // 触发gc会消耗CPU20ms左右，所以异步触发
             Runtime.getRuntime().gc();
             Runtime.getRuntime().runFinalization();
@@ -49,7 +55,6 @@ public class ObjectReferenceSampler {
 
         @Override
         public boolean queueIdle() {
-            //TODO 是否限制执行次数
             Log.i("zkw", "[---]start find garbage!!!!!");
             if (suspectObjects == null || suspectObjects.isEmpty()) {
                 Log.i(TAG, "[---]===============all clean!!!");
@@ -111,8 +116,13 @@ public class ObjectReferenceSampler {
     }
 
     private void triggerGC() {
-        //由于触发gc要消耗20ms左右，所以异步触发
-        JobManager.getInstance().postWorkerThread(gcTask);
+        //避免过于频繁的触发gc和引用扫描任务
+        long timestamp = System.currentTimeMillis();
+        if (timestamp - triggerTime > TRIGGER_INTERVAL_TIME) {
+            //由于触发gc要消耗20ms左右，所以异步触发
+            JobManager.getInstance().postWorkerThread(gcTask);
+        }
+        triggerTime = timestamp;
     }
 
 }
