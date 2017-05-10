@@ -26,6 +26,6 @@ ext {
     uploadName = 'Telescope'//项目名称
     publishVersion = '0.8.1'//项目版本
     desc = 'Library for android app performance monitor'//项目描述
-    website = 'https://github.com/zkwlx/AndrPerfMonitor'//项目地址
+    website = 'https://github.com/zkwlx/DroidTelescope'//项目地址
     licences = ['Apache-2.0']
 }
