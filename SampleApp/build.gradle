@@ -29,27 +29,25 @@ android {
 
 buildscript {
     repositories {
-//        maven {
-//            url uri('../repo')
-//        }
+        maven {
+            url uri('../repo')
+        }
         jcenter()
     }
     dependencies {
-//        classpath 'andr.perf.monitor:InjectPlugin:0.9.0'
+        classpath 'andr.perf.monitor:TelescopeInjector:0.8.0'
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':AndrPerfMonitor')
-//    compile 'andr.perf.monitor:AndrPerfMonitor:0.9.0'
+    compile project(':DroidTelescope')
     compile project(':testlibrary')
     compile 'com.android.support:appcompat-v7:24.3.0'
     testCompile 'junit:junit:4.12'
 }
 
-//apply plugin: 'perf_monitor'
-//apply plugin: 'inject_plugin'
+apply plugin: 'telescope.injector'
 
 //injectConfig {
 //    debugEnabled = true //enable MethodSampler when debug mode, default true

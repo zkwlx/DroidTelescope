@@ -1,1 +1,1 @@
-include ':SampleApp', ':InjectPlugin', ':AndrPerfMonitor', ':testlibrary'
+include ':SampleApp', ':TelescopeInjector', ':DroidTelescope', ':testlibrary'

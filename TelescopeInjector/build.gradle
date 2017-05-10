@@ -1,6 +1,5 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
-apply plugin: 'bintray-release'
 
 repositories {
     jcenter()
@@ -17,8 +16,10 @@ dependencies {
 group = rootProject.groupId
 version = rootProject.publishVersion
 
+apply plugin: 'bintray-release'
+
 publish {
-    artifactId = 'InjectPlugin'//项目名称
+    artifactId = 'TelescopeInjector'//项目名称
 
     userOrg = rootProject.userOrg
     groupId = rootProject.groupId
