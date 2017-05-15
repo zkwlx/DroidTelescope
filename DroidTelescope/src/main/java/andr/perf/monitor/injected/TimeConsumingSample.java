@@ -5,7 +5,7 @@ import android.os.SystemClock;
 import andr.perf.monitor.SamplerFactory;
 
 /**
- * 用于代码注入的接口类
+ * 耗时采样类，用于代码注入的接口类
  * Created by ZhouKeWen on 17/3/16.
  */
 public class TimeConsumingSample {

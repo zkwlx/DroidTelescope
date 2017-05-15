@@ -5,6 +5,7 @@ import android.util.Log;
 import andr.perf.monitor.SamplerFactory;
 
 /**
+ * 对象泄露采样类，用于代码注入
  * Created by ZhouKeWen on 17/3/31.
  */
 public class ObjectLeakSample {

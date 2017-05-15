@@ -5,6 +5,7 @@ import javassist.CtMethod
 import javassist.CtNewMethod
 
 /**
+ * 内存监控模块的代码注入器
  * <p>Created by ZhouKeWen on 17-4-3.</p>
  */
 class MemoryCodeInject {

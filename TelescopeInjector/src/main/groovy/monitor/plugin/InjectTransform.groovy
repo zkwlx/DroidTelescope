@@ -28,6 +28,7 @@ public class InjectTransform extends Transform {
     private List<String> mExcludePackages = ["andr.perf.monitor"];
     private List<String> mExcludeClasses = [];
     private List<String> mIncludePackages = [];
+    private List<String> mIncludeClasses = ["android.support.v7.app.AppCompatViewInflater\$DeclaredOnClickListener"];
 
     // 添加构造，为了方便从plugin中拿到project对象，待会有用
     public InjectTransform(Project project, InjectConfig config) {
@@ -120,7 +121,7 @@ public class InjectTransform extends Transform {
         javassistClassPath.addAll(applicationVariant.androidBuilder.computeFullBootClasspath())
         //进行代码注入
         Injector.setClassPathForJavassist(javassistClassPath)
-        Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses)
+        Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses, mIncludeClasses)
         careFiles.each { File file ->
             Injector.inject(project, file)
         }

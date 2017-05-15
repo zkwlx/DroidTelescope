@@ -7,8 +7,5 @@ public class DummyThread extends Thread {
     @Override
     public void run() {
 
-        Object o = null;
-        o.toString();
-
     }
 }

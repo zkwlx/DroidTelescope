@@ -6,6 +6,7 @@ import javassist.Modifier
 import monitor.plugin.utils.LogUtils
 
 /**
+ * 卡顿监控模块的代码注入器
  * <p>Created by ZhouKeWen on 17-4-3.</p>
  */
 class CpuCodeInject {

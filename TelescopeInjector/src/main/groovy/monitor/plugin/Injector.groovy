@@ -18,13 +18,15 @@ public class Injector {
 
     private static Set<String> excludePackage
     private static Set<String> includePackage
+    private static Set<String> includeClass
     private static Set<String> excludeClass
 
     public static void setPackagesConfig(List<String> excludePackage, List<String> includePackage,
-            List<String> excludeClass) {
+            List<String> excludeClass, List<String> includeClass) {
         this.excludePackage = ClassFilterUtils.formatPath(excludePackage)
         this.includePackage = ClassFilterUtils.formatPath(includePackage)
         this.excludeClass = ClassFilterUtils.formatPath(excludeClass)
+        this.includeClass = ClassFilterUtils.formatPath(includeClass)
 
     }
 
@@ -49,14 +51,14 @@ public class Injector {
         dirFile.eachFileRecurse { File file ->
             String filePath = file.absolutePath
             if (shouldInjectFileClass(filePath)) {
-                LogUtils.printLog("======>>>>name::> ${filePath}")
+//                LogUtils.printLog("======>>>>name::> ${filePath}")
                 JavassistHandler.handleClass(file)
             }
         }
     }
 
     private static void injectForJar(Project project, File file) {
-        LogUtils.printLog("[process jar]============" + file.absolutePath)
+//        LogUtils.printLog("[process jar]============" + file.absolutePath)
         JarFile jarFile = new JarFile(file)
         Enumeration enumeration = jarFile.entries()
         File tempOutJar = new File(file.getParent(), file.getName() + ".tmp")
@@ -90,6 +92,13 @@ public class Injector {
     private static boolean shouldInjectJarClass(String entryName) {
         if (ClassFilterUtils.skipThisClassForJar(entryName)) {
             return false
+        }
+        if (entryName.contains("android.support.v7.app.AppCompatViewInflater")) {
+            LogUtils.printLog(">>>>>>>>>-----" + entryName)
+        }
+
+        if (entryName == "android.support.v7.app.AppCompatViewInflater\$DeclaredOnClickListener") {
+            return true
         }
         return ClassFilterUtils.isIncluded(entryName, includePackage) &&
                 !ClassFilterUtils.isExcluded(entryName, excludePackage, excludeClass)

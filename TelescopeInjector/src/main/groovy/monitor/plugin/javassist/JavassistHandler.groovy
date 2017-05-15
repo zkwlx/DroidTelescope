@@ -70,9 +70,10 @@ class JavassistHandler {
             return clazz.toBytecode()
         }
 
-        injectForCpu(clazz)
-        //TODO 判断是否开启泄露监控功能
-        injectForMemory(clazz)
+        //TODO 通过开关控制开启哪些监控模块的注入
+//        injectForMemory(clazz)
+//        injectForCpu(clazz)
+        injectForInteractive(clazz)
 
         def bytes = clazz.toBytecode()
         //TODO 这里为何还要解冻？
@@ -119,6 +120,7 @@ class JavassistHandler {
             }
             for (IMethodHandler handler : methodHandlers) {
                 if (handler.handleMethod(clazz, ctMethod)) {
+                    //TODO 这里对一个方法处理成功，是否退出循环，开始下一个方法？
                     LogUtils.printLog("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
                     successCount++
                 }
@@ -134,4 +136,9 @@ class JavassistHandler {
             handler.checkMethodAndAdd(clazz)
         }
     }
+
+    private static void injectForInteractive(CtClass clazz) {
+        InteractiveCodeInject.injectForViewClick(clazz)
+    }
+
 }

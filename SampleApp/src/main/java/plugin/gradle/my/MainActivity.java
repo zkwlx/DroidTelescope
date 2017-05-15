@@ -16,8 +16,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Choreographer;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 showDialogTipUserRequestPermission();
             }
         }
-
     }
 
     // 提示用户该请求权限的弹出框
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     public void onSlowClick(View view) {
         Intent i = new Intent(this, SecondActivity.class);
         startActivity(i);
-
+        ViewParent p = view.getParent();
         try {
             g2();
         } catch (IllegalAccessException e) {

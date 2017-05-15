@@ -11,7 +11,7 @@ class Scope {
     /**
      * 当前项目依赖的jar包，比如libs下的所有jar包
      */
-    boolean projectLocalDep = false
+    boolean projectLocalDep = true
     /**
      * 当前项目依赖的子项目，比如compile project(':testlibrary')
      */
