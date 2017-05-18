@@ -9,7 +9,7 @@ import android.view.Choreographer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import andr.perf.monitor.AndroidMonitor;
+import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.Config;
 import andr.perf.monitor.SamplerFactory;
 import andr.perf.monitor.cpu.models.BlockInfo;
@@ -36,7 +36,7 @@ public class LooperMonitor {
     }
 
     private LooperMonitor() {
-        config = AndroidMonitor.getConfig();
+        config = DroidTelescope.getConfig();
     }
 
     private final InnerBlockListener innerBlockListener = new InnerBlockListener() {
@@ -51,7 +51,7 @@ public class LooperMonitor {
             blockInfo.setCpuTimeMs(cpuTimeMs);
             blockInfo.setWallClockTimeMs(wallClockTimeMs);
             blockInfo.setRootMethodList(methodInfoList);
-            AndroidMonitor.BlockListener listener = AndroidMonitor.getBlockListener();
+            DroidTelescope.BlockListener listener = DroidTelescope.getBlockListener();
             if (listener != null) {
                 listener.onBlock(blockInfo);
             }

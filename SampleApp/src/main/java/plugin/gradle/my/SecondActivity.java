@@ -1,19 +1,21 @@
 package plugin.gradle.my;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.view.View.*;
 
 import plugin.gradle.my.dummy.DummyContent;
 
 /**
  * Created by ZhouKeWen on 17/3/31.
  */
-public class SecondActivity extends AppCompatActivity {
+public class SecondActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener {
 
     private byte[] a = new byte[8024000];
 
@@ -29,6 +31,10 @@ public class SecondActivity extends AppCompatActivity {
         tx.commit();
 
         blankFragment.onLowMemory();
+
+        Button b = (Button) findViewById(R.id.test_click);
+        b.setOnClickListener(this);
+        b.setOnLongClickListener(this);
     }
 
     @Override
@@ -38,4 +44,14 @@ public class SecondActivity extends AppCompatActivity {
         d.sleep();
     }
 
+    @Override
+    public void onClick(View v) {
+        Log.i("zkw", "on test click clicked");
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Log.i("zkw", "on long click!!!!!");
+        return true;
+    }
 }

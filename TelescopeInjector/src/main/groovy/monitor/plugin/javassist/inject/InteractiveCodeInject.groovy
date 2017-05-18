@@ -1,9 +1,11 @@
 package monitor.plugin.javassist.inject;
 
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
-import monitor.plugin.utils.LogUtils;
+import javassist.CtClass
+import monitor.plugin.javassist.inject.interactive.DialogOnClickHandler
+import monitor.plugin.javassist.inject.interactive.IInterfaceHandler
+import monitor.plugin.javassist.inject.interactive.ViewOnClickHandler
+import monitor.plugin.javassist.inject.interactive.ViewOnLongClickHandler
+import monitor.plugin.utils.LogUtils
 
 /**
  * 用户交互行为监控模块的代码注入器
@@ -11,44 +13,29 @@ import monitor.plugin.utils.LogUtils;
  */
 public class InteractiveCodeInject {
 
+    private final static HashMap<String, IInterfaceHandler> handlerMap;
+
+    static {
+        handlerMap = new HashMap<>()
+        handlerMap.put(ViewOnClickHandler.NAME, new ViewOnClickHandler())
+        handlerMap.put(ViewOnLongClickHandler.NAME, new ViewOnLongClickHandler())
+        handlerMap.put(DialogOnClickHandler.NAME, new DialogOnClickHandler())
+    }
+
     public static void injectForViewClick(CtClass clazz) {
-        CtClass[] interfaces;
-        try {
-            interfaces = clazz.getInterfaces();
-        } catch (NotFoundException e) {
-            return;
-        }
+        CtClass[] interfaces = clazz.interfaces;
         if (interfaces == null || interfaces.length == 0) {
             return;
         }
-        boolean shouldInject
-        for (CtClass interfaceClass : interfaces) {
-            if ("android.view.View\$OnClickListener" == interfaceClass.getName()) {
-                shouldInject = true;
-                break;
-            }
-        }
-        if (shouldInject) {
-            injectOnClick(clazz)
 
+        for (CtClass face : interfaces) {
+            LogUtils.printLog("--------interface name: " + face.name)
+            IInterfaceHandler handler = handlerMap.get(face.name)
+            if (handler != null) {
+                handler.handleInterface(clazz)
+            }
         }
     }
 
-    private static void injectOnClick(CtClass clazz) {
-        CtMethod[] declaredMethods = clazz.getDeclaredMethods();
-        for (CtMethod method : declaredMethods) {
-            if (method.name == "onClick" && method.parameterTypes.length == 1 && method.parameterTypes[0].name ==
-                    "android.view.View") {
-                LogUtils.printLog("inject onClick---------->" + clazz.name)
-                method.addLocalVariable("__interactive_switch", CtClass.booleanType);
-                method.insertBefore("""
-                  __interactive_switch = andr.perf.monitor.injected.InteractiveSample.shouldMonitor();
-                  if(__interactive_switch) {
-                      andr.perf.monitor.injected.InteractiveSample.onViewClick(\$0,\$1);
-                  }
-                """)
-            }
-        }
 
-    }
 }

@@ -93,13 +93,6 @@ public class Injector {
         if (ClassFilterUtils.skipThisClassForJar(entryName)) {
             return false
         }
-        if (entryName.contains("android.support.v7.app.AppCompatViewInflater")) {
-            LogUtils.printLog(">>>>>>>>>-----" + entryName)
-        }
-
-        if (entryName == "android.support.v7.app.AppCompatViewInflater\$DeclaredOnClickListener") {
-            return true
-        }
         return ClassFilterUtils.isIncluded(entryName, includePackage) &&
                 !ClassFilterUtils.isExcluded(entryName, excludePackage, excludeClass)
     }

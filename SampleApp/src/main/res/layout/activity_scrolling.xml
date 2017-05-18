@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="plugin.gradle.my.ScrollingActivity">
+
+    <FrameLayout
+        android:id="@+id/scrolling_content_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:background="@android:color/holo_red_dark">
+    </FrameLayout>
+
+    <Button android:id="@+id/test_fragment_click"
+            android:layout_width="wrap_content"
+            android:text="fff"
+            android:layout_height="wrap_content"/>
+
+</LinearLayout>

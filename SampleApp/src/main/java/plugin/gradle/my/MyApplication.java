@@ -1,17 +1,14 @@
 package plugin.gradle.my;
 
-import android.app.Activity;
 import android.app.Application;
-import android.os.Bundle;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Random;
 
-import andr.perf.monitor.AndroidMonitor;
+import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.Config;
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.memory.models.LeakInfo;
@@ -25,22 +22,22 @@ public class MyApplication extends Application {
 
     private Config config = new AndrPerfMonitorConfig();
 
-    private AndroidMonitor.BlockListener blockListener = new MyBlockListener();
-    private AndroidMonitor.LeakListener leakListener = new MyLeakListener();
+    private DroidTelescope.BlockListener blockListener = new MyBlockListener();
+    private DroidTelescope.LeakListener leakListener = new MyLeakListener();
 
     @Override
     public void onCreate() {
         super.onCreate();
-        AndroidMonitor.install(config);
-        AndroidMonitor.setBlockListener(blockListener);
-        AndroidMonitor.setLeakListener(leakListener);
+        DroidTelescope.install(config);
+        DroidTelescope.setBlockListener(blockListener);
+        DroidTelescope.setLeakListener(leakListener);
     }
 
     private static class AndrPerfMonitorConfig extends Config {
 
     }
 
-    private static class MyBlockListener implements AndroidMonitor.BlockListener {
+    private static class MyBlockListener implements DroidTelescope.BlockListener {
         @Override
         public void onBlock(BlockInfo blockInfo) {
             JSONObject blockInfoJson = null;
@@ -64,7 +61,7 @@ public class MyApplication extends Application {
         }
     }
 
-    private static class MyLeakListener implements AndroidMonitor.LeakListener {
+    private static class MyLeakListener implements DroidTelescope.LeakListener {
         @Override
         public void onLeak(LeakInfo leakInfo) {
             JSONObject leakInfoJson = null;

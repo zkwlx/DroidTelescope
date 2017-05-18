@@ -199,10 +199,14 @@ public class MainActivity extends AppCompatActivity {
         Log.i("zkw", "----------------_>>>on trim memory:" + level);
     }
 
+    public void onGoClick(View view) {
+        Intent i = new Intent(this, ScrollingActivity.class);
+        startActivity(i);
+    }
+
     public void onSlowClick(View view) {
         Intent i = new Intent(this, SecondActivity.class);
         startActivity(i);
-        ViewParent p = view.getParent();
         try {
             g2();
         } catch (IllegalAccessException e) {

@@ -7,7 +7,7 @@ import andr.perf.monitor.memory.models.LeakInfo;
 /**
  * Created by ZhouKeWen on 17/3/24.
  */
-public class AndroidMonitor {
+public class DroidTelescope {
 
     private static BlockListener blockListener;
 
@@ -37,7 +37,7 @@ public class AndroidMonitor {
     }
 
     public static void setLeakListener(LeakListener leakListener) {
-        AndroidMonitor.leakListener = leakListener;
+        DroidTelescope.leakListener = leakListener;
     }
 
     public static void setBlockListener(BlockListener listener) {

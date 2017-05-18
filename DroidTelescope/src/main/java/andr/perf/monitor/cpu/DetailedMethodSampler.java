@@ -4,7 +4,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
-import andr.perf.monitor.AndroidMonitor;
+import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.Config;
 import andr.perf.monitor.cpu.models.MethodInfo;
 
@@ -66,7 +66,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         //threadMethodStack无需remove，有两个原因：一是通线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         MethodInfo topMethod = methodStack.pop();
-        Config config = AndroidMonitor.getConfig();
+        Config config = DroidTelescope.getConfig();
         if (config == null) {
             //TODO 还未初始化好，一般发生在Application.<init>方法中
             return;

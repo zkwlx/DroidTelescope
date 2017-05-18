@@ -10,8 +10,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import andr.perf.monitor.AndroidMonitor;
+import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.JobManager;
+import andr.perf.monitor.SamplerFactory;
+import andr.perf.monitor.interactive.IEvent;
 import andr.perf.monitor.memory.models.LeakInfo;
 
 /**
@@ -20,6 +22,11 @@ import andr.perf.monitor.memory.models.LeakInfo;
 public class ObjectReferenceSampler {
 
     private static final String TAG = "ObjectReferenceSampler";
+
+    /**
+     * 最大标记次数，超过则视为垃圾
+     */
+    private static final int MAX_MARK_TIMES = 3;
 
     /**
      * 在同一个UI线程里操作嫌疑对象列表，所以无需加锁
@@ -70,7 +77,7 @@ public class ObjectReferenceSampler {
                 } else {
                     //增加对象的计数，当达到阈值时视为泄漏
                     reference.increaseLookUpTimes();
-                    if (reference.tooManyTimes()) {
+                    if (reference.getMarkeTimes() > MAX_MARK_TIMES) {
                         //发生泄漏，记录泄漏Object
                         Log.i(TAG, "[---]...............garbage!!!!!!!>> " + obj.toString());
                         iterator.remove();
@@ -79,7 +86,7 @@ public class ObjectReferenceSampler {
                 }
             }
             //在UI线程回调
-            AndroidMonitor.LeakListener listener = AndroidMonitor.getLeakListener();
+            DroidTelescope.LeakListener listener = DroidTelescope.getLeakListener();
             if (listener != null && leakInfo.getReferenceList() != null &&
                     !leakInfo.getReferenceList().isEmpty()) {
                 listener.onLeak(leakInfo);
@@ -101,6 +108,8 @@ public class ObjectReferenceSampler {
         SuspectWeakReference reference = new SuspectWeakReference(object);
         String[] objectIdStack = objectCreateStack.toArray(new String[objectCreateStack.size()]);
         reference.setCreateStack(objectIdStack);
+        IEvent[] events = SamplerFactory.getInteractiveSampler().obtainCurrentEvents();
+        reference.setViewEventArray(events);
         suspectObjects.add(reference);
         //防止堆栈混乱，索性直接用remove
         objectCreateStack.remove(object.toString());
