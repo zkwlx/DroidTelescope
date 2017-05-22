@@ -199,6 +199,11 @@ public class MainActivity extends AppCompatActivity {
         Log.i("zkw", "----------------_>>>on trim memory:" + level);
     }
 
+    public void onGoListClick(View view) {
+        Intent i = new Intent(this, ListActivity.class);
+        startActivity(i);
+    }
+
     public void onGoClick(View view) {
         Intent i = new Intent(this, ScrollingActivity.class);
         startActivity(i);

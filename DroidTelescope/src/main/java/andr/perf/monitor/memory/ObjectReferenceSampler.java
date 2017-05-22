@@ -26,7 +26,7 @@ public class ObjectReferenceSampler {
     /**
      * 最大标记次数，超过则视为垃圾
      */
-    private static final int MAX_MARK_TIMES = 3;
+    private static final int MAX_MARK_TIMES = 2;
 
     /**
      * 在同一个UI线程里操作嫌疑对象列表，所以无需加锁
@@ -77,6 +77,7 @@ public class ObjectReferenceSampler {
                 } else {
                     //增加对象的计数，当达到阈值时视为泄漏
                     reference.increaseLookUpTimes();
+                    Log.i(TAG, "[---]times:"+reference.getMarkeTimes() );
                     if (reference.getMarkeTimes() > MAX_MARK_TIMES) {
                         //发生泄漏，记录泄漏Object
                         Log.i(TAG, "[---]...............garbage!!!!!!!>> " + obj.toString());

@@ -10,12 +10,13 @@ import monitor.plugin.utils.LogUtils
 class DialogOnClickHandler implements IInterfaceHandler {
 
     public static final String NAME = "android.content.DialogInterface\$OnClickListener"
+    private static final String METHOD_NAME = "onClick"
 
     @Override
     boolean handleInterface(CtClass clazz) {
         CtMethod[] declaredMethods = clazz.getDeclaredMethods()
         for (CtMethod method : declaredMethods) {
-            if (method.name == "onClick" && method.parameterTypes.length == 2 && method.parameterTypes[0].name ==
+            if (method.name == METHOD_NAME && method.parameterTypes.length == 2 && method.parameterTypes[0].name ==
                     "android.content.DialogInterface" && method.parameterTypes[1].name == "int") {
                 LogUtils.printLog("inject dialog onClick---------->" + clazz.name)
                 method.addLocalVariable("__interactive_switch", CtClass.booleanType)

@@ -25,9 +25,17 @@
         android:onClick="onSlowClick"
         android:text="slow"/>
 
+    <Button
+        android:id="@+id/go"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/slow"
+        android:onClick="onGoClick"
+        android:text="go"/>
+
     <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/slow"
-            android:onClick="onGoClick"
-            android:text="go"/>
+            android:layout_below="@id/go"
+            android:onClick="onGoListClick"
+            android:text="goList"/>
 </RelativeLayout>

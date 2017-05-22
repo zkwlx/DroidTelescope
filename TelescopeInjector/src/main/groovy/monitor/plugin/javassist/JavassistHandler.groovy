@@ -71,8 +71,8 @@ class JavassistHandler {
         }
 
         //TODO 通过开关控制开启哪些监控模块的注入
-//        injectForMemory(clazz)
-//        injectForCpu(clazz)
+        injectForMemory(clazz)
+        injectForCpu(clazz)
         injectForInteractive(clazz)
 
         def bytes = clazz.toBytecode()
@@ -138,7 +138,7 @@ class JavassistHandler {
     }
 
     private static void injectForInteractive(CtClass clazz) {
-        InteractiveCodeInject.injectForViewClick(clazz)
+        monitor.plugin.javassist.inject.interactive.InteractiveCodeInject.injectForViewEvent(clazz)
     }
 
 }

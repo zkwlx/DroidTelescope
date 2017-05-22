@@ -71,12 +71,14 @@ public class ViewEvent implements IEvent {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         try {
-            JSONArray jsonArray = new JSONArray(parentArray);
             json.put("eventType", eventType);
             json.put("listenerName", listenerName);
             json.put("pageName", pageName);
             json.put("viewObject", viewObject);
-            json.put("parents", jsonArray);
+            if (parentArray != null && parentArray.length > 0) {
+                JSONArray jsonArray = new JSONArray(parentArray);
+                json.put("parents", jsonArray);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

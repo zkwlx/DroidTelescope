@@ -32,19 +32,21 @@ public class InteractiveSample {
     }
 
     //AdapterView.OnItemClickListener
-    public static void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        SamplerFactory.getInteractiveSampler().onItemClick(parent, view, position, id);
+    public static void onItemClick(Object object, AdapterView<?> parent, View view, int position, long id) {
+        SamplerFactory.getInteractiveSampler().onItemClick(object,parent, view, position, id);
 
     }
 
     //AdapterView.OnItemLongClickListener
-    public static void onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        SamplerFactory.getInteractiveSampler().onItemLongClick(parent, view, position, id);
+    public static void onItemLongClick(Object object, AdapterView<?> parent, View view, int position,
+            long id) {
+        SamplerFactory.getInteractiveSampler().onItemLongClick(object,parent, view, position, id);
     }
 
     //AdapterView.OnItemSelectedListener
-    public static void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        SamplerFactory.getInteractiveSampler().onItemSelected(parent, view, position, id);
+    public static void onItemSelected(Object object, AdapterView<?> parent, View view, int position,
+            long id) {
+        SamplerFactory.getInteractiveSampler().onItemSelected(object,parent, view, position, id);
 
     }
 

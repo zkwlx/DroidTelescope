@@ -16,6 +16,9 @@ public class UserInteractiveSampler {
     private static final String VIEW_CLICK_EVENT = "view_click";
     private static final String VIEW_LONG_CLICK_EVENT = "view_long_click";
     private static final String DIALOG_CLICK_EVENT = "dialog_click";
+    private static final String ITEM_CLICK_EVENT = "item_click_event";
+    private static final String ITEM_LONG_CLICK_EVENT = "item_long_click_event";
+    private static final String ITEM_SELECTED_EVENT = "item_selected_event";
 
     private static final int MAX_EVENT_COUNT = 5;
 
@@ -53,17 +56,32 @@ public class UserInteractiveSampler {
     }
 
     //AdapterView.OnItemClickListener
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(Object object, AdapterView<?> parent, View view, int position, long id) {
+        ItemEvent itemEvent = new ItemEvent();
+        itemEvent.setEventType(ITEM_CLICK_EVENT);
+        itemEvent.setListenerName(object.getClass().getName());
+        if (parent != null) {
+            itemEvent.setPageName(parent.getContext().getClass().getName());
+            if (parent.getAdapter() != null) {
+                itemEvent.setAdapterName(parent.getAdapter().getClass().getName());
+            }
+        } else {
+            itemEvent.setPageName(view.getContext().getClass().getName());
+        }
+        itemEvent.setViewObject(ViewUtils.getViewSign(view));
+        itemEvent.setParentArray(ViewUtils.getParentArray(view));
+        itemEvent.setPosition(position);
+        itemEvent.setId(id);
 
     }
 
     //AdapterView.OnItemLongClickListener
-    public void onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemLongClick(Object object, AdapterView<?> parent, View view, int position, long id) {
 
     }
 
     //AdapterView.OnItemSelectedListener
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemSelected(Object object, AdapterView<?> parent, View view, int position, long id) {
 
     }
 

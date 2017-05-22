@@ -1,10 +1,6 @@
-package monitor.plugin.javassist.inject;
+package monitor.plugin.javassist.inject.interactive
 
 import javassist.CtClass
-import monitor.plugin.javassist.inject.interactive.DialogOnClickHandler
-import monitor.plugin.javassist.inject.interactive.IInterfaceHandler
-import monitor.plugin.javassist.inject.interactive.ViewOnClickHandler
-import monitor.plugin.javassist.inject.interactive.ViewOnLongClickHandler
 import monitor.plugin.utils.LogUtils
 
 /**
@@ -20,9 +16,10 @@ public class InteractiveCodeInject {
         handlerMap.put(ViewOnClickHandler.NAME, new ViewOnClickHandler())
         handlerMap.put(ViewOnLongClickHandler.NAME, new ViewOnLongClickHandler())
         handlerMap.put(DialogOnClickHandler.NAME, new DialogOnClickHandler())
+        handlerMap.put(ItemOnClickHandler.NAME, new ItemOnClickHandler())
     }
 
-    public static void injectForViewClick(CtClass clazz) {
+    public static void injectForViewEvent(CtClass clazz) {
         CtClass[] interfaces = clazz.interfaces;
         if (interfaces == null || interfaces.length == 0) {
             return;

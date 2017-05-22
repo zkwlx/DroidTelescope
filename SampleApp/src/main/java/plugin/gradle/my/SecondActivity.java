@@ -17,8 +17,6 @@ import plugin.gradle.my.dummy.DummyContent;
  */
 public class SecondActivity extends AppCompatActivity implements OnClickListener, OnLongClickListener {
 
-    private byte[] a = new byte[8024000];
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
