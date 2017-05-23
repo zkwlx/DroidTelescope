@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SecondActivity"/>
+        <activity android:name=".ListActivity"/>
         <activity
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling"

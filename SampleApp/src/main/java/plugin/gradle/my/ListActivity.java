@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -23,11 +24,14 @@ public class ListActivity extends Activity {
 
     private List<ObjectEntity> dataSource;
 
+    private static List<ListActivity> l = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initListView();
+        l.add(this);
     }
 
     private void initListView() {
@@ -56,6 +60,13 @@ public class ListActivity extends Activity {
                 ObjectEntity data = dataSource.get(position);
 
                 Toast.makeText(getApplicationContext(), data.desc, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return false;
             }
         });
     }

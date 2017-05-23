@@ -57,32 +57,17 @@ public class UserInteractiveSampler {
 
     //AdapterView.OnItemClickListener
     public void onItemClick(Object object, AdapterView<?> parent, View view, int position, long id) {
-        ItemEvent itemEvent = new ItemEvent();
-        itemEvent.setEventType(ITEM_CLICK_EVENT);
-        itemEvent.setListenerName(object.getClass().getName());
-        if (parent != null) {
-            itemEvent.setPageName(parent.getContext().getClass().getName());
-            if (parent.getAdapter() != null) {
-                itemEvent.setAdapterName(parent.getAdapter().getClass().getName());
-            }
-        } else {
-            itemEvent.setPageName(view.getContext().getClass().getName());
-        }
-        itemEvent.setViewObject(ViewUtils.getViewSign(view));
-        itemEvent.setParentArray(ViewUtils.getParentArray(view));
-        itemEvent.setPosition(position);
-        itemEvent.setId(id);
-
+        onItemEvent(ITEM_CLICK_EVENT, object, parent, view, position, id);
     }
 
     //AdapterView.OnItemLongClickListener
     public void onItemLongClick(Object object, AdapterView<?> parent, View view, int position, long id) {
-
+        onItemEvent(ITEM_LONG_CLICK_EVENT, object, parent, view, position, id);
     }
 
     //AdapterView.OnItemSelectedListener
     public void onItemSelected(Object object, AdapterView<?> parent, View view, int position, long id) {
-
+        onItemEvent(ITEM_SELECTED_EVENT, object, parent, view, position, id);
     }
 
     //android.content.DialogInterface$OnClickListener
@@ -105,6 +90,27 @@ public class UserInteractiveSampler {
     //View.OnScrollChangeListener_*
     public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
 
+    }
+
+    private void onItemEvent(String eventType, Object object, AdapterView<?> parent, View view, int position,
+            long id) {
+        ItemEvent itemEvent = new ItemEvent();
+        itemEvent.setEventType(eventType);
+        itemEvent.setListenerName(object.getClass().getName());
+        if (parent != null) {
+            itemEvent.setPageName(parent.getContext().getClass().getName());
+            if (parent.getAdapter() != null) {
+                itemEvent.setAdapterName(parent.getAdapter().getClass().getName());
+            }
+        } else {
+            itemEvent.setPageName(view.getContext().getClass().getName());
+        }
+        itemEvent.setViewObject(ViewUtils.getViewSign(view));
+        itemEvent.setParentArray(ViewUtils.getParentArray(view));
+        itemEvent.setPosition(position);
+        itemEvent.setId(id);
+
+        addToList(itemEvent);
     }
 
     private void addToList(IEvent eventObject) {

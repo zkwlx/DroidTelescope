@@ -17,6 +17,8 @@ public class InteractiveCodeInject {
         handlerMap.put(ViewOnLongClickHandler.NAME, new ViewOnLongClickHandler())
         handlerMap.put(DialogOnClickHandler.NAME, new DialogOnClickHandler())
         handlerMap.put(ItemOnClickHandler.NAME, new ItemOnClickHandler())
+        handlerMap.put(ItemOnLongClickHandler.NAME, new ItemOnLongClickHandler())
+        handlerMap.put(ItemOnSelectedHandler.NAME, new ItemOnSelectedHandler())
     }
 
     public static void injectForViewEvent(CtClass clazz) {

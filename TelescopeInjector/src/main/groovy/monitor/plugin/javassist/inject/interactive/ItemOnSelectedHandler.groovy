@@ -7,10 +7,10 @@ import monitor.plugin.utils.LogUtils
 /**
  * Created by ZhouKeWen on 2017/5/19.
  */
-class ItemOnLongClickHandler implements IInterfaceHandler {
+class ItemOnSelectedHandler implements IInterfaceHandler {
 
-    public static final String NAME = "android.widget.AdapterView\$OnItemLongClickListener"
-    private static final String METHOD_NAME = "onItemLongClick"
+    public static final String NAME = "android.widget.AdapterView\$OnItemSelectedListener"
+    private static final String METHOD_NAME = "onItemSelected"
 
     @Override
     boolean handleInterface(CtClass clazz) {
@@ -27,7 +27,7 @@ class ItemOnLongClickHandler implements IInterfaceHandler {
                 method.insertBefore("""
                   __interactive_switch = andr.perf.monitor.injected.InteractiveSample.shouldMonitor();
                   if(__interactive_switch) {
-                      andr.perf.monitor.injected.InteractiveSample.onItemLongClick(\$0,\$1,\$2,\$3,\$4);
+                      andr.perf.monitor.injected.InteractiveSample.onItemSelected(\$0,\$1,\$2,\$3,\$4);
                   }
                 """)
                 return true

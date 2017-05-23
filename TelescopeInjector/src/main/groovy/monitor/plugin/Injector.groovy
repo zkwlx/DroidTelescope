@@ -18,16 +18,13 @@ public class Injector {
 
     private static Set<String> excludePackage
     private static Set<String> includePackage
-    private static Set<String> includeClass
     private static Set<String> excludeClass
 
     public static void setPackagesConfig(List<String> excludePackage, List<String> includePackage,
-            List<String> excludeClass, List<String> includeClass) {
+            List<String> excludeClass) {
         this.excludePackage = ClassFilterUtils.formatPath(excludePackage)
         this.includePackage = ClassFilterUtils.formatPath(includePackage)
         this.excludeClass = ClassFilterUtils.formatPath(excludeClass)
-        this.includeClass = ClassFilterUtils.formatPath(includeClass)
-
     }
 
     public static void setClassPathForJavassist(Set<File> files) {
