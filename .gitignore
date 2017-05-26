@@ -40,7 +40,7 @@ captures/
 *.jks
 
 #repo dir
-repo/
+#repo/
 
 
 InjectPlugin/publish.cmd

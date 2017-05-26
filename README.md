@@ -116,6 +116,7 @@ public class BlankFragment extends Fragment {
 }
 ```
 ## 使用方法
+（不知为何bintray一直不通过我的包，所以jcenter上还没有插件包，可以先使用本地编译，见谅）
 
 
 
