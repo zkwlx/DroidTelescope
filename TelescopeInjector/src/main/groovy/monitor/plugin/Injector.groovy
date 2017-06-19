@@ -3,7 +3,6 @@ package monitor.plugin
 import monitor.plugin.javassist.JavassistHandler
 import monitor.plugin.utils.ClassFilterUtils
 import monitor.plugin.utils.LogUtils
-import org.gradle.api.Project
 
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
@@ -15,10 +14,9 @@ import java.util.zip.ZipEntry
  * Created by ZhouKeWen on 17/3/17.
  */
 public class Injector {
-
-    private static Set<String> excludePackage
-    private static Set<String> includePackage
-    private static Set<String> excludeClass
+    private static Set<String> excludePackage = ["andr.perf.monitor"]
+    private static Set<String> includePackage = []
+    private static Set<String> excludeClass = []
 
     public static void setPackagesConfig(List<String> excludePackage, List<String> includePackage,
             List<String> excludeClass) {
@@ -31,20 +29,20 @@ public class Injector {
         JavassistHandler.setClassPath(files)
     }
 
-    public static void inject(Project project, File file) {
+    public static void inject(File file) {
         if (file) {
             String filePath = file.absolutePath;
             if (file.isDirectory()) {
-                injectForDir(project, file)
+                injectForDir(file)
             } else if (filePath.endsWith(".jar")) {
-                injectForJar(project, file)
+                injectForJar(file)
             }
         } else {
             LogUtils.printLog("Inject error! file is null!!")
         }
     }
 
-    private static void injectForDir(Project project, File dirFile) {
+    private static void injectForDir(File dirFile) {
         dirFile.eachFileRecurse { File file ->
             String filePath = file.absolutePath
             if (shouldInjectFileClass(filePath)) {
@@ -54,7 +52,7 @@ public class Injector {
         }
     }
 
-    private static void injectForJar(Project project, File file) {
+    private static void injectForJar(File file) {
 //        LogUtils.printLog("[process jar]============" + file.absolutePath)
         JarFile jarFile = new JarFile(file)
         Enumeration enumeration = jarFile.entries()

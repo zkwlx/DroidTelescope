@@ -118,11 +118,12 @@ public class InjectTransform extends Transform {
         }
         ApplicationVariantImpl applicationVariant = project.android.applicationVariants.getAt(0);
         javassistClassPath.addAll(applicationVariant.androidBuilder.computeFullBootClasspath())
+
         //进行代码注入
         Injector.setClassPathForJavassist(javassistClassPath)
         Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses)
         careFiles.each { File file ->
-            Injector.inject(project, file)
+            Injector.inject(file)
         }
 
     }

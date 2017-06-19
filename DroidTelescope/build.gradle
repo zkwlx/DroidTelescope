@@ -8,7 +8,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0"
+        versionName "0.8.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -42,3 +42,29 @@ dependencies {
 //    website = rootProject.website
 //    licences = rootProject.licences
 //}
+
+project.afterEvaluate {
+    tasks.getByName("bundleRelease") {
+        it.doLast {
+            println("=====================start copy DroidTelescope.jar=========================")
+            def fileName = "classes.jar"
+            def fromFile = "./build/intermediates/bundles/default/" + fileName
+            def intoFile = "../"
+
+            def versionName = android.defaultConfig.versionName
+            def time = new java.text.SimpleDateFormat("yyyyMMdd").format(new Date())
+
+            def jarName = "DroidTelescope_v${versionName}_${time}.jar"
+
+            // copy --> rename
+            copy {
+                from fromFile
+                into intoFile
+
+                rename {
+                    jarName
+                }
+            }
+        }
+    }
+}
