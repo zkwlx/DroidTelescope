@@ -117,7 +117,7 @@ public class BlankFragment extends Fragment {
 ```
 ## 使用方法
 （不知为何bintray一直不通过我的包，所以jcenter上还没有插件包，可以先使用本地编译，见谅）
-<br>首先配置代码注入的插件，将repo目录复制到你自己项目的根目录，在项目app的build.gradle文件中加入如下代码：
+<br>框架会在编译期间注入代码，首先配置代码注入的插件，将repo目录复制到你自己项目的根目录，在项目app的build.gradle文件中加入如下代码：
 ```groovy
 buildscript {
     repositories {
@@ -187,7 +187,7 @@ public class MyApplication extends Application {
         @Override
         public void onLeak(LeakInfo leakInfo) {
             JSONObject leakInfoJson = null;
-            //使用框架提供的转换工具，将BlockInfo对象转换成Json格式
+            //使用框架提供的转换工具，将LeakInfo对象转换成Json格式
             try {
                 leakInfoJson = ConvertUtils.convertLeakInfoToJson(leakInfo);
             } catch (JSONException e) {
@@ -204,7 +204,8 @@ public class MyApplication extends Application {
     
 }
 ```
-
+##License
+DroidTelescope使用的GPL3.0协议，详细请参考[License](https://raw.githubusercontent.com/zkwlx/DroidTelescope/master/LICENSE)
 
 
 
