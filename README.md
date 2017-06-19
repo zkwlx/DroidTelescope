@@ -117,6 +117,23 @@ public class BlankFragment extends Fragment {
 ```
 ## 使用方法
 （不知为何bintray一直不通过我的包，所以jcenter上还没有插件包，可以先使用本地编译，见谅）
+首先配置代码注入的插件，将repo目录复制到你自己项目的根目录，在项目app的build.gradle文件中加入如下代码：
+```groovy
+buildscript {
+    repositories {
+        maven {
+            url uri('../repo')
+        }
+        jcenter()
+    }
+    dependencies {
+        classpath 'andr.perf.monitor:TelescopeInjector:0.8.0'
+    }
+}
+apply plugin: 'telescope.injector'
+```
+
+然后项目添加对DroidTelescope库的依赖，
 
 
 

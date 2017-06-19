@@ -41,7 +41,6 @@ buildscript {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':DroidTelescope')
     compile project(':testlibrary')
     compile 'com.android.support:appcompat-v7:24.3.0'
     compile 'com.android.support:design:24.2.1'
