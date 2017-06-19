@@ -132,8 +132,78 @@ buildscript {
 }
 apply plugin: 'telescope.injector'
 ```
+然后项目添加对DroidTelescope库的依赖，可以直接使用项目目录下的DroidTelescope_v0.8.0_xxxxxx.jar包，
+添加完后，大致是这个样子：
+![](https://raw.githubusercontent.com/zkwlx/DroidTelescope/master/wiki/demo.png "项目配置图例")
 
-然后项目添加对DroidTelescope库的依赖，
+然后再代码中配置监控框架，建议在自定义的Application.onCreate中配置，示例如下：
+```java
+public class MyApplication extends Application {
+
+    // 需要自定义配置项时，重写Config的相应方法
+    private Config config = new AndrPerfMonitorConfig();
+
+    // 设置监听器，当发生卡顿或者内存泄露时回调
+    private DroidTelescope.BlockListener blockListener = new MyBlockListener();
+    private DroidTelescope.LeakListener leakListener = new MyLeakListener();
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // 设置自定义配置
+        DroidTelescope.install(config);
+        // 设置监听器，当发生卡顿或者内存泄露时回调
+        DroidTelescope.setBlockListener(blockListener);
+        DroidTelescope.setLeakListener(leakListener);
+    }
+
+    //自定义配置类，本例没有自定义配置，所以没有重写任何方法
+    private static class AndrPerfMonitorConfig extends Config {
+        
+    }
+
+    //卡顿监听器，当发生卡顿时，使用框架提供的转换工具类将BlockInfo转换成Json，并保存到文件
+    private static class MyBlockListener implements DroidTelescope.BlockListener {
+        @Override
+        public void onBlock(BlockInfo blockInfo) {
+            JSONObject blockInfoJson = null;
+            //使用框架提供的转换工具，将BlockInfo对象转换成Json格式
+            try {
+                blockInfoJson = ConvertUtils.convertBlockInfoToJson(blockInfo);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //可以将json数据上传服务器，或者保存到本地
+            if (blockInfoJson != null) {
+                FileUtils fileUtils = new FileUtils();
+                String blockJson = blockInfoJson.toString();
+                fileUtils.write2SDFromInput("", "block.txt", blockJson);
+            }
+        }
+    }
+
+    //泄露监听器，当发生内存泄露时，使用框架提供的转换工具类将LeakInfo转换成Json，并保存到文件
+    private static class MyLeakListener implements DroidTelescope.LeakListener {
+        @Override
+        public void onLeak(LeakInfo leakInfo) {
+            JSONObject leakInfoJson = null;
+            //使用框架提供的转换工具，将BlockInfo对象转换成Json格式
+            try {
+                leakInfoJson = ConvertUtils.convertLeakInfoToJson(leakInfo);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //可以将json数据上传服务器，或者保存到本地
+            if (leakInfoJson != null) {
+                FileUtils fileUtils = new FileUtils();
+                String leakJson = leakInfoJson.toString();
+                fileUtils.write2SDFromInput("", "leak.txt", leakJson);
+            }
+        }
+    }
+    
+}
+```
 
 
 
