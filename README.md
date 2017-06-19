@@ -117,7 +117,7 @@ public class BlankFragment extends Fragment {
 ```
 ## 使用方法
 （不知为何bintray一直不通过我的包，所以jcenter上还没有插件包，可以先使用本地编译，见谅）
-首先配置代码注入的插件，将repo目录复制到你自己项目的根目录，在项目app的build.gradle文件中加入如下代码：
+<br>首先配置代码注入的插件，将repo目录复制到你自己项目的根目录，在项目app的build.gradle文件中加入如下代码：
 ```groovy
 buildscript {
     repositories {
@@ -134,7 +134,7 @@ apply plugin: 'telescope.injector'
 ```
 然后项目添加对DroidTelescope库的依赖，可以直接使用项目目录下的DroidTelescope_v0.8.0_xxxxxx.jar包，
 添加完后，大致是这个样子：
-![](https://raw.githubusercontent.com/zkwlx/DroidTelescope/master/wiki/demo.png "项目配置图例")
+<br>![](https://raw.githubusercontent.com/zkwlx/DroidTelescope/master/wiki/demo.png "项目配置图例")
 
 然后再代码中配置监控框架，建议在自定义的Application.onCreate中配置，示例如下：
 ```java
