@@ -2,7 +2,7 @@ DroidTelescope
 =======
 这是一套Android端线上应用性能监控框架，目前支持卡顿监控、内存泄露监控；后续还会增加更多监控对象。此项目部分源码参考自开源项目[BlockCanaryEx](https://github.com/seiginonakama/BlockCanaryEx)。
 
-##框架简介
+## 框架简介
 * 框架支持卡顿监控，当发生卡顿时会记录所有方法的调用耗时和调用栈
 * 框架支持内存泄露监控，当发生内存泄露时会记录用户的交互行为和页面的创建关系（为了提高性能，内存泄露并不会dump内存）
 * 框架支持用户交互行为的监控，为其他监控提供支持，比如内存泄露（交互监控还未开发完全）
@@ -210,10 +210,10 @@ public class MyApplication extends Application {
     
 }
 ```
-##对应用的性能影响测试
+## 对应用的性能影响测试
 
 
-##License
+## License
 DroidTelescope使用的GPL3.0协议，详细请参考[License](https://raw.githubusercontent.com/zkwlx/DroidTelescope/master/LICENSE)
 
 
