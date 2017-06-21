@@ -66,16 +66,16 @@ public class InjectTransform extends Transform {
             throws IOException, TransformException, InterruptedException {
 
         boolean isDebug = isDebug(context)
-        if ((isDebug && !config.debugEnabled)
-                || (!isDebug && !config.releaseEnabled)) {
+        boolean isDisable = ((isDebug && !config.debugEnabled)
+                || (!isDebug && !config.releaseEnabled))
+        if (isDisable) {
             careScopes.clear();
-            LogUtils.printLog("block canary ex disabled")
+            LogUtils.printLog("================DroidTelescope disabled!================")
         } else {
+            LogUtils.printLog("================开始注入监控代码================")
             setFilter(config)
             setCareScope(config.getScope())
         }
-
-        project.logger.error "================开始注入监控代码================"
 
         Set<File> javassistClassPath = new HashSet<>()
         Set<File> careFiles = new HashSet<>()
@@ -119,11 +119,13 @@ public class InjectTransform extends Transform {
         ApplicationVariantImpl applicationVariant = project.android.applicationVariants.getAt(0);
         javassistClassPath.addAll(applicationVariant.androidBuilder.computeFullBootClasspath())
 
-        //进行代码注入
-        Injector.setClassPathForJavassist(javassistClassPath)
-        Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses)
-        careFiles.each { File file ->
-            Injector.inject(file)
+        if (!isDisable) {
+            //进行代码注入
+            Injector.setClassPathForJavassist(javassistClassPath)
+            Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses)
+            careFiles.each { File file ->
+                Injector.inject(file)
+            }
         }
 
     }
