@@ -16,6 +16,7 @@ import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.cpu.models.MethodInfo;
 import andr.perf.monitor.reflect_utils.FieldUtils;
 import andr.perf.monitor.reflect_utils.MethodUtils;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * Looper监听类，监控每次loop的耗时
@@ -42,7 +43,7 @@ public class LooperMonitor {
     private final InnerBlockListener innerBlockListener = new InnerBlockListener() {
         @Override
         public void onBlock(long wallClockTimeMs, long cpuTimeMs) {
-            Log.e(TAG, "Oops!!!! block!!! " + "msTime:" + wallClockTimeMs + " threadTime:" + cpuTimeMs);
+            Logger.e(TAG, "Oops!!!! block!!! " + "msTime:" + wallClockTimeMs + " threadTime:" + cpuTimeMs);
             List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
             if (methodInfoList.isEmpty()) {
                 return;
@@ -83,7 +84,7 @@ public class LooperMonitor {
                 if (wallClockTimeMs >= warningFrameMs || config.isBlock(wallClockTimeMs, cpuTimeMs)) {
                     innerBlockListener.onBlock(wallClockTimeMs, cpuTimeMs);
                     int a = (int) (wallClockTimeMs / 16);
-                    Log.i("zkw", "-------skipped: " + a + " --- wall time:" + wallClockTimeMs);
+                    Logger.i("zkw", "-------skipped: " + a + " --- wall time:" + wallClockTimeMs);
                 }
 
                 //TODO 这里会影响性能，注意优化

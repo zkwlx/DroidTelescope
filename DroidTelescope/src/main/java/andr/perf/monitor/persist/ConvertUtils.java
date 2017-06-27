@@ -13,6 +13,7 @@ import andr.perf.monitor.cpu.models.MethodInfo;
 import andr.perf.monitor.interactive.IEvent;
 import andr.perf.monitor.memory.SuspectWeakReference;
 import andr.perf.monitor.memory.models.LeakInfo;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -53,7 +54,7 @@ public class ConvertUtils {
         }
         tab.append(">");
 
-        Log.i(TAG, tab.toString() + rootMethod.toString());
+        Logger.i(TAG, tab.toString() + rootMethod.toString());
 
         List<MethodInfo> list = rootMethod.getInvokeTraceList();
         depth++;

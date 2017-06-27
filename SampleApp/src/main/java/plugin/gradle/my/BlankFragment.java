@@ -37,7 +37,6 @@ public class BlankFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-
     public static List<Activity> ins = new ArrayList<>();
 
     public BlankFragment() {
@@ -82,44 +81,79 @@ public class BlankFragment extends Fragment {
         }
     }
 
-    private Button btn;
+    private Button btnBlock;
+    private Button btnLeak;
+    private Button btnInter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_blank, container, false);
-        btn = (Button) v.findViewById(R.id.fragment_test_btn);
-        btn.setOnClickListener(new View.OnClickListener() {
+        btnBlock = (Button) v.findViewById(R.id.fragment_block_test_btn);
+        btnBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 long n = System.nanoTime();
                 long m = SystemClock.currentThreadTimeMillis();
-                //                for (int i = 0; i < 200; i++) {
-                //                    //                    SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
-                //                    //                    SamplerFactory.getMethodSampler()
-                //                    //                            .onMethodExit(System.nanoTime(), System.currentTimeMillis(), "Classssss", "goooo",
-                //                    //                                    "int,String");
-                //                    //                    SamplerFactory.getMethodSampler().onMethodExitFinally("Classssss", "goooo", "int,String");
-                //                    Object o = new Object();
-                //                    SamplerFactory.getReferenceSampler().onKeyObjectCreate(o);
-                //                    SamplerFactory.getReferenceSampler().onKeyObjectDestroy(o);
-                //                    SamplerFactory.getReferenceSampler().onLowMemory(o);
+                for (int i = 0; i < 20000; i++) {
+                    SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
+                    SamplerFactory.getMethodSampler()
+                            .onMethodExit(System.nanoTime(), System.currentTimeMillis(), "Classssss", "goooo",
+                                    "int,String");
+                    SamplerFactory.getMethodSampler().onMethodExitFinally("Classssss", "goooo", "int,String");
+                }
+                //                try {
+                //                    new DummyThread().start();
+                //                    try {
+                //                        Thread.sleep(600);
+                //                    } catch (InterruptedException e) {
+                //                        e.printStackTrace();
+                //                    }
+                //                } finally {
+                //                    Log.i("zkw", "==========thread::>>" + Thread.currentThread().getName());
                 //                }
-                try {
-                    new DummyThread().start();
-                    try {
-                        Thread.sleep(600);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } finally {
-                    Log.i("zkw", "==========thread::>>" + Thread.currentThread().getName());
+
+                n = System.nanoTime() - n;
+                m = SystemClock.currentThreadTimeMillis() - m;
+                n = n / 1000000;
+                Log.i("zkw", "-----block test---->nano:" + n + " thread::>>" + m);
+            }
+        });
+
+        btnLeak = (Button) v.findViewById(R.id.fragment_leak_test_btn);
+        btnLeak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long n = System.nanoTime();
+                long m = SystemClock.currentThreadTimeMillis();
+                for (int i = 0; i < 20000; i++) {
+                    Object o = new Object();
+                    SamplerFactory.getReferenceSampler().onKeyObjectCreate(o);
+                    SamplerFactory.getReferenceSampler().onKeyObjectDestroy(o);
+                    SamplerFactory.getReferenceSampler().onLowMemory(o);
                 }
 
                 n = System.nanoTime() - n;
                 m = SystemClock.currentThreadTimeMillis() - m;
                 n = n / 1000000;
-                Log.i("zkw", "--------->nano:" + n + " thread::>>" + m);
+                Log.i("zkw", "-----leak test---->nano:" + n + " thread::>>" + m);
+            }
+        });
+
+        btnInter = (Button) v.findViewById(R.id.fragment_interactive_test_btn);
+        btnInter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long n = System.nanoTime();
+                long m = SystemClock.currentThreadTimeMillis();
+                for (int i = 0; i < 20000; i++) {
+                    SamplerFactory.getInteractiveSampler().onViewClick(BlankFragment.this, v);
+                }
+
+                n = System.nanoTime() - n;
+                m = SystemClock.currentThreadTimeMillis() - m;
+                n = n / 1000000;
+                Log.i("zkw", "-----leak test---->nano:" + n + " thread::>>" + m);
             }
         });
         return v;

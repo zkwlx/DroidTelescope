@@ -8,6 +8,8 @@ import android.widget.AdapterView;
 
 import java.util.LinkedList;
 
+import andr.perf.monitor.utils.Logger;
+
 /**
  * Created by ZhouKeWen on 2017/5/15.
  */
@@ -37,7 +39,7 @@ public class UserInteractiveSampler {
         viewEvent.setParentArray(ViewUtils.getParentArray(view));
         viewEvent.setPageName(view.getContext().getClass().getName());
 
-        Log.i("zkw", "view event>>>> " + viewEvent);
+        Logger.i("zkw", "view event>>>> " + viewEvent);
 
         addToList(viewEvent);
     }
@@ -51,7 +53,7 @@ public class UserInteractiveSampler {
         viewEvent.setParentArray(ViewUtils.getParentArray(view));
         viewEvent.setPageName(view.getContext().getClass().getName());
 
-        Log.i("zkw", "view long event>>>> " + viewEvent);
+        Logger.i("zkw", "view long event>>>> " + viewEvent);
         addToList(viewEvent);
     }
 
@@ -78,7 +80,7 @@ public class UserInteractiveSampler {
         dialogEvent.setDialogName(dialog.getClass().getName());
         dialogEvent.setWhich(which);
 
-        Log.i("zkw", "===>" + dialogEvent);
+        Logger.i("zkw", "===>" + dialogEvent);
         addToList(dialogEvent);
     }
 

@@ -1,8 +1,7 @@
 package andr.perf.monitor.injected;
 
-import android.util.Log;
-
 import andr.perf.monitor.SamplerFactory;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * 对象泄露采样类，用于代码注入
@@ -23,12 +22,12 @@ public class ObjectLeakSample {
     }
 
     public static void objectLowMemory(Object object) {
-        Log.i("zkw", "low memory>>>>>>>>>>>>>>>>>" + object);
+        Logger.i("zkw", "low memory>>>>>>>>>>>>>>>>>" + object);
         SamplerFactory.getReferenceSampler().onLowMemory(object);
     }
 
     public static void objectTrimMemory(Object object, int level) {
-        Log.i("zkw", "trim memory>>>>>>>>>>>>>>>>>" + object + " level:" + level);
+        Logger.i("zkw", "trim memory>>>>>>>>>>>>>>>>>" + object + " level:" + level);
         SamplerFactory.getReferenceSampler().onTrimMemory(object, level);
     }
 }

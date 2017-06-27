@@ -44,7 +44,18 @@ public class SecondActivity extends AppCompatActivity implements OnClickListener
 
     @Override
     public void onClick(View v) {
-        Log.i("zkw", "on test click clicked");
+        onA();
+        onB();
+    }
+
+    private void onA() {
+    }
+
+    private void onB() {
+        onC();
+    }
+
+    private void onC() {
     }
 
     @Override

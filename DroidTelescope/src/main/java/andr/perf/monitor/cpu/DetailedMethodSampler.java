@@ -63,7 +63,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
     public void onMethodExitFinally(String cls, final String method, String argTypes) {
         final long threadId = Thread.currentThread().getId();
         //方法无论是return退出还是异常throw退出，都会回调onMethodExitFinally()
-        //threadMethodStack无需remove，有两个原因：一是通线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
+        //threadMethodStack无需remove，有两个原因：一是同线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         MethodInfo topMethod = methodStack.pop();
         Config config = DroidTelescope.getConfig();

@@ -44,7 +44,7 @@ dependencies {
 //}
 
 project.afterEvaluate {
-    tasks.getByName("bundleRelease") {
+    tasks.getByName("assembleRelease") {
         it.doLast {
             println("=====================start copy DroidTelescope.jar=========================")
             def fileName = "classes.jar"

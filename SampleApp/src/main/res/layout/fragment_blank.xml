@@ -1,19 +1,32 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
+              android:orientation="vertical"
              android:layout_height="match_parent"
              tools:context="plugin.gradle.my.BlankFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment"/>
 
     <Button
-        android:id="@+id/fragment_test_btn"
+        android:id="@+id/fragment_block_test_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开始测性能！！"/>
+        android:text="开始卡顿模块性能测试！！"/>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/fragment_leak_test_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始泄露模块性能测试！！"/>
+
+    <Button
+        android:id="@+id/fragment_interactive_test_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始交互模块性能测试！！"/>
+
+</LinearLayout>

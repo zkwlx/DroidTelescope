@@ -3,7 +3,6 @@ package andr.perf.monitor.memory;
 import android.content.ComponentCallbacks2;
 import android.os.Looper;
 import android.os.MessageQueue;
-import android.util.Log;
 
 import java.util.Deque;
 import java.util.Iterator;
@@ -15,6 +14,7 @@ import andr.perf.monitor.JobManager;
 import andr.perf.monitor.SamplerFactory;
 import andr.perf.monitor.interactive.IEvent;
 import andr.perf.monitor.memory.models.LeakInfo;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 17/4/1.
@@ -62,9 +62,9 @@ public class ObjectReferenceSampler {
 
         @Override
         public boolean queueIdle() {
-            Log.i("zkw", "[---]start find garbage!!!!!");
+            Logger.i("zkw", "[---]start find garbage!!!!!");
             if (suspectObjects == null || suspectObjects.isEmpty()) {
-                Log.i(TAG, "[---]===============all clean!!!");
+                Logger.i(TAG, "[---]===============all clean!!!");
                 return false;
             }
             Iterator<SuspectWeakReference> iterator = suspectObjects.iterator();
@@ -77,10 +77,10 @@ public class ObjectReferenceSampler {
                 } else {
                     //增加对象的计数，当达到阈值时视为泄漏
                     reference.increaseLookUpTimes();
-                    Log.i(TAG, "[---]times:"+reference.getMarkeTimes() );
+                    Logger.i(TAG, "[---]times:"+reference.getMarkeTimes() );
                     if (reference.getMarkeTimes() > MAX_MARK_TIMES) {
                         //发生泄漏，记录泄漏Object
-                        Log.i(TAG, "[---]...............garbage!!!!!!!>> " + obj.toString());
+                        Logger.i(TAG, "[---]...............garbage!!!!!!!>> " + obj.toString());
                         iterator.remove();
                         leakInfo.addGarbageReference(reference);
                     }
