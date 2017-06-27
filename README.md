@@ -211,7 +211,12 @@ public class MyApplication extends Application {
 }
 ```
 ## 对应用的性能影响测试
-
+* __包大小：__ 由于编译时会注入代码，所以会增加class文件的大小，如果按默认配置（只注入所有模块src下的代码）编出的dex平均会增加20%~40%。
+后期会增加编译开关来控制注入哪些模块。
+* __方法耗时：__ 测试方法是对一个方法循环调用2万次，对比注入前和注入后耗时。当只注入卡顿监控模块时会慢120ms；
+当只注入泄露模块时会慢170ms；当只注入用户交互模块时会慢1000ms。
+<br>Looper监控的测试比较特殊，测试时每次loop生成10个耗时方法，然后触发200次loop监控，耗时180ms左右。
+* __内存消耗：__ 同样是循环2万次调用，卡顿模块消耗2.38MB，内存模块消耗510.89KB，交互模块消耗400KB（该测试和实际差别较大，仅供参考）。
 
 ## License
 DroidTelescope使用的GPL3.0协议，详细请参考[License](https://raw.githubusercontent.com/zkwlx/DroidTelescope/master/LICENSE)
