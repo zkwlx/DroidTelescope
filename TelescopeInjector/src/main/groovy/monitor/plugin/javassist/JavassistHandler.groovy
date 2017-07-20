@@ -35,7 +35,7 @@ class JavassistHandler {
 
     static void setClassPath(Set<File> files) {
         classPool = new ClassPool(true);
-        //TODO 实验选项，能节省编译时的内存消耗
+        //节省编译时的内存消耗
         ClassPool.doPruning = true;
         for (File file : files) {
             if (file.exists()) {
@@ -115,7 +115,7 @@ class JavassistHandler {
             int modifiers = ctMethod.getModifiers();
             if (Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)) {
                 LogUtils.printLog(
-                        "static or native!!!!! method=--========----------- ${clazz.name}.${ctMethod.name}")
+                        "static or native!!!Don't inject>> ${clazz.name}.${ctMethod.name}")
                 continue
             }
             for (IMethodHandler handler : methodHandlers) {

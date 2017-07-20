@@ -24,6 +24,10 @@ import com.shit.testlibrary.TestLibraryClass;
 
 import java.util.Random;
 
+import andr.perf.monitor.cpu.BlockMonitor;
+import andr.perf.monitor.cpu.BlockMonitorFactory;
+import plugin.gradle.my.concurrent_test.ExecutorManager;
+
 public class MainActivity extends AppCompatActivity {
 
     private TestLibraryClass test;
@@ -56,13 +60,15 @@ public class MainActivity extends AppCompatActivity {
                 showDialogTipUserRequestPermission();
             }
         }
+
+        BlockMonitor b = BlockMonitorFactory.getMonitor(this);
+        Toast.makeText(this, ">>>>" + b, Toast.LENGTH_LONG).show();
     }
 
     // 提示用户该请求权限的弹出框
     private void showDialogTipUserRequestPermission() {
 
-        new AlertDialog.Builder(this).setTitle("存储权限不可用")
-                .setMessage("由于支付宝需要获取存储空间，为你存储个人信息；\n否则，您将无法正常使用支付宝")
+        new AlertDialog.Builder(this).setTitle("存储权限不可用").setMessage("由于需要获取存储空间，为你存储个人信息；\n否则，您将无法正常使用支付宝")
                 .setPositiveButton("立即开启", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -110,8 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showDialogTipUserGoToAppSettting() {
 
-        dialog = new AlertDialog.Builder(this).setTitle("存储权限不可用")
-                .setMessage("请在-应用设置-权限-中，允许支付宝使用存储权限来保存用户数据")
+        dialog = new AlertDialog.Builder(this).setTitle("存储权限不可用").setMessage("请在-应用设置-权限-中，允许使用存储权限来保存用户数据")
                 .setPositiveButton("立即开启", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -200,8 +205,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onGoListClick(View view) {
-        Intent i = new Intent(this, ListActivity.class);
-        startActivity(i);
+//        Intent i = new Intent(this, ListActivity.class);
+//        startActivity(i);
+        ExecutorManager manager = new ExecutorManager();
+        manager.execut();
     }
 
     public void onGoClick(View view) {

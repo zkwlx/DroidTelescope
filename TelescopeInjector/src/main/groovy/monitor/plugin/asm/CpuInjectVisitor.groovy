@@ -52,7 +52,8 @@ public class CpuInjectVisitor extends MethodVisitor {
     @Override
     void visitVarInsn(int opcode, int var) {
         printLog("visitVarInsn=== opcode:${opcode}, operand:${var}")
-        //如果opcode是ILOAD, LLOAD, FLOAD, DLOAD, ALOAD, ISTORE, LSTORE, FSTORE, DSTORE, ASTORE指令，则对参数处理
+        //如果opcode是ILOAD, LLOAD, FLOAD, DLOAD, ALOAD, ISTORE,
+        // LSTORE, FSTORE, DSTORE, ASTORE指令，则对参数处理
         //TODO 注意，这里也包括RET指令
         if (tempM == methodName && var > 0) {
             //var>0是因为我们只影响了索引>=1之后的局部变量表
@@ -65,11 +66,12 @@ public class CpuInjectVisitor extends MethodVisitor {
     @Override
     public void visitInsn(int opcode) {
         printLog("visitInsn>>> opcode: ${opcode}")
-        if (tempM == methodName && (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN) || opcode ==
-                Opcodes.ATHROW) {
+        if (tempM == methodName && (opcode >= Opcodes.IRETURN
+                && opcode <= Opcodes.RETURN) || opcode == Opcodes.ATHROW) {
             super.visitVarInsn(Opcodes.LLOAD, 1);
-            super.visitMethodInsn(Opcodes.INVOKESTATIC, "andr/perf/monitor/CpuMonitor", "startMethodMonitor",
-                                  "(J)V", false);
+            super.visitMethodInsn(Opcodes.INVOKESTATIC,
+             "andr/perf/monitor/CpuMonitor", "startMethodMonitor",
+             "(J)V", false);
         }
         super.visitInsn(opcode);
     }

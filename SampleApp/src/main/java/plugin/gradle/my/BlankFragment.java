@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Printer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import andr.perf.monitor.SamplerFactory;
+import andr.perf.monitor.cpu.LooperMonitor;
 import andr.perf.monitor.memory.ObjectReferenceSampler;
+import andr.perf.monitor.reflect_utils.FieldUtils;
 import plugin.gradle.my.dummy.DummyThread;
 
 /**
@@ -84,6 +87,7 @@ public class BlankFragment extends Fragment {
     private Button btnBlock;
     private Button btnLeak;
     private Button btnInter;
+    private Button btnLoop;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -154,6 +158,34 @@ public class BlankFragment extends Fragment {
                 m = SystemClock.currentThreadTimeMillis() - m;
                 n = n / 1000000;
                 Log.i("zkw", "-----leak test---->nano:" + n + " thread::>>" + m);
+            }
+        });
+        btnLoop = (Button) v.findViewById(R.id.fragment_loop_test_btn);
+        btnLoop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                long n = System.nanoTime();
+                long m = SystemClock.currentThreadTimeMillis();
+                long ex = 0;
+                for (int i = 0; i < 200; i++) {
+                    long no = System.nanoTime();
+                    for (int j = 0; j < 10; j++) {
+                        SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
+                        SamplerFactory.getMethodSampler()
+                                .onMethodExit(System.nanoTime(), System.currentTimeMillis(), "Classssss",
+                                        "goooo", "int,String");
+                        SamplerFactory.getMethodSampler()
+                                .onMethodExitFinally("Classssss", "goooo", "int,String");
+                    }
+                    ex += System.nanoTime() - no;
+                }
+
+                n = System.nanoTime() - n - ex;
+
+                m = SystemClock.currentThreadTimeMillis() - m;
+                n = n / 1000000;
+                Log.i("zkw", "-----looper monitor test---->nano:" + n + " thread::>>" + m + " exxx:" + ex);
             }
         });
         return v;

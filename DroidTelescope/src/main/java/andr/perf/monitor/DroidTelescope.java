@@ -1,6 +1,9 @@
 package andr.perf.monitor;
 
-import andr.perf.monitor.cpu.LooperMonitor;
+import android.content.Context;
+
+import andr.perf.monitor.cpu.BlockMonitor;
+import andr.perf.monitor.cpu.BlockMonitorManager;
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.memory.models.LeakInfo;
 
@@ -8,6 +11,9 @@ import andr.perf.monitor.memory.models.LeakInfo;
  * Created by ZhouKeWen on 17/3/24.
  */
 public class DroidTelescope {
+
+    public static final int BLOCK_MONITOR_LOOPER = 1;
+    public static final int BLOCK_MONITOR_CHOREOGRAPHER = 2;
 
     private static BlockListener blockListener;
 
@@ -23,13 +29,27 @@ public class DroidTelescope {
         void onLeak(LeakInfo leakInfo);
     }
 
-    public static void install() {
-        install(new Config());
+    public static void install(Context context) {
+        install(context, new Config());
     }
 
-    public static void install(Config config) {
+    public static void install(Context context, Config config) {
         monitorConfig = (config == null ? new Config() : config);
-        LooperMonitor.getInstance().installLooperListener();
+        BlockMonitorManager.getMonitor(context).startBlockMonitoring();
+    }
+
+    public static void startBlockMonitor(int monitorType) {
+        BlockMonitor monitor = BlockMonitorManager.getMonitor(monitorType);
+        if (monitor != null) {
+            monitor.startBlockMonitoring();
+        }
+    }
+
+    public static void stopBlockMonitor(int monitorType) {
+        BlockMonitor monitor = BlockMonitorManager.getMonitor(monitorType);
+        if (monitor != null) {
+            monitor.stopBlockMonitoring();
+        }
     }
 
     public static LeakListener getLeakListener() {

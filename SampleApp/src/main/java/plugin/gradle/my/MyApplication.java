@@ -2,14 +2,16 @@ package plugin.gradle.my;
 
 import android.app.Application;
 import android.util.Log;
+import android.view.Choreographer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Random;
 
-import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.Config;
+import andr.perf.monitor.DroidTelescope;
+import andr.perf.monitor.cpu.BlockMonitorFactory;
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.memory.models.LeakInfo;
 import andr.perf.monitor.persist.ConvertUtils;
@@ -28,13 +30,16 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        DroidTelescope.install(config);
+        DroidTelescope.install(this, config);
         DroidTelescope.setBlockListener(blockListener);
         DroidTelescope.setLeakListener(leakListener);
     }
 
     private static class AndrPerfMonitorConfig extends Config {
-
+        @Override
+        public boolean isBlock(long wallClockTimeMs, long cpuTimeMs) {
+            return true;
+        }
     }
 
     private static class MyBlockListener implements DroidTelescope.BlockListener {
@@ -51,10 +56,15 @@ public class MyApplication extends Application {
             if (blockInfoJson != null) {
                 FileUtils fileUtils = new FileUtils();
                 String s = blockInfoJson.toString();
-
                 Random r = new Random();
                 String fileName = "apm_block" + r.nextInt(100);
-                fileUtils.write2SDFromInput("", fileName, s);
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                //                fileUtils.write2SDFromInput("", fileName, s);
                 Log.i("zkw", "[-----on block, save to file:" + fileName + "]");
             }
 

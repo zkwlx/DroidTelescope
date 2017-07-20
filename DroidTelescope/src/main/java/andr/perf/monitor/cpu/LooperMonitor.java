@@ -22,42 +22,25 @@ import andr.perf.monitor.utils.Logger;
  * Looper监听类，监控每次loop的耗时
  * Created by ZhouKeWen on 17/3/24.
  */
-public class LooperMonitor {
+public class LooperMonitor extends BlockMonitor {
 
     private static final String TAG = "LooperMonitor";
 
     private static Config config;
 
-    public static LooperMonitor getInstance() {
-        return SingletonHolder.instance;
+    @Override
+    public void startBlockMonitoring() {
+        installLooperListener();
     }
 
-    private static class SingletonHolder {
-        private static LooperMonitor instance = new LooperMonitor();
+    @Override
+    public void stopBlockMonitoring() {
+        Looper.getMainLooper().setMessageLogging(null);
     }
 
-    private LooperMonitor() {
+    LooperMonitor() {
         config = DroidTelescope.getConfig();
     }
-
-    private final InnerBlockListener innerBlockListener = new InnerBlockListener() {
-        @Override
-        public void onBlock(long wallClockTimeMs, long cpuTimeMs) {
-            Logger.e(TAG, "Oops!!!! block!!! " + "msTime:" + wallClockTimeMs + " threadTime:" + cpuTimeMs);
-            List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
-            if (methodInfoList.isEmpty()) {
-                return;
-            }
-            BlockInfo blockInfo = new BlockInfo();
-            blockInfo.setCpuTimeMs(cpuTimeMs);
-            blockInfo.setWallClockTimeMs(wallClockTimeMs);
-            blockInfo.setRootMethodList(methodInfoList);
-            DroidTelescope.BlockListener listener = DroidTelescope.getBlockListener();
-            if (listener != null) {
-                listener.onBlock(blockInfo);
-            }
-        }
-    };
 
     //TODO 注意使用范围，目前是进程全局的
     private final Printer looperListener = new Printer() {
@@ -82,9 +65,9 @@ public class LooperMonitor {
                 long cpuTimeMs = SystemClock.currentThreadTimeMillis() - startCpuTimeMs;
 
                 if (wallClockTimeMs >= warningFrameMs || config.isBlock(wallClockTimeMs, cpuTimeMs)) {
-                    innerBlockListener.onBlock(wallClockTimeMs, cpuTimeMs);
-                    int a = (int) (wallClockTimeMs / 16);
-                    Logger.i("zkw", "-------skipped: " + a + " --- wall time:" + wallClockTimeMs);
+                    Logger.e(TAG,
+                            "Oops!!!!loop block!!! " + "msTime:" + wallClockTimeMs + " threadTime:" + cpuTimeMs);
+                    onBlock(wallClockTimeMs, cpuTimeMs);
                 }
 
                 //TODO 这里会影响性能，注意优化
@@ -100,7 +83,7 @@ public class LooperMonitor {
 
     private static final int DEFAULT_FRAME_SKIP_WARNING = 30;
 
-    public void installLooperListener() {
+    private void installLooperListener() {
         //TODO 注意Looper的选择，是否考虑其他线程的looper
         Looper.getMainLooper().setMessageLogging(looperListener);
         try {
@@ -118,7 +101,4 @@ public class LooperMonitor {
         }
     }
 
-    private interface InnerBlockListener {
-        void onBlock(long wallClockTimeNs, long useThreadTime);
-    }
 }

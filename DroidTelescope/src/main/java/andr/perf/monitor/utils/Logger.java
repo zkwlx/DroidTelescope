@@ -9,7 +9,7 @@ public class Logger {
 
     private static final String TAG = "zkw";
 
-    private static boolean isDebug = false;
+    private static boolean isDebug = true;
 
     public static void i(String content) {
         if (isDebug) {
