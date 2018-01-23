@@ -31,8 +31,9 @@ public abstract class BlockMonitor {
         blockInfo.setRootMethodList(methodInfoList);
         DroidTelescope.BlockListener listener = DroidTelescope.getBlockListener();
         if (listener != null) {
-            Logger.i(TAG, "On block, but listener is null!");
             listener.onBlock(blockInfo);
+        } else {
+            Logger.i(TAG, "On block, but listener is null!");
         }
     }
 
