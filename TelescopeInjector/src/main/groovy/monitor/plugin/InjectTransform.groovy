@@ -22,12 +22,12 @@ public class InjectTransform extends Transform {
     private static final String NAME = "injectPlugin"
 
     private Project project
-    private InjectConfig config;
-    private final Set<QualifiedContent.Scope> careScopes = new HashSet<>();
+    private InjectConfig config
+    private final Set<QualifiedContent.Scope> careScopes = new HashSet<>()
 
-    private List<String> mExcludePackages = ["andr.perf.monitor"];
-    private List<String> mExcludeClasses = [];
-    private List<String> mIncludePackages = [];
+    private List<String> mExcludePackages = ["andr.perf.monitor"]
+    private List<String> mExcludeClasses = []
+    private List<String> mIncludePackages = []
 
     // 添加构造，为了方便从plugin中拿到project对象，待会有用
     public InjectTransform(Project project, InjectConfig config) {

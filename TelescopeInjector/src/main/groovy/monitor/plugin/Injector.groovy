@@ -14,15 +14,16 @@ import java.util.zip.ZipEntry
  * Created by ZhouKeWen on 17/3/17.
  */
 public class Injector {
-    private static Set<String> excludePackage = ["andr.perf.monitor"]
-    private static Set<String> includePackage = []
-    private static Set<String> excludeClass = []
+    private static Set<String> excludePackage
+    private static Set<String> includePackage
+    private static Set<String> excludeClass
 
     public static void setPackagesConfig(List<String> excludePackage, List<String> includePackage,
-            List<String> excludeClass) {
+                                         List<String> excludeClass) {
         this.excludePackage = ClassFilterUtils.formatPath(excludePackage)
         this.includePackage = ClassFilterUtils.formatPath(includePackage)
-        this.excludeClass = ClassFilterUtils.formatPath(excludeClass)
+        this.excludeClass = ClassFilterUtils.formatClass(excludeClass)
+        LogUtils.printLog("include:" + this.includePackage + " excludePkg:" + this.excludePackage + " excludeCls:" + this.excludeClass)
     }
 
     public static void setClassPathForJavassist(Set<File> files) {
@@ -48,6 +49,8 @@ public class Injector {
             if (shouldInjectFileClass(filePath)) {
 //                LogUtils.printLog("======>>>>name::> ${filePath}")
                 JavassistHandler.handleClass(file)
+            } else {
+                LogUtils.printLog("skip class file:>> " + filePath)
             }
         }
     }
@@ -65,9 +68,10 @@ public class Injector {
             InputStream inputStream = jarFile.getInputStream(entry)
             output.putNextEntry(zipEntry)
             if (shouldInjectJarClass(entryName)) {
-                def bytes = JavassistHandler.handleClass(inputStream)
+                def bytes = JavassistHandler.handleClass(entryName, inputStream)
                 output.write(bytes)
             } else {
+                LogUtils.printLog("skip class:>> " + entryName)
                 output.write(inputStream.getBytes())
             }
             output.closeEntry()

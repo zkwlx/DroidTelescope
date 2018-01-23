@@ -99,6 +99,8 @@ public class LooperMonitor extends BlockMonitor {
             e.printStackTrace();
             warningFrameMs = 16 * DEFAULT_FRAME_SKIP_WARNING;
         }
+
+        Logger.i(TAG, "[LooperMonitor default warning frame ms: " + warningFrameMs + "]");
     }
 
 }

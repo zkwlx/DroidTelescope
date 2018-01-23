@@ -20,6 +20,8 @@ import andr.perf.monitor.utils.Logger;
  */
 public class ChoreographerMonitor extends BlockMonitor {
 
+    private static final String TAG = "ChoreographerMonitor";
+
     private static Config config;
 
     /**
@@ -70,6 +72,7 @@ public class ChoreographerMonitor extends BlockMonitor {
                 e.printStackTrace();
                 warningFrameMs = 17 * DEFAULT_FRAME_SKIP_WARNING;
             }
+            Logger.i(TAG, "[ChoreographerMonitor default warning frame ms: " + warningFrameMs + "]");
             startWallClockTimeMs = System.currentTimeMillis();
             startCpuTimeMs = SystemClock.currentThreadTimeMillis();
         }

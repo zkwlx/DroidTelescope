@@ -13,6 +13,8 @@ import andr.perf.monitor.utils.Logger;
  */
 public abstract class BlockMonitor {
 
+    private static final String TAG = "BlockMonitor";
+
     public abstract void startBlockMonitoring();
 
     public abstract void stopBlockMonitoring();
@@ -20,6 +22,7 @@ public abstract class BlockMonitor {
     void onBlock(long wallClockTimeMs, long cpuTimeMs) {
         List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
         if (methodInfoList.isEmpty()) {
+            Logger.i(TAG, "On block, but method list is empty!");
             return;
         }
         BlockInfo blockInfo = new BlockInfo();
@@ -28,6 +31,7 @@ public abstract class BlockMonitor {
         blockInfo.setRootMethodList(methodInfoList);
         DroidTelescope.BlockListener listener = DroidTelescope.getBlockListener();
         if (listener != null) {
+            Logger.i(TAG, "On block, but listener is null!");
             listener.onBlock(blockInfo);
         }
     }

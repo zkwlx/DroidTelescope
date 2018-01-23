@@ -2,6 +2,7 @@ package andr.perf.monitor.cpu;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import andr.perf.monitor.Config;
@@ -19,8 +20,7 @@ public class BlockMonitorManager {
      * @param context
      * @return
      */
-    public static BlockMonitor getMonitor(Context context) {
-        Config config = DroidTelescope.getConfig();
+    public static BlockMonitor getMonitor(@NonNull Context context, @NonNull Config config) {
         if (isDebug(context) && config.useChoreographerMonitor()) {
             return getMonitor(DroidTelescope.BLOCK_MONITOR_CHOREOGRAPHER);
         } else {
@@ -39,16 +39,16 @@ public class BlockMonitorManager {
         BlockMonitor monitor;
         switch (type) {
             case DroidTelescope.BLOCK_MONITOR_LOOPER:
-                if (choreographerMonitor == null) {
-                    choreographerMonitor = new ChoreographerMonitor();
-                }
-                monitor = choreographerMonitor;
-                break;
-            case DroidTelescope.BLOCK_MONITOR_CHOREOGRAPHER:
                 if (looperMonitor == null) {
                     looperMonitor = new LooperMonitor();
                 }
                 monitor = looperMonitor;
+                break;
+            case DroidTelescope.BLOCK_MONITOR_CHOREOGRAPHER:
+                if (choreographerMonitor == null) {
+                    choreographerMonitor = new ChoreographerMonitor();
+                }
+                monitor = choreographerMonitor;
                 break;
             default:
                 monitor = null;

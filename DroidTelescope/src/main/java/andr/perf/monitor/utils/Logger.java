@@ -19,6 +19,7 @@ public class Logger {
 
     public static void i(String tag, String content) {
         if (isDebug) {
+            tag = TAG + "_" + tag;
             Log.i(tag, content);
         }
     }
@@ -31,6 +32,7 @@ public class Logger {
 
     public static void e(String tag, String content) {
         if (isDebug) {
+            tag = TAG + "_" + tag;
             Log.e(tag, content);
         }
     }

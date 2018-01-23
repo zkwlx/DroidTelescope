@@ -50,9 +50,9 @@ class MemoryCodeInject {
         return !ACTIVITY_CLASSES.contains(superClazz.name) && !FRAGMENT_CLASSES.contains(superClazz.name)
     }
 
-    public static boolean isV4Class(CtClass ctClass) {
+    public static boolean isV4OrV7Class(CtClass ctClass) {
         CtClass superClazz = ctClass.getSuperclass();
-        return superClazz.name.startsWith("android.support.v4")
+        return superClazz.name.startsWith("android.support.v4") || superClazz.name.startsWith("android.support.v7")
     }
 
     public static void addObjectCreateMethod(CtClass clazz) {

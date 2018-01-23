@@ -16,6 +16,7 @@
 package monitor.plugin.utils
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.util.TextUtil
 
 class ClassFilterUtils {
 
@@ -41,18 +42,34 @@ class ClassFilterUtils {
     public static Set<String> formatPath(Collection<String> paths) {
         Set<String> theNew = new HashSet<>()
         for (String path : paths) {
-            theNew.add(path.replaceAll("\\.", "/"))
+            if (path != null && !path.isEmpty()) {
+                theNew.add(path.replaceAll("\\.", "/"))
+            }
         }
         return theNew
     }
 
-    public static boolean isExcluded(String path, Collection<String> excludePackage, Collection<String> excludeClass) {
+    public static Set<String> formatClass(Collection<String> classes) {
+        Set<String> theNew = new HashSet<>()
+        for (String classStr : classes) {
+            if (classStr.endsWith(".class")) {
+                classStr = classStr - ".class"
+            }
+            String classPath = classStr.replaceAll("\\.", "/") + ".class"
+            theNew.add(classPath)
+
+        }
+        return theNew
+    }
+
+    public
+    static boolean isExcluded(String path, Collection<String> excludePackage, Collection<String> excludeClass) {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             path = path.replaceAll("\\\\", "/");
         }
 
         for (String exclude : excludeClass) {
-            if (path == exclude) {
+            if (path == exclude || path.endsWith(exclude)) {
                 return true;
             }
         }

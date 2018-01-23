@@ -1,6 +1,7 @@
 package monitor.plugin.javassist
 
 import javassist.*
+import javassist.bytecode.ClassFile
 import monitor.plugin.javassist.inject.*
 import monitor.plugin.utils.LogUtils
 
@@ -53,7 +54,7 @@ class JavassistHandler {
 
         FileInputStream inputStream = new FileInputStream(file);
         FileOutputStream outputStream = new FileOutputStream(optClass)
-        def bytes = handleClass(inputStream);
+        def bytes = handleClass(file.name, inputStream);
         outputStream.write(bytes)
         inputStream.close()
         outputStream.close()
@@ -64,8 +65,16 @@ class JavassistHandler {
         return bytes
     }
 
-    public static byte[] handleClass(InputStream inputStream) {
-        CtClass clazz = classPool.makeClass(inputStream)
+    static byte[] handleClass(String className, InputStream inputStream) {
+        CtClass clazz
+        try {
+            clazz = classPool.makeClass(inputStream)
+        } catch (RuntimeException e) {
+            e.printStackTrace()
+            LogUtils.printLog("class frozen: :::::::>>> " + className + ", ignore that!")
+            //TODO 重复打开已冻结类，说明有重复类，跳过修改
+            return inputStream.getBytes()
+        }
         if (clazz.isInterface() || clazz.isAnnotation() || clazz.isEnum() || clazz.isArray()) {
             return clazz.toBytecode()
         }
@@ -76,7 +85,9 @@ class JavassistHandler {
         injectForInteractive(clazz)
 
         def bytes = clazz.toBytecode()
-        //TODO 这里为何还要解冻？
+        //TODO javasisst不允许对一个class做两次writeFile()、toClass()、toBytecode()操作
+        //TODO 以上操作会冻结class，可以强行解冻，但是这种方式不太好
+        //TODO 当发生修改冻结class时，说明同包名同类名的类有两个
 //        clazz.defrost()
         return bytes
     }
@@ -102,7 +113,7 @@ class JavassistHandler {
             return
         }
         List<IMethodHandler> methodHandlers;
-        if (MemoryCodeInject.isV4Class(clazz)) {
+        if (MemoryCodeInject.isV4OrV7Class(clazz)) {
             methodHandlers = getV4MethodHandlers()
         } else {
             methodHandlers = getMethodHandlers()

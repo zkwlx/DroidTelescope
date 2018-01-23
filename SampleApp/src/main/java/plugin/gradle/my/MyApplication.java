@@ -30,9 +30,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        DroidTelescope.install(this, config);
         DroidTelescope.setBlockListener(blockListener);
         DroidTelescope.setLeakListener(leakListener);
+        DroidTelescope.install(this, config);
     }
 
     private static class AndrPerfMonitorConfig extends Config {

@@ -35,7 +35,7 @@ public class DroidTelescope {
 
     public static void install(Context context, Config config) {
         monitorConfig = (config == null ? new Config() : config);
-        BlockMonitorManager.getMonitor(context).startBlockMonitoring();
+        BlockMonitorManager.getMonitor(context, monitorConfig).startBlockMonitoring();
     }
 
     public static void startBlockMonitor(int monitorType) {
