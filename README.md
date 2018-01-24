@@ -1,6 +1,6 @@
 DroidTelescope
 =======
-这是一套Android端线上应用性能监控框架，目前支持卡顿监控、内存泄露监控；后续还会增加更多监控对象。此项目部分源码参考自开源项目[BlockCanaryEx](https://github.com/seiginonakama/BlockCanaryEx)。
+这是一套Android端线上应用性能监控框架，目前支持卡顿监控、内存泄露监控；后续还会增加更多监控对象。此项目参考自开源项目[BlockCanaryEx](https://github.com/seiginonakama/BlockCanaryEx)。
 
 ## 框架简介
 * 框架支持卡顿监控，当发生卡顿时会记录所有方法的调用耗时和调用栈
