@@ -8,6 +8,9 @@ DroidTelescope
 * 框架支持用户交互行为的监控，为其他监控提供支持，比如内存泄露（交互监控还未开发完全）
 * 框架会在编译时进行代码注入，所以对apk的性能会有一点影响，具体影响范围会在下面介绍。
 
+## 架构图
+<br>![](https://github.com/zkwlx/DroidTelescope/blob/master/wiki/DroidTelescope%E6%9E%B6%E6%9E%84%E5%9B%BE.png "整体架构")
+
 ## 使用效果
 ### 卡顿监控
 当发生卡顿时，框架会记录相关方法的调用时间和调用栈，并生成BlockInfo对象，使用框架提供的ConvertUtils工具将BlockInfo对象转换成JSON格式的日志，如下例子，每个字段的意义请看注释：
