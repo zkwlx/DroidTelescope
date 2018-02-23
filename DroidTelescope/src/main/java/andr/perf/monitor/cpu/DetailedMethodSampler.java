@@ -1,5 +1,7 @@
 package andr.perf.monitor.cpu;
 
+import android.os.Looper;
+
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +31,9 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodEnter(final String cls, final String method, final String argTypes) {
+        if (skipRecord()) {
+            return;
+        }
         final long threadId = Thread.currentThread().getId();
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         if (methodStack == null) {
@@ -47,7 +52,10 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodExit(final long wallClockTimeNs, final long cpuTimeMs, final String cls,
-            final String method, String argTypes) {
+                             final String method, String argTypes) {
+        if (skipRecord()) {
+            return;
+        }
         final long threadId = Thread.currentThread().getId();
         //当方法非return语句退出时，不会回调onMethodExit()
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
@@ -61,6 +69,9 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodExitFinally(String cls, final String method, String argTypes) {
+        if (skipRecord()) {
+            return;
+        }
         final long threadId = Thread.currentThread().getId();
         //方法无论是return退出还是异常throw退出，都会回调onMethodExitFinally()
         //threadMethodStack无需remove，有两个原因：一是同线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
@@ -85,6 +96,16 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     private String createSignature(String className, String methodName, String argTypes) {
         return className + "." + methodName + "(" + argTypes + ")";
+    }
+
+    private boolean skipRecord() {
+        return DroidTelescope.getConfig().justRecordUIThread() && isNotUIThread();
+    }
+
+    private boolean isNotUIThread() {
+        final long mainThreadId = Looper.getMainLooper().getThread().getId();
+        final long currentId = Thread.currentThread().getId();
+        return mainThreadId != currentId;
     }
 
 }

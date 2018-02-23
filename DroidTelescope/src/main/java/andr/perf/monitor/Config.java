@@ -31,9 +31,19 @@ public class Config {
 
     /**
      * 是否使用Choreographer监控器，如果false，则使用Looper监控器
+     *
      * @return
      */
     public boolean useChoreographerMonitor() {
+        return false;
+    }
+
+    /**
+     * 记录方法信息时，仅记录ui线程的方法
+     *
+     * @return
+     */
+    public boolean justRecordUIThread() {
         return false;
     }
 
