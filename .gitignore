@@ -40,7 +40,9 @@ captures/
 *.jks
 
 #repo dir
-#repo/
+repo/
+
+*.DS_Store
 
 
 InjectPlugin/publish.cmd
