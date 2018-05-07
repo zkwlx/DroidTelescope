@@ -2,6 +2,8 @@ package monitor.plugin.javassist
 
 import javassist.*
 import javassist.bytecode.ClassFile
+import monitor.plugin.ConfigProvider
+import monitor.plugin.config.InjectConfig
 import monitor.plugin.javassist.inject.*
 import monitor.plugin.utils.LogUtils
 
@@ -80,9 +82,16 @@ class JavassistHandler {
         }
 
         //TODO 通过开关控制开启哪些监控模块的注入
-        injectForMemory(clazz)
-        injectForCpu(clazz)
-        injectForInteractive(clazz)
+        InjectConfig config = ConfigProvider.config
+        if (config.memoryLeakEnable) {
+            injectForMemory(clazz)
+        }
+        if (config.cpuTimeEnable) {
+            injectForCpu(clazz)
+        }
+        if (config.interactiveEnable) {
+            injectForInteractive(clazz)
+        }
 
         def bytes = clazz.toBytecode()
         //TODO javasisst不允许对一个class做两次writeFile()、toClass()、toBytecode()操作

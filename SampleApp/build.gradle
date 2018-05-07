@@ -35,14 +35,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'andr.perf.monitor:TelescopeInjector:0.8.0'
+        classpath 'andr.perf.monitor:TelescopeInjector:0.9.0'
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':testlibrary')
-    compile 'com.android.support:appcompat-v7:24.3.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     testCompile 'junit:junit:4.12'
@@ -53,6 +53,7 @@ apply plugin: 'telescope.injector'
 injectConfig {
     debugEnabled = true //enable MethodSampler when debug mode, default true
     releaseEnabled = false //enable MethodSampler when release mode, default false
+    cpuTimeEnable = true
     //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
     excludePackages = [""]
     //exclude the class you don't want to inject MethodSampler, eg:['com.android.view.TextView']

@@ -14,6 +14,10 @@ import monitor.plugin.utils.ReflectUtils;
 public class InjectConfig {
     boolean releaseEnabled = false;
     boolean debugEnabled = true;
+    boolean memoryLeakEnable = false;
+    boolean cpuTimeEnable = false;
+    boolean interactiveEnable = false;
+
     List<String> includePackages = new ArrayList<>();
     List<String> excludePackages = new ArrayList<>();
     List<String> excludeClasses = new ArrayList<>();
@@ -40,6 +44,18 @@ public class InjectConfig {
         this.excludeClasses.addAll(excludeClasses);
     }
 
+    void setMemoryLeakEnable(boolean memoryLeakEnable) {
+        this.memoryLeakEnable = memoryLeakEnable
+    }
+
+    void setCpuTimeEnable(boolean cpuTimeEnable) {
+        this.cpuTimeEnable = cpuTimeEnable
+    }
+
+    void setInteractiveEnable(boolean interactiveEnable) {
+        this.interactiveEnable = interactiveEnable
+    }
+
     void scope(Action<Scope> action) {
         action.execute(scope);
     }
@@ -50,7 +66,8 @@ public class InjectConfig {
 
     String generateHash() {
         String content = "releaseEnabled:{$releaseEnabled} debugEnabled:{$debugEnabled} includePackages:{$includePackages} excludePackages:{$excludePackages}" +
-                " excludeClasses:{$excludeClasses} scope:" + ReflectUtils.printObject(scope);
+                " excludeClasses:{$excludeClasses} memoryLeakEnable:{$memoryLeakEnable} cpuTimeEnable:{$cpuTimeEnable} interactiveEnable:{$interactiveEnable}" +
+                " scope:" + ReflectUtils.printObject(scope);
         return HashUtil.createCompactMD5(content)
     }
 }

@@ -23,6 +23,7 @@ public class MonitorInjectPlugin implements Plugin<Project> {
 
         project.extensions.create("injectConfig", InjectConfig)
         InjectConfig config = project.injectConfig
+        ConfigProvider.setConfig(config)
 
         /**
          * 注册transform接口

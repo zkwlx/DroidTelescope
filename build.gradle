@@ -24,7 +24,7 @@ ext {
     userOrg = 'zkwlx'//bintray.com用户名
     groupId = 'andr.perf.monitor'//jcenter上的路径
     uploadName = 'Telescope'//项目名称
-    publishVersion = '0.8.0'//项目版本
+    publishVersion = '0.9.0'//项目版本
     desc = 'Library for android app performance monitor'//项目描述
     website = 'https://github.com/zkwlx/DroidTelescope'//项目地址
     licences = ['Apache-2.0']

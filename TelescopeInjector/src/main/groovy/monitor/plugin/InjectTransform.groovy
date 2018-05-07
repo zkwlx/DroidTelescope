@@ -55,6 +55,11 @@ public class InjectTransform extends Transform {
     }
 
     @Override
+    Set<QualifiedContent.Scope> getReferencedScopes() {
+        return super.getReferencedScopes()
+    }
+
+    @Override
     boolean isIncremental() {
         return false
     }
