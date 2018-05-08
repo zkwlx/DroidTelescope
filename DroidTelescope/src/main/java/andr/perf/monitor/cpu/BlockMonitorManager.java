@@ -17,11 +17,10 @@ public class BlockMonitorManager {
     private static BlockMonitor choreographerMonitor;
 
     /**
-     * @param context
      * @return
      */
-    public static BlockMonitor getMonitor(@NonNull Context context, @NonNull Config config) {
-        if (isDebug(context) && config.useChoreographerMonitor()) {
+    public static BlockMonitor getMonitor(@NonNull Config config) {
+        if (config.useChoreographerMonitor()) {
             return getMonitor(DroidTelescope.BLOCK_MONITOR_CHOREOGRAPHER);
         } else {
             return getMonitor(DroidTelescope.BLOCK_MONITOR_LOOPER);

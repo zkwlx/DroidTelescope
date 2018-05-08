@@ -34,6 +34,11 @@ public class ListActivity extends Activity {
         l.add(this);
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+    }
+
     private void initListView() {
 
         setContentView(R.layout.activity_list_main);

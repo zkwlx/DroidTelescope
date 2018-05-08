@@ -110,24 +110,31 @@ public class ConvertUtils {
     }
 
     private static JSONObject innerConvertToJson(long wallClockTimeMs, long cpuTimeMs,
-            List<MethodInfo> methodList) throws JSONException {
+                                                 List<MethodInfo> methodList) throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("loop_wall_clock_time", wallClockTimeMs);
-        jsonObject.put("loop_cpu_time", cpuTimeMs);
+        jsonObject.put("total_wall_clock_time", wallClockTimeMs);
+        jsonObject.put("total_cpu_time", cpuTimeMs);
         JSONArray rootMethodArray = new JSONArray();
         jsonObject.put("invoke_trace_array", rootMethodArray);
         if (methodList != null && !methodList.isEmpty()) {
+            count = 0;
             for (MethodInfo method : methodList) {
                 JSONObject methodJson = createMethodJSONObject(method);
                 rootMethodArray.put(methodJson);
             }
+            jsonObject.put("total_method_count", count);
+            count = 0;
         }
         return jsonObject;
     }
 
+    private static int count;
+
     private static JSONObject createMethodJSONObject(MethodInfo method) throws JSONException {
+        count++;
         JSONObject methodJson = new JSONObject();
         methodJson.put("method_signature", method.getSignature());
+        methodJson.put("id", count);
         methodJson.put("thread_id", method.getThreadId());
         methodJson.put("wall_clock_time", method.getWallClockTimeMs());
         methodJson.put("cpu_time", method.getCpuTimeMs());

@@ -1,11 +1,21 @@
 package andr.perf.monitor;
 
 import android.content.Context;
+import android.os.SystemClock;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 import andr.perf.monitor.cpu.BlockMonitor;
 import andr.perf.monitor.cpu.BlockMonitorManager;
 import andr.perf.monitor.cpu.models.BlockInfo;
+import andr.perf.monitor.cpu.models.MethodInfo;
 import andr.perf.monitor.memory.models.LeakInfo;
+import andr.perf.monitor.persist.ConvertUtils;
+import andr.perf.monitor.stack_traces.TracesMonitor;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -29,27 +39,40 @@ public class DroidTelescope {
         void onLeak(LeakInfo leakInfo);
     }
 
-    public static void install(Context context) {
-        install(context, new Config());
+    public static void install() {
+        install(new Config());
     }
 
-    public static void install(Context context, Config config) {
+    public static void install(Config config) {
         monitorConfig = (config == null ? new Config() : config);
-        BlockMonitorManager.getMonitor(context, monitorConfig).startBlockMonitoring();
     }
 
-    public static void startBlockMonitor(int monitorType) {
-        BlockMonitor monitor = BlockMonitorManager.getMonitor(monitorType);
+    public static void startBlockMonitor() {
+        if (monitorConfig == null) {
+            return;
+        }
+        BlockMonitor monitor = BlockMonitorManager.getMonitor(monitorConfig);
         if (monitor != null) {
             monitor.startBlockMonitoring();
         }
     }
 
-    public static void stopBlockMonitor(int monitorType) {
-        BlockMonitor monitor = BlockMonitorManager.getMonitor(monitorType);
+    public static void stopBlockMonitor() {
+        if (monitorConfig == null) {
+            return;
+        }
+        BlockMonitor monitor = BlockMonitorManager.getMonitor(monitorConfig);
         if (monitor != null) {
             monitor.stopBlockMonitoring();
         }
+    }
+
+    public static void startMethodTracing() {
+        TracesMonitor.startTracing();
+    }
+
+    public static JSONObject stopMethodTracing() {
+        return TracesMonitor.stopTracing();
     }
 
     public static LeakListener getLeakListener() {

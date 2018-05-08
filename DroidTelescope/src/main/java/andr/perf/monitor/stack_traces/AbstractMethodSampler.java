@@ -1,4 +1,4 @@
-package andr.perf.monitor.cpu;
+package andr.perf.monitor.stack_traces;
 
 import java.util.ArrayList;
 import java.util.Collection;

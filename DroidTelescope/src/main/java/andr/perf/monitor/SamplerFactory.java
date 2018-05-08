@@ -1,7 +1,7 @@
 package andr.perf.monitor;
 
-import andr.perf.monitor.cpu.AbstractMethodSampler;
-import andr.perf.monitor.cpu.DetailedMethodSampler;
+import andr.perf.monitor.stack_traces.AbstractMethodSampler;
+import andr.perf.monitor.stack_traces.DetailedMethodSampler;
 import andr.perf.monitor.interactive.UserInteractiveSampler;
 import andr.perf.monitor.memory.ObjectReferenceSampler;
 

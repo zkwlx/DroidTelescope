@@ -1,4 +1,4 @@
-package andr.perf.monitor.cpu;
+package andr.perf.monitor.stack_traces;
 
 import android.os.Looper;
 
@@ -21,6 +21,8 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
      */
     private final ConcurrentHashMap<Long, Deque<MethodInfo>> threadMethodStack;
 
+    private boolean isSkip = false;
+
     public DetailedMethodSampler() {
         super();
         threadMethodStack = new ConcurrentHashMap<>();
@@ -31,7 +33,8 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodEnter(final String cls, final String method, final String argTypes) {
-        if (skipRecord()) {
+        isSkip = skipRecord();
+        if (isSkip) {
             return;
         }
         final long threadId = Thread.currentThread().getId();
@@ -53,7 +56,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
     @Override
     public void onMethodExit(final long wallClockTimeNs, final long cpuTimeMs, final String cls,
                              final String method, String argTypes) {
-        if (skipRecord()) {
+        if (isSkip) {
             return;
         }
         final long threadId = Thread.currentThread().getId();
@@ -69,7 +72,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodExitFinally(String cls, final String method, String argTypes) {
-        if (skipRecord()) {
+        if (isSkip) {
             return;
         }
         final long threadId = Thread.currentThread().getId();
@@ -99,7 +102,13 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
     }
 
     private boolean skipRecord() {
-        return DroidTelescope.getConfig().justRecordUIThread() && isNotUIThread();
+        Config config = DroidTelescope.getConfig();
+        if (config == null) {
+            //TODO 还未初始化好，一般发生在Application.<init>方法中
+            return true;
+        } else {
+            return config.justRecordUIThread() && isNotUIThread();
+        }
     }
 
     private boolean isNotUIThread() {

@@ -52,6 +52,9 @@ class ClassFilterUtils {
     public static Set<String> formatClass(Collection<String> classes) {
         Set<String> theNew = new HashSet<>()
         for (String classStr : classes) {
+            if (classStr == null || classStr.length() <= 0) {
+                continue
+            }
             if (classStr.endsWith(".class")) {
                 classStr = classStr - ".class"
             }

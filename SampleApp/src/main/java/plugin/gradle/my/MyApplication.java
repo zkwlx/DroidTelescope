@@ -1,8 +1,8 @@
 package plugin.gradle.my;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
-import android.view.Choreographer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +11,6 @@ import java.util.Random;
 
 import andr.perf.monitor.Config;
 import andr.perf.monitor.DroidTelescope;
-import andr.perf.monitor.cpu.BlockMonitorFactory;
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.memory.models.LeakInfo;
 import andr.perf.monitor.persist.ConvertUtils;
@@ -27,12 +26,26 @@ public class MyApplication extends Application {
     private DroidTelescope.BlockListener blockListener = new MyBlockListener();
     private DroidTelescope.LeakListener leakListener = new MyLeakListener();
 
+
+    {
+        DroidTelescope.setBlockListener(blockListener);
+        DroidTelescope.setLeakListener(leakListener);
+        DroidTelescope.install(config);
+        DroidTelescope.startMethodTracing();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+//        DroidTelescope.setBlockListener(blockListener);
+//        DroidTelescope.setLeakListener(leakListener);
+//        DroidTelescope.install(config);
+//        DroidTelescope.startMethodTracing();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        DroidTelescope.setBlockListener(blockListener);
-        DroidTelescope.setLeakListener(leakListener);
-        DroidTelescope.install(this, config);
     }
 
     private static class AndrPerfMonitorConfig extends Config {

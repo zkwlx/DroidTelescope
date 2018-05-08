@@ -17,15 +17,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
 
+import org.json.JSONObject;
+
 import java.util.Random;
 
-import andr.perf.monitor.cpu.BlockMonitor;
-import andr.perf.monitor.cpu.BlockMonitorFactory;
+import andr.perf.monitor.DroidTelescope;
 import plugin.gradle.my.concurrent_test.ExecutorManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        BlockMonitor b = BlockMonitorFactory.getMonitor(this);
-        Toast.makeText(this, ">>>>" + b, Toast.LENGTH_LONG).show();
     }
 
     // 提示用户该请求权限的弹出框
@@ -90,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     // 用户权限 申请 的回调方法
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 321) {
@@ -291,12 +289,38 @@ public class MainActivity extends AppCompatActivity {
             Log.i("g2", "finally");
         }
         Log.i("g2", ">>>>>" + a);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     private boolean isT(Object o) {
         Log.i("", "=======" + o);
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return new Random().nextInt(10) > 5;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        launchFinished();
+    }
+
+    private void launchFinished() {
+        JSONObject jsonObject = DroidTelescope.stopMethodTracing();
+        FileUtils fileUtils = new FileUtils();
+        String s = jsonObject.toString();
+        Random r = new Random();
+        String fileName = "apm_method_tracing" + r.nextInt(100);
+        fileUtils.write2SDFromInput("", fileName, s);
+        Log.i("zkw", "加载完成。。。。。。。。:::>" + fileName);
     }
 
 }
