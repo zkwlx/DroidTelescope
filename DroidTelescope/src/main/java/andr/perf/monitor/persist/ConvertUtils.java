@@ -37,6 +37,21 @@ public class ConvertUtils {
                 blockInfo.getRootMethodList());
     }
 
+    /**
+     * 将{@link BlockInfo}对象转换成Json格式
+     *
+     * @param blockInfo
+     * @return
+     * @throws JSONException
+     */
+    public static JSONArray convertTracesInfoToJson(BlockInfo blockInfo) throws JSONException {
+        if (blockInfo == null) {
+            return null;
+        }
+        return innerConvertToWebJson(blockInfo.getWallClockTimeMs(), blockInfo.getCpuTimeMs(),
+                blockInfo.getRootMethodList());
+    }
+
     public static JSONObject convertLeakInfoToJson(LeakInfo leakInfo) throws JSONException {
         if (leakInfo == null) {
             return null;
@@ -109,6 +124,7 @@ public class ConvertUtils {
         return referenceJson;
     }
 
+
     private static JSONObject innerConvertToJson(long wallClockTimeMs, long cpuTimeMs,
                                                  List<MethodInfo> methodList) throws JSONException {
         JSONObject jsonObject = new JSONObject();
@@ -136,6 +152,7 @@ public class ConvertUtils {
         methodJson.put("method_signature", method.getSignature());
         methodJson.put("id", count);
         methodJson.put("thread_id", method.getThreadId());
+        methodJson.put("thread_name", method.getThreadName());
         methodJson.put("wall_clock_time", method.getWallClockTimeMs());
         methodJson.put("cpu_time", method.getCpuTimeMs());
 
@@ -147,6 +164,69 @@ public class ConvertUtils {
             methodJson.put("invoke_trace", traceArray);
             for (MethodInfo subMethod : invokeTraceList) {
                 JSONObject subMethodJson = createMethodJSONObject(subMethod);
+                traceArray.put(subMethodJson);
+            }
+        }
+        return methodJson;
+    }
+
+    /**
+     * 针对 web 解析的 json 日志
+     *
+     * @param wallClockTimeMs
+     * @param cpuTimeMs
+     * @param methodList
+     * @return
+     * @throws JSONException
+     */
+    private static JSONArray innerConvertToWebJson(long wallClockTimeMs, long cpuTimeMs,
+                                                   List<MethodInfo> methodList) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("wall_clock_time", wallClockTimeMs);
+        jsonObject.put("cpu_time", cpuTimeMs);
+        jsonObject.put("id", 0);
+        JSONArray rootMethodArray = new JSONArray();
+        jsonObject.put("children", rootMethodArray);
+        if (methodList != null && !methodList.isEmpty()) {
+            web_count = 0;
+            for (MethodInfo method : methodList) {
+                JSONObject methodJson = createMethodWebJson(method);
+                rootMethodArray.put(methodJson);
+            }
+        }
+        jsonObject.put("method_signature", "Total(" + web_count + ")");
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(jsonObject);
+        web_count = 0;
+        return jsonArray;
+    }
+
+    private static int web_count;
+
+    /**
+     * 针对 web 解析的 json 日志
+     *
+     * @return
+     * @throws JSONException
+     */
+    private static JSONObject createMethodWebJson(MethodInfo method) throws JSONException {
+        web_count++;
+        JSONObject methodJson = new JSONObject();
+        methodJson.put("method_signature", method.getSignature());
+        methodJson.put("id", web_count);
+        methodJson.put("thread_id", method.getThreadId());
+        methodJson.put("thread_name", method.getThreadName());
+        methodJson.put("wall_clock_time", method.getWallClockTimeMs());
+        methodJson.put("cpu_time", method.getCpuTimeMs());
+
+        List<MethodInfo> invokeTraceList = method.getInvokeTraceList();
+        if (invokeTraceList == null || invokeTraceList.isEmpty()) {
+            return methodJson;
+        } else {
+            JSONArray traceArray = new JSONArray();
+            methodJson.put("children", traceArray);
+            for (MethodInfo subMethod : invokeTraceList) {
+                JSONObject subMethodJson = createMethodWebJson(subMethod);
                 traceArray.put(subMethodJson);
             }
         }

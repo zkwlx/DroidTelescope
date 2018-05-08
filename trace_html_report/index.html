@@ -10,14 +10,14 @@
 	<script type="text/javascript" src="jquery.easyui.min.js"></script>
 </head>
 <body>
-	<h2>Method sampling - by DroidTelescope</h2>
+	<h2>Method sampling - by zhoukewen@zhihu.com</h2>
 	<p>应用一次完整启动的所有方法耗时，同线程中调用顺序为序号顺序。</p>
 	<div style="margin:20px 0;">
 		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="collapseAll()">CollapseAll</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="expandAll()">ExpandAll</a>
 	</div>
 	<div style="margin:20px 0;"></div>
-	<table id="tg" title="Method sampling tree" class="easyui-treegrid" style="width:1800px;height:800px"
+	<table id="tg" title="Method sampling tree" class="easyui-treegrid" style="width:1550px;height:800px"
 			data-options="
 				url: 'data/apm_method.json',
 				method: 'get',
@@ -30,8 +30,9 @@
 			">
 		<thead>
 			<tr>
-				<th data-options="field:'method_signature'" width="1400">Method Name</th>
+				<th data-options="field:'method_signature'" width="1125">Method Name</th>
 				<th data-options="field:'thread_id'" width="80" align="right">Thread Id</th>
+				<th data-options="field:'thread_name'" width="105" align="right">Thread Name</th>
 				<th data-options="field:'wall_clock_time'" width="120" align="right">Wall Time(ms)</th>
 				<th data-options="field:'cpu_time'" width="120" align="right">Cpu Time(ms)</th>
 			</tr>

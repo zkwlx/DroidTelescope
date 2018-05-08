@@ -2,6 +2,7 @@ package andr.perf.monitor.stack_traces;
 
 import android.os.SystemClock;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,16 +42,21 @@ public class TracesMonitor {
      *
      * @return
      */
-    public static JSONObject stopTracing() {
+    public static String stopTracing() {
         if (isTracing) {
             isTracing = false;
-            return createJSONMethodTraces();
+            JSONArray jsonArray = createJSONMethodTraces();
+            if (jsonArray != null) {
+                return jsonArray.toString();
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
     }
 
-    private static JSONObject createJSONMethodTraces() {
+    private static JSONArray createJSONMethodTraces() {
         long wallClockTimeMs = System.currentTimeMillis() - startWallClockTimeMs;
         long cpuTimeMs = SystemClock.currentThreadTimeMillis() - startCpuTimeMs;
         List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
@@ -63,9 +69,9 @@ public class TracesMonitor {
         blockInfo.setCpuTimeMs(cpuTimeMs);
         blockInfo.setWallClockTimeMs(wallClockTimeMs);
         blockInfo.setRootMethodList(methodInfoList);
-        JSONObject result = null;
+        JSONArray result = null;
         try {
-            result = ConvertUtils.convertBlockInfoToJson(blockInfo);
+            result = ConvertUtils.convertTracesInfoToJson(blockInfo);
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {

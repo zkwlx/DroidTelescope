@@ -3,6 +3,7 @@ package andr.perf.monitor;
 import android.content.Context;
 import android.os.SystemClock;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,7 +72,7 @@ public class DroidTelescope {
         TracesMonitor.startTracing();
     }
 
-    public static JSONObject stopMethodTracing() {
+    public static String stopMethodTracing() {
         return TracesMonitor.stopTracing();
     }
 

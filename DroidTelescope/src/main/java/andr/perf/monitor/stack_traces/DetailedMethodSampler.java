@@ -44,10 +44,12 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
             methodStack = new LinkedList<>();
             threadMethodStack.put(threadId, methodStack);
         }
+        final String threadName = Thread.currentThread().getName();
         //TODO 考虑使用对象池！！！！
         //创建新的MethodInfo
         MethodInfo info = new MethodInfo();
         info.setThreadId(threadId);
+        info.setThreadName(threadName);
         info.setSignature(createSignature(cls, method, argTypes));
         //将当前方法添加到线程的临时调用栈
         methodStack.push(info);

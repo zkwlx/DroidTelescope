@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Random;
@@ -314,12 +315,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchFinished() {
-        JSONObject jsonObject = DroidTelescope.stopMethodTracing();
+        String jsonString = DroidTelescope.stopMethodTracing();
         FileUtils fileUtils = new FileUtils();
-        String s = jsonObject.toString();
         Random r = new Random();
         String fileName = "apm_method_tracing" + r.nextInt(100);
-        fileUtils.write2SDFromInput("", fileName, s);
+        fileUtils.write2SDFromInput("", fileName, jsonString);
         Log.i("zkw", "加载完成。。。。。。。。:::>" + fileName);
     }
 

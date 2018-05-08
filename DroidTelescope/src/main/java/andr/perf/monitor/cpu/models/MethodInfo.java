@@ -44,6 +44,11 @@ public class MethodInfo implements Serializable {
      */
     private long threadId;
 
+    /**
+     * 方法所在的线程名
+     */
+    private String threadName;
+
     private LinkedList<MethodInfo> invokeTrace;
 
     /**
@@ -116,5 +121,13 @@ public class MethodInfo implements Serializable {
             wallClockTimeMs = wallClockTimeMs / 100.0;
         }
         return wallClockTimeMs;
+    }
+
+    public String getThreadName() {
+        return threadName;
+    }
+
+    public void setThreadName(String threadName) {
+        this.threadName = threadName;
     }
 }
