@@ -184,7 +184,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'andr.perf.monitor:TelescopeInjector:0.8.0'
+        classpath 'andr.perf.monitor:TelescopeInjector:0.9.0'
     }
 }
 apply plugin: 'telescope.injector'
