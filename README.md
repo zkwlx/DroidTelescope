@@ -12,6 +12,54 @@ DroidTelescope
 <br>![](https://github.com/zkwlx/DroidTelescope/blob/master/wiki/DroidTelescope%E6%9E%B6%E6%9E%84%E5%9B%BE.png "整体架构")
 
 ## 使用效果
+### 方法调用追踪（新功能）
+可以通过接口 DroidTelescope.startMethodTracing 和 DroidTelescope.stopMethodTracing 追踪方法的调用栈的耗时，
+例如想要监控 App 的启动耗时方法，可以在 App 中加入如下代码：
+```java
+public class MyApplication extends Application {
+    ...
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        DroidTelescope.install();
+        DroidTelescope.startMethodTracing();
+    }
+    ...
+}
+ 
+public class MainActivity extends Activity {
+    ...
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        String traces = DroidTelescope.stopMethodTracing();
+        //将 traces 日志写入文件
+        if (traces != null) {
+            FileUtils fileUtils = new FileUtils();
+            String fileName = "apm_method.json";
+            fileUtils.write2SDFromInput("", fileName, traces);
+        }
+    }
+    ...
+}
+```
+之后按如下几部打开报告文件：
+* 将生成的文件放到项目目录：trace_html_report/data/下，文件名为：apm_method.json
+* 用浏览器打开 trace_html_report/index.html 文件
+* 如果页面空白，可能因为浏览器禁用了跨域访问（报告页面会访问本地日志文件），可以打开浏览器相应开关。拿 MAC 系统的 Chrome 浏览器举例：1.先退出 Chrome 浏览器的进程，2.使用命令启动：open -a "Google Chrome" --args --disable-web-security --user-data-dir
+
+报告的效果和分析方法如下：
+
+<br>![](https://github.com/zkwlx/DroidTelescope/blob/master/wiki/TracesDemo.png)
+简单说明下两个时长的意义：
+* 时钟时长，表示方法执行所消耗的时钟时间，即使方法没有占用 cpu，仅等待另一线程的完成，时长也会被记录。
+* Cpu 时长，表示方法执行所消耗的 cpu 时间，当方法没有占用 cpu 时，时间不会被记录。
+
+相比 Google 官方提供的检测方法，DroidTelescope 框架有如下优点：
+* 报告规模、方法数量可控，不会被大量系统方法干扰；
+* 性能损耗较小，可针对某些需求应用到线上；
+* 高度可定制，可以根据 App 特点定制框架（例如想监控 Fragment 的创建耗时）；
+
 ### 卡顿监控
 当发生卡顿时，框架会记录相关方法的调用时间和调用栈，并生成BlockInfo对象，使用框架提供的ConvertUtils工具将BlockInfo对象转换成JSON格式的日志，如下例子，每个字段的意义请看注释：
 ```js
