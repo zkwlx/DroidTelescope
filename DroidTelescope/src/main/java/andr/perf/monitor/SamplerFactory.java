@@ -1,9 +1,12 @@
 package andr.perf.monitor;
 
+import android.util.Log;
+
 import andr.perf.monitor.stack_traces.AbstractMethodSampler;
 import andr.perf.monitor.stack_traces.DetailedMethodSampler;
 import andr.perf.monitor.interactive.UserInteractiveSampler;
 import andr.perf.monitor.memory.ObjectReferenceSampler;
+import andr.perf.monitor.stack_traces.SysTraceMethodSampler;
 
 /**
  * Created by ZhouKeWen on 17/3/28.
@@ -19,8 +22,15 @@ public class SamplerFactory {
 
     public static AbstractMethodSampler getMethodSampler() {
         if (methodSampler == null) {
-            //TODO 这里根据具体config选择不同Sampler实现
-            methodSampler = new DetailedMethodSampler();
+            Config config = DroidTelescope.getConfig();
+            //TODO 根据具体config选择不同Sampler实现
+            if (config.useSysTrace()) {
+                Log.i("zkw", "使用 SysTrace！！！！");
+                methodSampler = new SysTraceMethodSampler();
+            } else {
+                Log.i("zkw", "使用默认的Sampler！！！！");
+                methodSampler = new DetailedMethodSampler();
+            }
         }
         return methodSampler;
     }

@@ -1,6 +1,6 @@
 package andr.perf.monitor.stack_traces;
 
-import android.os.Looper;
+import android.util.Log;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -21,10 +21,13 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
      */
     private final ConcurrentHashMap<Long, Deque<MethodInfo>> threadMethodStack;
 
-    private boolean isSkip = false;
+    private final ThreadLocal<Boolean> localSkip = new ThreadLocal<>();
+
+    private final boolean configJustRecordUiThread;
 
     public DetailedMethodSampler() {
         super();
+        configJustRecordUiThread = DroidTelescope.getConfig().justRecordUIThread();
         threadMethodStack = new ConcurrentHashMap<>();
     }
 
@@ -33,7 +36,8 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodEnter(final String cls, final String method, final String argTypes) {
-        isSkip = skipRecord();
+        boolean isSkip = skipSampling();
+        localSkip.set(isSkip);
         if (isSkip) {
             return;
         }
@@ -58,7 +62,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
     @Override
     public void onMethodExit(final long wallClockTimeNs, final long cpuTimeMs, final String cls,
                              final String method, String argTypes) {
-        if (isSkip) {
+        if (localSkip.get()) {
             return;
         }
         final long threadId = Thread.currentThread().getId();
@@ -74,19 +78,20 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodExitFinally(String cls, final String method, String argTypes) {
-        if (isSkip) {
+        if (localSkip.get()) {
             return;
         }
         final long threadId = Thread.currentThread().getId();
         //方法无论是return退出还是异常throw退出，都会回调onMethodExitFinally()
         //threadMethodStack无需remove，有两个原因：一是同线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
+        if (methodStack == null) {
+            Log.i("zkw", "[ERROR:]" + createSignature(cls, method, argTypes) + ", threadName:" + Thread.currentThread().getName());
+            Exception e = new Exception();
+            e.printStackTrace();
+        }
         MethodInfo topMethod = methodStack.pop();
         Config config = DroidTelescope.getConfig();
-        if (config == null) {
-            //TODO 还未初始化好，一般发生在Application.<init>方法中
-            return;
-        }
         if (config.shouldRecordMethod(topMethod.getWallClockTimeNs(), topMethod.getCpuTimeMs())) {
             //弹出当前线程的栈顶Method，如果栈为空了，说明这个栈顶Method是个rootMethod，保存到root列表
             if (methodStack.isEmpty()) {
@@ -99,24 +104,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         }
     }
 
-    private String createSignature(String className, String methodName, String argTypes) {
-        return className + "." + methodName + "(" + argTypes + ")";
+    private boolean skipSampling() {
+        return !TracesMonitor.isTracing || configJustRecordUiThread && isNotUIThread();
     }
-
-    private boolean skipRecord() {
-        Config config = DroidTelescope.getConfig();
-        if (config == null) {
-            //TODO 还未初始化好，一般发生在Application.<init>方法中
-            return true;
-        } else {
-            return config.justRecordUIThread() && isNotUIThread();
-        }
-    }
-
-    private boolean isNotUIThread() {
-        final long mainThreadId = Looper.getMainLooper().getThread().getId();
-        final long currentId = Thread.currentThread().getId();
-        return mainThreadId != currentId;
-    }
-
 }

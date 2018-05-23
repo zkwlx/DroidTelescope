@@ -25,7 +25,7 @@ public class TracesMonitor {
     private static long startWallClockTimeMs;
     private static long startCpuTimeMs;
 
-    private static volatile boolean isTracing = false;
+    public static volatile boolean isTracing = false;
 
     public static void startTracing() {
         if (isTracing) {

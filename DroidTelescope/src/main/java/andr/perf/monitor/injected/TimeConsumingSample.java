@@ -2,6 +2,7 @@ package andr.perf.monitor.injected;
 
 import android.os.SystemClock;
 
+import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.SamplerFactory;
 
 /**
@@ -10,22 +11,43 @@ import andr.perf.monitor.SamplerFactory;
  */
 public class TimeConsumingSample {
 
+//    private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<>();
+
+    private static volatile boolean isInited = false;
+
     public static boolean shouldMonitor() {
         return true;
     }
 
     public static void methodEnter(String cls, String method, String argTypes) {
+        if (!isInited) {
+            if (DroidTelescope.getConfig() == null) {
+                //未初始化完，直接退出
+//            threadLocal.set(false);
+                isInited = false;
+                return;
+            } else {
+                isInited = true;
+//            threadLocal.set(true);
+            }
+        }
         SamplerFactory.getMethodSampler().onMethodEnter(cls, method, argTypes);
     }
 
     public static void methodExit(long startTimeNano, long startThreadTime, String cls, String method,
-            String argTypes) {
+                                  String argTypes) {
+        if (!isInited) {
+            return;
+        }
         long wallClockTimeNs = System.nanoTime() - startTimeNano;
         long cpuTimeMs = SystemClock.currentThreadTimeMillis() - startThreadTime;
         SamplerFactory.getMethodSampler().onMethodExit(wallClockTimeNs, cpuTimeMs, cls, method, argTypes);
     }
 
     public static void methodExitFinally(String cls, String method, String argTypes) {
+        if (!isInited) {
+            return;
+        }
         SamplerFactory.getMethodSampler().onMethodExitFinally(cls, method, argTypes);
     }
 

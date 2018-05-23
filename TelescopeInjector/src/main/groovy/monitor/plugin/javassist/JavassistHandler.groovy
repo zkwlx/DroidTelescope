@@ -5,6 +5,7 @@ import javassist.bytecode.ClassFile
 import monitor.plugin.ConfigProvider
 import monitor.plugin.config.InjectConfig
 import monitor.plugin.javassist.inject.*
+import monitor.plugin.javassist.inject.interactive.InteractiveCodeInject
 import monitor.plugin.utils.LogUtils
 
 /**
@@ -77,7 +78,9 @@ class JavassistHandler {
             //TODO 重复打开已冻结类，说明有重复类，跳过修改
             return inputStream.getBytes()
         }
-        if (clazz.isInterface() || clazz.isAnnotation() || clazz.isEnum() || clazz.isArray()) {
+
+        if (clazz.isInterface() || clazz.isAnnotation() || clazz.isEnum() || clazz.isArray() || isMonitorSubclass(clazz)) {
+            //跳过
             return clazz.toBytecode()
         }
 
@@ -158,7 +161,20 @@ class JavassistHandler {
     }
 
     private static void injectForInteractive(CtClass clazz) {
-        monitor.plugin.javassist.inject.interactive.InteractiveCodeInject.injectForViewEvent(clazz)
+        InteractiveCodeInject.injectForViewEvent(clazz)
+    }
+
+    private static boolean isMonitorSubclass(CtClass clazz) {
+        //TODO 暂时只判断一层超类，注意！！！
+//        if (clazz.superclass.packageName.startsWith("andr.perf.monitor")) {
+//        }
+        //TODO 暂时只判断 Config 的子类，注意！！
+        if (clazz.superclass.name == "andr.perf.monitor.Config") {
+            LogUtils.printLog("Found Config subclass:>>>" + clazz.name)
+            return true
+        } else {
+            return false
+        }
     }
 
 }

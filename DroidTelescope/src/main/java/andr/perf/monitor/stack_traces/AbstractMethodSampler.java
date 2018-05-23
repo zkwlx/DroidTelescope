@@ -1,5 +1,7 @@
 package andr.perf.monitor.stack_traces;
 
+import android.os.Looper;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +41,7 @@ public abstract class AbstractMethodSampler {
      * @param argTypes
      */
     public abstract void onMethodExit(long wallClockTimeNs, long cpuTimeMs, String cls, String method,
-            String argTypes);
+                                      String argTypes);
 
     /**
      * 方法无论怎样退出（比如异常退出、throw等），都回调此接口
@@ -56,6 +58,16 @@ public abstract class AbstractMethodSampler {
         }
     }
 
+    String createSignature(String className, String methodName, String argTypes) {
+        return className + "." + methodName + "(" + argTypes + ")";
+    }
+
+    boolean isNotUIThread() {
+        final long mainThreadId = Looper.getMainLooper().getThread().getId();
+        final long currentId = Thread.currentThread().getId();
+        return mainThreadId != currentId;
+    }
+
     public List<MethodInfo> getRootMethodList() {
         ArrayList<MethodInfo> list;
         synchronized (rootMethodList) {
@@ -69,4 +81,5 @@ public abstract class AbstractMethodSampler {
             rootMethodList.clear();
         }
     }
+
 }

@@ -53,6 +53,16 @@ public class MyApplication extends Application {
         public boolean isBlock(long wallClockTimeMs, long cpuTimeMs) {
             return true;
         }
+
+        @Override
+        public boolean useSysTrace() {
+            return true;
+        }
+
+        @Override
+        public boolean justRecordUIThread() {
+            return true;
+        }
     }
 
     private static class MyBlockListener implements DroidTelescope.BlockListener {

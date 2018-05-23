@@ -19,7 +19,7 @@
 	<div style="margin:20px 0;"></div>
 	<table id="tg" title="Method sampling tree" class="easyui-treegrid" style="width:1550px;height:800px"
 			data-options="
-				url: 'data/apm_method.json',
+				url: 'data/guest_cold_boot.json',
 				method: 'get',
 				lines: true,
 				collapsible: true,
@@ -30,11 +30,11 @@
 			">
 		<thead>
 			<tr>
-				<th data-options="field:'method_signature'" width="1125" sortable="true">Method Name</th>
-				<th data-options="field:'thread_id'" width="80" align="right" sortable="true">Thread Id</th>
-				<th data-options="field:'thread_name'" width="105" align="right" sortable="true">Thread Name</th>
-				<th data-options="field:'wall_clock_time'" width="120" align="right" sortable="true">Wall Time(ms)</th>
-				<th data-options="field:'cpu_time'" width="120" align="right" sortable="true">Cpu Time(ms)</th>
+				<th field="method_signature" width="1125" sortable="true">Method Name</th>
+				<th field="thread_id" width="80" align="right" sortable="true">Thread Id</th>
+				<th field="thread_name" width="105" align="right" sortable="true">Thread Name</th>
+				<th field="wall_clock_time" width="120" align="right" sortable="true">Wall Time(ms)</th>
+				<th field="cpu_time" width="120" align="right" sortable="true">Cpu Time(ms)</th>
 			</tr>
 		</thead>
 	</table>

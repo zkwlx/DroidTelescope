@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -316,11 +317,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchFinished() {
         String jsonString = DroidTelescope.stopMethodTracing();
-        FileUtils fileUtils = new FileUtils();
-        Random r = new Random();
-        String fileName = "apm_method_tracing" + r.nextInt(100);
-        fileUtils.write2SDFromInput("", fileName, jsonString);
-        Log.i("zkw", "加载完成。。。。。。。。:::>" + fileName);
+        if (!TextUtils.isEmpty(jsonString)) {
+            FileUtils fileUtils = new FileUtils();
+            Random r = new Random();
+            String fileName = "apm_method_tracing" + r.nextInt(100);
+            fileUtils.write2SDFromInput("", fileName, jsonString);
+            Log.i("zkw", "加载完成。。。。。。。。:::>" + fileName);
+        } else {
+            Log.i("zkw", "json is null!!!!!!");
+        }
     }
 
 }
