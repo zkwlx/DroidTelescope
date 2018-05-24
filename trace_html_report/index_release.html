@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Method sampling - by zhoukewen</title>
+	<link rel="stylesheet" type="text/css" href="themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="themes/default/default.css">
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.easyui.min.js"></script>
+</head>
+<body>
+	<h2>Method sampling - by zhoukewen@zhihu.com</h2>
+	<p>应用一次完整启动的所有方法耗时，同线程中调用顺序为序号顺序。</p>
+	<div style="margin:20px 0;">
+		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="collapseAll()">CollapseAll</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="expandAll()">ExpandAll</a>
+	</div>
+	<div style="margin:20px 0;"></div>
+	<table id="tg" title="Method sampling tree" class="easyui-treegrid" style="width:1550px;height:800px"
+			data-options="
+				url: 'data/apm_method_release.json',
+				method: 'get',
+				lines: true,
+				collapsible: true,
+				fitColumns: true,
+				rownumbers: true,
+				nowrap: true,
+				striped: true,
+				idField: 'id',
+				remoteSort: false,
+				treeField: 'method_signature'
+			">
+		<thead>
+			<tr>
+				<th data-options="field:'method_signature'" width="1125" sortable="true">Method Name</th>
+				<th data-options="field:'thread_id'" width="80" align="right" sortable="true">Thread Id</th>
+				<th data-options="field:'thread_name'" width="105" align="right" sortable="true">Thread Name</th>
+				<th data-options="field:'wall_clock_time'" width="120" align="right" sortable="true">Wall Time(ms)</th>
+				<th data-options="field:'cpu_time'" width="120" align="right" sortable="true">Cpu Time(ms)</th>
+			</tr>
+		</thead>
+	</table>
+	<script type="text/javascript">
+		function formatProgress(value){
+	    	if (value){
+		    	var s = '<div style="width:100%;border:1px solid #ccc">' +
+		    			'<div style="width:' + value + '%;background:#cc0000;color:#fff">' + value + '%' + '</div>'
+		    			'</div>';
+		    	return s;
+	    	} else {
+		    	return '';
+	    	}
+		}
+		function collapseAll(){
+			$('#tg').treegrid('collapseAll');
+		}
+		function expandAll(){
+			$('#tg').treegrid('expandAll');
+		}
+	</script>
+</body>
+</html>

@@ -1,22 +1,13 @@
 package andr.perf.monitor;
 
-import android.content.Context;
-import android.os.SystemClock;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import andr.perf.monitor.cpu.BlockMonitor;
 import andr.perf.monitor.cpu.BlockMonitorManager;
 import andr.perf.monitor.cpu.models.BlockInfo;
-import andr.perf.monitor.cpu.models.MethodInfo;
 import andr.perf.monitor.memory.models.LeakInfo;
-import andr.perf.monitor.persist.ConvertUtils;
 import andr.perf.monitor.stack_traces.TracesMonitor;
-import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -46,6 +37,9 @@ public class DroidTelescope {
 
     public static void install(Config config) {
         monitorConfig = (config == null ? new Config() : config);
+        if (monitorConfig.useSysTrace()) {
+            openSysTraceReleaseAllow();
+        }
     }
 
     public static void startBlockMonitor() {
@@ -94,6 +88,19 @@ public class DroidTelescope {
 
     public static BlockListener getBlockListener() {
         return blockListener;
+    }
+
+    /**
+     * Android 的 SysTrace 不支持 Release 的包，可以通过反射打开
+     */
+    private static void openSysTraceReleaseAllow() {
+        try {
+            Class<?> trace = Class.forName("android.os.Trace");
+            Method setAppTracingAllowed = trace.getDeclaredMethod("setAppTracingAllowed", boolean.class);
+            setAppTracingAllowed.invoke(null, true);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
 }
