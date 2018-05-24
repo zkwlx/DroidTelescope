@@ -316,15 +316,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchFinished() {
-        String jsonString = DroidTelescope.stopMethodTracing();
-        if (!TextUtils.isEmpty(jsonString)) {
-            FileUtils fileUtils = new FileUtils();
-            Random r = new Random();
-            String fileName = "apm_method_tracing" + r.nextInt(100);
-            fileUtils.write2SDFromInput("", fileName, jsonString);
-            Log.i("zkw", "加载完成。。。。。。。。:::>" + fileName);
+        String path = DroidTelescope.stopMethodTracing();
+        if (!TextUtils.isEmpty(path)) {
+            Log.i("zkw", "加载完成。。。。。。。。:::>" + path);
         } else {
-            Log.i("zkw", "json is null!!!!!!");
+            Log.i("zkw", "path is null!!!!!!");
         }
     }
 

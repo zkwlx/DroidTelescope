@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.List;
 
 import andr.perf.monitor.SamplerFactory;
@@ -38,7 +39,7 @@ public class TracesMonitor {
     }
 
     /**
-     * 结束方法调用耗时追踪，返回解析好的 Json 对象，便于分析
+     * 结束方法调用耗时追踪，返回生成的 js 报告文件路径
      *
      * @return
      */
@@ -47,7 +48,9 @@ public class TracesMonitor {
             isTracing = false;
             JSONArray jsonArray = createJSONMethodTraces();
             if (jsonArray != null) {
-                return jsonArray.toString();
+                String jsonString = jsonArray.toString();
+                File jsFile = TraceJSTemplate.createJSFile(jsonString);
+                return jsFile.getAbsolutePath();
             } else {
                 return null;
             }

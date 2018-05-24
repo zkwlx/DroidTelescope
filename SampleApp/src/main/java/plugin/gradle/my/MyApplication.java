@@ -56,12 +56,12 @@ public class MyApplication extends Application {
 
         @Override
         public boolean useSysTrace() {
-            return true;
+            return false;
         }
 
         @Override
         public boolean justRecordUIThread() {
-            return true;
+            return false;
         }
     }
 

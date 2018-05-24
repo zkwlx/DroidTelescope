@@ -19,7 +19,6 @@
 	<div style="margin:20px 0;"></div>
 	<table id="tg" title="Method sampling tree" class="easyui-treegrid" style="width:1550px;height:800px"
 			data-options="
-				url: 'data/apm_method_release.json',
 				method: 'get',
 				lines: true,
 				collapsible: true,
@@ -41,19 +40,16 @@
 			</tr>
 		</thead>
 	</table>
+	<script src="data_example.js"></script>
 	<script type="text/javascript">
-		function formatProgress(value){
-	    	if (value){
-		    	var s = '<div style="width:100%;border:1px solid #ccc">' +
-		    			'<div style="width:' + value + '%;background:#cc0000;color:#fff">' + value + '%' + '</div>'
-		    			'</div>';
-		    	return s;
-	    	} else {
-		    	return '';
-	    	}
-		}
+		$(document).ready(function(){
+			// $('#tg').treegrid('loading');
+			var data = getJsonData();
+			$('#tg').treegrid('loadData', data);
+			// $('#tg').treegrid('loaded');
+		})
 		function collapseAll(){
-			$('#tg').treegrid('collapseAll');
+			 $('#tg').treegrid('collapseAll');
 		}
 		function expandAll(){
 			$('#tg').treegrid('expandAll');
