@@ -6,8 +6,6 @@
 	<link rel="stylesheet" type="text/css" href="themes/default/easyui.css">
 	<link rel="stylesheet" type="text/css" href="themes/icon.css">
 	<link rel="stylesheet" type="text/css" href="themes/default/default.css">
-	<script type="text/javascript" src="jquery.min.js"></script>
-	<script type="text/javascript" src="jquery.easyui.min.js"></script>
 </head>
 <body>
 	<h2>Method sampling - by zhoukewen@zhihu.com</h2>
@@ -40,20 +38,24 @@
 			</tr>
 		</thead>
 	</table>
-	<script src="data.js"></script>
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.easyui.min.js"></script>
 	<script type="text/javascript">
-		$(document).ready(function(){
-			// $('#tg').treegrid('loading');
-			var data = getJsonData();
-			$('#tg').treegrid('loadData', data);
-			// $('#tg').treegrid('loaded');
+		$(document).ready(function () {
+			$('#tg').treegrid('loading');
+			setTimeout(function () {
+				var data = getJsonData();
+				$('#tg').treegrid('loadData', data);
+				$('#tg').treegrid('loaded');
+			}, 10)
 		})
-		function collapseAll(){
-			 $('#tg').treegrid('collapseAll');
+		function collapseAll() {
+			$('#tg').treegrid('collapseAll');
 		}
-		function expandAll(){
+		function expandAll() {
 			$('#tg').treegrid('expandAll');
 		}
 	</script>
+	<script src="data.js"></script>
 </body>
 </html>
