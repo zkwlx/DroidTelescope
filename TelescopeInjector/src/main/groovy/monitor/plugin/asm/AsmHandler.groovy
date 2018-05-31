@@ -51,7 +51,7 @@ class AsmHandler {
 //            }
 //
 //        };
-        cr.accept(cv, 0);
+        cr.accept(cv, ClassReader.EXPAND_FRAMES);
         return cw.toByteArray();
     }
 
