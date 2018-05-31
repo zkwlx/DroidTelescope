@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "plugin.gradle.my"
         minSdkVersion 23
@@ -40,16 +40,26 @@ buildscript {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':testlibrary')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':testlibrary')
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:24.2.1'
+    implementation 'com.android.support:design:24.2.1'
+    implementation 'com.android.support:recyclerview-v7:24.2.1'
+    implementation 'junit:junit:4.12'
 }
 
 apply plugin: 'telescope.injector'
+
+buildscript {
+    repositories {
+        maven { url project(':TelescopeInjector').file('.maven').toURI() }
+        maven { url 'http://android-maven.in.zhihu.com/repository/maven-public/' }
+    }
+    dependencies {
+        classpath 'andr.perf.monitor:TelescopeInjector:0.9.0'
+    }
+}
 
 injectConfig {
     debugEnabled = true //enable MethodSampler when debug mode, default true

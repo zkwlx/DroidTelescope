@@ -1,39 +1,55 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
-
-repositories {
-    jcenter()
-}
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile 'com.android.tools.build:gradle:2.2.3'
-    compile 'org.ow2.asm:asm:5.0'
-    compile "org.javassist:javassist:3.21.0-GA"
+    compileOnly gradleApi()
+    compileOnly localGroovy()
+    compileOnly "com.android.tools.build:gradle:3.1.2"
+//    compile 'org.ow2.asm:asm:5.0'
+    compile "org.javassist:javassist:3.22.0-GA"
 }
 
-group = rootProject.groupId
-version = rootProject.publishVersion
-
-apply plugin: 'bintray-release'
-
-publish {
-    artifactId = 'TelescopeInjector'//项目名称
-
-    userOrg = rootProject.userOrg
-    groupId = rootProject.groupId
-    uploadName = rootProject.uploadName
-    publishVersion = rootProject.publishVersion
-    desc = rootProject.desc
-    website = rootProject.website
-    licences = rootProject.licences
+compileGroovy {
+    sourceCompatibility = "1.7"
+    targetCompatibility = "1.7"
+    options.encoding = "UTF-8"
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('../repo'))
+apply plugin: 'maven'
+
+group = "andr.perf.monitor"
+archivesBaseName = "TelescopeInjector"
+version = "0.9.0"
+
+if (rootProject.file("local").exists()) {
+    version = 'local'
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: uri('.maven'))
+            }
         }
+        finalizedBy(clean)
     }
+} else {
+    System.out.println("uploadArchives for Release!!!!")
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: 'http://xxx') {
+                    authentication(userName: 'xxx', password: 'xxx')
+                }
+            }
+        }
+        finalizedBy(clean)
+    }
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
 }
