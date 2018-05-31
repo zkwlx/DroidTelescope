@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "plugin.gradle.my"
+        minSdkVersion 23
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+buildscript {
+    repositories {
+        maven {
+            url uri('../repo')
+        }
+        jcenter()
+    }
+    dependencies {
+        classpath 'andr.perf.monitor:TelescopeInjector:0.9.0'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':testlibrary')
+    //noinspection GradleCompatible
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+}
+
+apply plugin: 'telescope.injector'
+
+injectConfig {
+    debugEnabled = true //enable MethodSampler when debug mode, default true
+    releaseEnabled = false //enable MethodSampler when release mode, default false
+    cpuTimeEnable = true
+    //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
+    excludePackages = [""]
+    //exclude the class you don't want to inject MethodSampler, eg:['com.android.view.TextView']
+    excludeClasses = [""]
+    //only include the package you want to inject MethodSampler, packages which don't included will not be injected
+    includePackages = ["plugin.gradle"]
+
+    scope {
+        project = true //inject MethodSampler for app project, default true
+        projectLocalDep = true //inject MethodSampler for app libs(eg: .jar), default false
+        subProject = true //inject MethodSampler for subProject of app project, default true
+        subProjectLocalDep = true //inject MethodSampler for subProject libs, default false
+        externalLibraries = true //inject MethodSampler external libs, default false
+    }
+}
