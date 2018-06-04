@@ -27,9 +27,9 @@ final class DirClassPath implements ClassPath {
             String filename = directory + sep
                     + classname.replace('.', sep) + ".class";
             return new FileInputStream(filename.toString());
+        } catch (FileNotFoundException e) {
+        } catch (SecurityException e) {
         }
-        catch (FileNotFoundException e) {}
-        catch (SecurityException e) {}
         return null;
     }
 
@@ -41,14 +41,15 @@ final class DirClassPath implements ClassPath {
         if (f.exists())
             try {
                 return f.getCanonicalFile().toURI().toURL();
+            } catch (MalformedURLException e) {
+            } catch (IOException e) {
             }
-            catch (MalformedURLException e) {}
-            catch (IOException e) {}
 
         return null;
     }
 
-    public void close() {}
+    public void close() {
+    }
 
     public String toString() {
         return directory;

@@ -3,7 +3,7 @@ package monitor.plugin.javassist.inject
 import javassist.CtBehavior
 import javassist.CtClass
 import javassist.Modifier
-import monitor.plugin.utils.LogUtils
+import monitor.plugin.utils.Logger
 
 /**
  * 卡顿监控模块的代码注入器
@@ -12,7 +12,7 @@ import monitor.plugin.utils.LogUtils
 class CpuCodeInject {
 
     public static void insertCpuSampleCode(CtClass clazz, CtBehavior ctBehavior) {
-        LogUtils.printLog("inject Cpu sample code:::>>>> ${clazz.name}.${ctBehavior.name}")
+        Logger.i("inject Cpu sample code:::>>>> ${clazz.name}.${ctBehavior.name}")
         if (ctBehavior.isEmpty() || Modifier.isNative(ctBehavior.getModifiers())) {
             return;
         }

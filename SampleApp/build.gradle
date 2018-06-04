@@ -27,23 +27,11 @@ android {
     }
 }
 
-buildscript {
-    repositories {
-        maven {
-            url uri('../repo')
-        }
-        jcenter()
-    }
-    dependencies {
-        classpath 'andr.perf.monitor:TelescopeInjector:0.9.0'
-    }
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':testlibrary')
     //noinspection GradleCompatible
-    implementation 'com.android.support:appcompat-v7:24.2.1'
+    implementation 'com.android.support:appcompat-v7:25.1.1'
     implementation 'com.android.support:design:24.2.1'
     implementation 'com.android.support:recyclerview-v7:24.2.1'
     implementation 'junit:junit:4.12'
@@ -54,29 +42,29 @@ apply plugin: 'telescope.injector'
 buildscript {
     repositories {
         maven { url project(':TelescopeInjector').file('.maven').toURI() }
-        maven { url 'http://android-maven.in.zhihu.com/repository/maven-public/' }
+//        maven { url 'http://android-maven.in.zhihu.com/repository/maven-public/' }
+        jcenter()
     }
     dependencies {
-        classpath 'andr.perf.monitor:TelescopeInjector:0.9.0'
+        classpath 'andr.perf.monitor:TelescopeInjector:local'
     }
 }
 
 injectConfig {
-    debugEnabled = true //enable MethodSampler when debug mode, default true
-    releaseEnabled = false //enable MethodSampler when release mode, default false
+    debugLog = true
+//    debugEnabled = true //enable MethodSampler when debug mode, default true
+//    releaseEnabled = false //enable MethodSampler when release mode, default false
     cpuTimeEnable = true
-    //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
-    excludePackages = [""]
-    //exclude the class you don't want to inject MethodSampler, eg:['com.android.view.TextView']
-    excludeClasses = [""]
-    //only include the package you want to inject MethodSampler, packages which don't included will not be injected
-    includePackages = ["plugin.gradle"]
-
-    scope {
-        project = true //inject MethodSampler for app project, default true
-        projectLocalDep = true //inject MethodSampler for app libs(eg: .jar), default false
-        subProject = true //inject MethodSampler for subProject of app project, default true
-        subProjectLocalDep = true //inject MethodSampler for subProject libs, default false
-        externalLibraries = true //inject MethodSampler external libs, default false
-    }
+//    //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
+//    excludePackages = [""]
+//    //exclude the class you don't want to inject MethodSampler, eg:['com.android.view.TextView']
+//    excludeClasses = [""]
+//    //only include the package you want to inject MethodSampler, packages which don't included will not be injected
+    includePackages = ["plugin.gradle", "com.shit.testlibrary"]
+//
+//    scope {
+//        project = true //inject MethodSampler for app project, default true
+//        subProject = true //inject MethodSampler for subProject of app project, default true
+//        externalLibraries = true //inject MethodSampler external libs, default false
+//    }
 }

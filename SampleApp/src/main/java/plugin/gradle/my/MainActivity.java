@@ -41,12 +41,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
-            g2();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        gogo(100);
+
+//        gogo(100);
 
         Fragment f = new Fragment();
         android.app.Fragment ff = new android.app.Fragment();
@@ -174,23 +170,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //        try {
-        //            Thread.sleep(200);
-        //        } catch (InterruptedException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        try {
-        //            Thread.sleep(200);
-        //        } catch (InterruptedException e) {
-        //            e.printStackTrace();
-        //        }
-        //
-        //        try {
-        //            Thread.sleep(400);
-        //        } catch (InterruptedException e) {
-        //            e.printStackTrace();
-        //        }
     }
 
     @Override

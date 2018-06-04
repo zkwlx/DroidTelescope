@@ -2,7 +2,7 @@ package monitor.plugin.javassist.inject.interactive
 
 import javassist.CtClass
 import javassist.CtMethod
-import monitor.plugin.utils.LogUtils
+import monitor.plugin.utils.Logger
 
 /**
  * Created by ZhouKeWen on 2017/5/19.
@@ -21,7 +21,7 @@ class ItemOnSelectedHandler implements IInterfaceHandler {
                     "android.widget.AdapterView" && method.parameterTypes[1].name ==
                     "android.view.View" && method.parameterTypes[2].name == "int" && method.parameterTypes[3].name ==
                     "long") {
-                LogUtils.printLog(
+                Logger.i(
                         "inject onItemClick---------->" + clazz.name)
                 method.addLocalVariable("__interactive_switch", CtClass.booleanType)
                 method.insertBefore("""

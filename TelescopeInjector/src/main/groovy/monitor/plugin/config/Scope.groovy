@@ -8,9 +8,11 @@ class Scope {
      * 当前项目src下的class
      */
     boolean project = true
+
     /**
      * 当前项目依赖的jar包，比如libs下的所有jar包
      */
+    @Deprecated
     boolean projectLocalDep = true
     /**
      * 当前项目依赖的子项目，比如compile project(':testlibrary')
@@ -19,11 +21,12 @@ class Scope {
     /**
      * 当前项目所依赖的子项目的依赖jar包
      */
-    boolean subProjectLocalDep = false
+    @Deprecated
+    boolean subProjectLocalDep = true
     /**
      * 外部依赖，比如compile 'com.android.support:appcompat-v7:24.3.0'
      */
-    boolean externalLibraries = false
+    boolean externalLibraries = true
 
     void project(boolean enable) {
         project = enable

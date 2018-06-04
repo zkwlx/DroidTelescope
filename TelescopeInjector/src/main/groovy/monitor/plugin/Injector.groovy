@@ -2,7 +2,7 @@ package monitor.plugin
 
 import monitor.plugin.javassist.JavassistHandler
 import monitor.plugin.utils.ClassFilterUtils
-import monitor.plugin.utils.LogUtils
+import monitor.plugin.utils.Logger
 
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
@@ -13,33 +13,38 @@ import java.util.zip.ZipEntry
  * 代码注入器
  * Created by ZhouKeWen on 17/3/17.
  */
-public class Injector {
+class Injector {
     private static Set<String> excludePackage
     private static Set<String> includePackage
     private static Set<String> excludeClass
 
-    public static void setPackagesConfig(List<String> excludePackage, List<String> includePackage,
-                                         List<String> excludeClass) {
+    static void setPackagesConfig(List<String> excludePackage, List<String> includePackage,
+                                  List<String> excludeClass) {
         this.excludePackage = ClassFilterUtils.formatPath(excludePackage)
         this.includePackage = ClassFilterUtils.formatPath(includePackage)
         this.excludeClass = ClassFilterUtils.formatClass(excludeClass)
-        LogUtils.printLog("include:" + this.includePackage + " excludePkg:" + this.excludePackage + " excludeCls:" + this.excludeClass)
+        Logger.i("include:" + this.includePackage + " excludePkg:" + this.excludePackage + " excludeCls:" + this.excludeClass)
     }
 
-    public static void setClassPathForJavassist(Set<File> files) {
+    static void setClassPathForJavassist(List<File> files) {
         JavassistHandler.setClassPath(files)
     }
 
-    public static void inject(File file) {
+    static void inject(File file) {
         if (file) {
             String filePath = file.absolutePath;
-            if (file.isDirectory()) {
-                injectForDir(file)
-            } else if (filePath.endsWith(".jar")) {
+//            if (file.isDirectory()) {
+//                injectForDir(file)
+//            } else if (filePath.endsWith(".jar")) {
+//                injectForJar(file)
+//            }
+            if (filePath.endsWith(".jar")) {
                 injectForJar(file)
+            } else {
+                injectForFile(file)
             }
         } else {
-            LogUtils.printLog("Inject error! file is null!!")
+            Logger.i("Inject error! file is null!!")
         }
     }
 
@@ -47,16 +52,35 @@ public class Injector {
         dirFile.eachFileRecurse { File file ->
             String filePath = file.absolutePath
             if (shouldInjectFileClass(filePath)) {
-//                LogUtils.printLog("======>>>>name::> ${filePath}")
+//                Logger.i("---->handle file:${file.absolutePath}")
                 JavassistHandler.handleClass(file)
             } else {
-                LogUtils.printLog("skip class file:>> " + filePath)
+//                Logger.i("skip class file:>> " + filePath)
             }
         }
     }
 
+    private static void injectForFile(File file) {
+        Closure handleFileClosure = { File f ->
+            String filePath = f.absolutePath
+            if (shouldInjectFileClass(filePath)) {
+//                Logger.i("---->handle file:${file.absolutePath}")
+                JavassistHandler.handleClass(f)
+            } else {
+//                Logger.i("skip class file:>> " + filePath)
+            }
+        }
+        if (file.isDirectory()) {
+            file.eachFileRecurse {
+                handleFileClosure
+            }
+        } else {
+            handleFileClosure.call(file)
+        }
+    }
+
     private static void injectForJar(File file) {
-//        LogUtils.printLog("[process jar]============" + file.absolutePath)
+//        Logger.i("[process jar]============" + file.absolutePath)
         JarFile jarFile = new JarFile(file)
         Enumeration enumeration = jarFile.entries()
         File tempOutJar = new File(file.getParent(), file.getName() + ".tmp")
@@ -68,10 +92,11 @@ public class Injector {
             InputStream inputStream = jarFile.getInputStream(entry)
             output.putNextEntry(zipEntry)
             if (shouldInjectJarClass(entryName)) {
+//                Logger.i("---->handle jar:${entryName}")
                 def bytes = JavassistHandler.handleClass(entryName, inputStream)
                 output.write(bytes)
             } else {
-                LogUtils.printLog("skip class:>> " + entryName)
+//                Logger.i("skip class:>> " + entryName)
                 output.write(inputStream.getBytes())
             }
             output.closeEntry()

@@ -1,13 +1,13 @@
 package monitor.plugin.javassist.inject.interactive
 
 import javassist.CtClass
-import monitor.plugin.utils.LogUtils
+import monitor.plugin.utils.Logger
 
 /**
  * 用户交互行为监控模块的代码注入器
  * Created by ZhouKeWen on 2017/5/11.
  */
-public class InteractiveCodeInject {
+class InteractiveCodeInject {
 
     private final static HashMap<String, IInterfaceHandler> handlerMap;
 
@@ -28,7 +28,7 @@ public class InteractiveCodeInject {
         }
 
         for (CtClass face : interfaces) {
-            LogUtils.printLog("--------interface name: " + face.name)
+            Logger.i("--------interface name: " + face.name)
             IInterfaceHandler handler = handlerMap.get(face.name)
             if (handler != null) {
                 handler.handleInterface(clazz)

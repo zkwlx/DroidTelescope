@@ -2,7 +2,7 @@ package monitor.plugin.javassist.inject
 
 import javassist.CtClass
 import javassist.CtMethod
-import monitor.plugin.utils.LogUtils
+import monitor.plugin.utils.Logger
 
 /**
  * <p>Created by ZhouKeWen on 17-4-4.</p>
@@ -28,7 +28,7 @@ class OnTrimMemoryHandler implements IMethodHandler {
         if (hasTrimMemoryMethod) {
             hasTrimMemoryMethod = false
         } else {
-            LogUtils.printLog("没有trimMemory方法？？？？>>>>>> ${clazz.name}")
+            Logger.i("没有trimMemory方法？？？？>>>>>> ${clazz.name}")
             MemoryCodeInject.addTrimMemoryCode(clazz)
         }
     }

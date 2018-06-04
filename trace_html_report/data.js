@@ -1,4 +1,1 @@
-function getJsonData(){
-    var m = '';
-    return $.parseJSON(m);
-}
+function getJsonData(){var m = '[{"wall_clock_time":229,"cpu_time":85,"id":0,"children":[{"method_signature":"plugin.gradle.my.MainActivity.MainActivity()","id":1,"thread_id":1,"thread_name":"main","wall_clock_time":1.7,"cpu_time":1},{"method_signature":"plugin.gradle.my.MainActivity.onCreate(android.os.Bundle)","id":2,"thread_id":1,"thread_name":"main","wall_clock_time":58.98,"cpu_time":35}],"method_signature":"Total(2)"}]';return $.parseJSON(m);}

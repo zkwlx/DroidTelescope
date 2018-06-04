@@ -11,4 +11,11 @@ public class TestLibraryClass {
         Log.i("》》》》》》》》", "i am test!!!");
     }
 
+    public void toding() {
+        Log.i("zkw", "tututu");
+    }
+
+//    public void toding2() {
+//        Log.i("zkw", "tututu");
+//    }
 }

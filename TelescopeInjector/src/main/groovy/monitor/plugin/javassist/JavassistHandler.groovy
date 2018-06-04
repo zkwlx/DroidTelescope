@@ -1,12 +1,11 @@
 package monitor.plugin.javassist
 
 import javassist.*
-import javassist.bytecode.ClassFile
 import monitor.plugin.ConfigProvider
 import monitor.plugin.config.InjectConfig
 import monitor.plugin.javassist.inject.*
 import monitor.plugin.javassist.inject.interactive.InteractiveCodeInject
-import monitor.plugin.utils.LogUtils
+import monitor.plugin.utils.Logger
 
 /**
  * Created by ZhouKeWen on 17/3/23.
@@ -37,22 +36,22 @@ class JavassistHandler {
         return v4MethodHandlers
     }
 
-    static void setClassPath(Set<File> files) {
-        classPool = new ClassPool(true);
+    static void setClassPath(List<File> files) {
+        classPool = new ClassPool(true)
         //节省编译时的内存消耗
-        ClassPool.doPruning = true;
+        ClassPool.doPruning = true
         for (File file : files) {
             if (file.exists()) {
                 if (file.isDirectory()) {
-                    classPool.appendClassPath(new DirClassPath(file.absolutePath));
+                    classPool.appendClassPath(new DirClassPath(file.absolutePath))
                 } else {
-                    classPool.appendClassPath(new JarClassPath(file.absolutePath));
+                    classPool.appendClassPath(new JarClassPath(file.absolutePath))
                 }
             }
         }
     }
 
-    public static byte[] handleClass(File file) {
+    static byte[] handleClass(File file) {
         def optClass = new File(file.getParent(), file.name + ".opt")
 
         FileInputStream inputStream = new FileInputStream(file);
@@ -74,7 +73,7 @@ class JavassistHandler {
             clazz = classPool.makeClass(inputStream)
         } catch (RuntimeException e) {
             e.printStackTrace()
-            LogUtils.printLog("class frozen: :::::::>>> " + className + ", ignore that!")
+            Logger.i("class frozen: :::::::>>> " + className + ", ignore that!")
             //TODO 重复打开已冻结类，说明有重复类，跳过修改
             return inputStream.getBytes()
         }
@@ -134,17 +133,17 @@ class JavassistHandler {
         CtMethod[] ctMethods = clazz.getDeclaredMethods();
         int successCount = 0
         for (CtMethod ctMethod : ctMethods) {
-            LogUtils.printLog("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
+            Logger.i("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
             int modifiers = ctMethod.getModifiers();
             if (Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)) {
-                LogUtils.printLog(
+                Logger.i(
                         "static or native!!!Don't inject>> ${clazz.name}.${ctMethod.name}")
                 continue
             }
             for (IMethodHandler handler : methodHandlers) {
                 if (handler.handleMethod(clazz, ctMethod)) {
                     //TODO 这里对一个方法处理成功，是否退出循环，开始下一个方法？
-                    LogUtils.printLog("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
+                    Logger.i("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
                     successCount++
                 }
             }
@@ -170,7 +169,7 @@ class JavassistHandler {
 //        }
         //TODO 暂时只判断 Config 的子类，注意！！
         if (clazz.superclass.name == "andr.perf.monitor.Config") {
-            LogUtils.printLog("Found Config subclass:>>>" + clazz.name)
+            Logger.i("Found Config subclass:>>>" + clazz.name)
             return true
         } else {
             return false
