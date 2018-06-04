@@ -42,7 +42,6 @@ apply plugin: 'telescope.injector'
 buildscript {
     repositories {
         maven { url project(':TelescopeInjector').file('.maven').toURI() }
-//        maven { url 'http://android-maven.in.zhihu.com/repository/maven-public/' }
         jcenter()
     }
     dependencies {
