@@ -1,14 +1,49 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+group = "andr.perf.monitor"
+archivesBaseName = "DroidTelescope"
+version = "1.0.2"
+
+if (rootProject.file("local").exists()) {
+    version = 'local'
+    uploadArchives {
+        doFirst {
+            System.out.println("============uploadArchives for local")
+        }
+        repositories {
+            mavenDeployer {
+                repository(url: uri('.maven'))
+            }
+        }
+        finalizedBy(clean)
+    }
+} else {
+    uploadArchives {
+        doFirst {
+            System.out.println("============uploadArchives for Release!!!!")
+        }
+        repositories {
+            mavenDeployer {
+                repository(url: 'http://xxx') {
+                    authentication(userName: 'xxx', password: 'xxx')
+                }
+
+            }
+        }
+        finalizedBy(clean)
+    }
+}
 
 android {
     compileSdkVersion 26
     buildToolsVersion "27.0.3"
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
-        versionName "0.9.0"
+        versionName version
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -22,12 +57,37 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:support-annotations:27.1.1'
+}
+
+// type显示指定任务类型或任务, 这里指定要执行Javadoc这个task,这个task在gradle中已经定义
+task androidJavadocs(type: Javadoc) {
+    // 设置源码所在的位置
+    source = android.sourceSets.main.java.sourceFiles
+}
+
+// 生成javadoc.jar
+task androidJavadocsJar(type: Jar) {
+    // 指定文档名称
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+// 生成sources.jar
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+
+// 产生相关配置文件的任务
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
 }
 
 project.afterEvaluate {

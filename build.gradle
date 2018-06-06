@@ -13,9 +13,12 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url project(':TelescopeInjector').file('.maven').toURI() }
+//        maven { url project(':DroidTelescope').file('.maven').toURI() }
         jcenter()
         google()
         mavenCentral()
+
     }
 }
 

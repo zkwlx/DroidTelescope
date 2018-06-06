@@ -35,6 +35,8 @@ dependencies {
     implementation 'com.android.support:design:24.2.1'
     implementation 'com.android.support:recyclerview-v7:24.2.1'
     implementation 'junit:junit:4.12'
+    //    implementation 'andr.perf.monitor:DroidTelescope:local'
+    implementation project(':DroidTelescope')
 }
 
 apply plugin: 'telescope.injector'
