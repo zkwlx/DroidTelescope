@@ -11,9 +11,12 @@ import android.util.Log;
  */
 public class SysTraceMethodSampler extends AbstractMethodSampler {
 
+    private boolean isStopTrace;
+
     @Override
     public void onMethodEnter(String cls, String method, String argTypes) {
-        if (!TracesMonitor.isTracing) {
+        isStopTrace = !TracesMonitor.isTracing;
+        if (isStopTrace) {
             return;
         }
         if (isNotUIThread()) {
@@ -35,7 +38,7 @@ public class SysTraceMethodSampler extends AbstractMethodSampler {
 
     @Override
     public void onMethodExitFinally(String cls, String method, String argTypes) {
-        if (!TracesMonitor.isTracing) {
+        if (isStopTrace) {
             return;
         }
         //TODO 只收集 UI 线程的方法
