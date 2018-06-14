@@ -22,9 +22,6 @@ import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.Random;
 
 import andr.perf.monitor.DroidTelescope;
@@ -295,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchFinished() {
-        String path = DroidTelescope.stopMethodTracing();
+        String path = DroidTelescope.stopMethodTracing(this.getApplicationContext());
         if (!TextUtils.isEmpty(path)) {
             Log.i("zkw", "加载完成。。。。。。。。:::>" + path);
         } else {

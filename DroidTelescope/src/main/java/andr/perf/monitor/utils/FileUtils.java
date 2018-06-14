@@ -1,14 +1,19 @@
 package andr.perf.monitor.utils;
 
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -55,6 +60,67 @@ public class FileUtils {
             FileChannel toChannel = toStream.getChannel();
             fromChannel.transferTo(0, fromChannel.size(), toChannel);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 复制文件
+     *
+     * @param fromStream
+     * @param toFilePath
+     */
+    public static void copyFile(InputStream fromStream, String toFilePath, boolean force) {
+        if (fromStream == null || TextUtils.isEmpty(toFilePath)) {
+            Log.i(TAG, "File copy failed!");
+            return;
+        }
+        File toFile = new File(toFilePath);
+        if (toFile.exists() && force) {
+            toFile.delete(); // delete file
+        } else {
+            return;
+        }
+        File fileParent = toFile.getParentFile();
+        if (!fileParent.exists()) {
+            if (!fileParent.mkdirs()) {
+                Log.e(TAG, "Make dirs false! dir:" + fileParent.getAbsolutePath());
+            }
+        }
+        try {
+            toFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (InputStream fromStreamInner = fromStream;
+             FileOutputStream toStream = new FileOutputStream(toFile)) {
+            byte[] buffer = new byte[4096];
+            int byteCount;
+            while ((byteCount = fromStreamInner.read(buffer)) != -1) {
+                toStream.write(buffer, 0, byteCount);
+            }
+            toStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void copyAssetsDir(Context context, String assetsPath, String toPath) {
+        AssetManager assetManager = context.getAssets();
+        try {
+            String fileNames[] = assetManager.list(assetsPath);
+            if (fileNames.length > 0) {
+                forceCreateDir(toPath);
+                for (String fileName : fileNames) {
+                    copyAssetsDir(context, assetsPath + File.separator + fileName,
+                            toPath + File.separator + fileName);
+                }
+            } else {
+                InputStream assetInputStream = assetManager.open(assetsPath);
+                copyFile(assetInputStream, toPath, false);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -107,6 +173,17 @@ public class FileUtils {
             }
         }
         return file.delete();
+    }
+
+    public static File forceCreateDir(String dirPath) {
+        if (TextUtils.isEmpty(dirPath)) {
+            return null;
+        }
+        File dir = new File(dirPath);
+        if (!dir.mkdirs()) {
+            Log.e(TAG, "Make dirs false! dir:" + dir.getAbsolutePath());
+        }
+        return dir;
     }
 
     public static File forceCreateNewFile(String filePath) {

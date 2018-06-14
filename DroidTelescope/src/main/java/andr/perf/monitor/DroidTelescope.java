@@ -1,5 +1,7 @@
 package andr.perf.monitor;
 
+import android.content.Context;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -66,8 +68,8 @@ public class DroidTelescope {
         TracesMonitor.startTracing();
     }
 
-    public static String stopMethodTracing() {
-        return TracesMonitor.stopTracing();
+    public static String stopMethodTracing(Context context) {
+        return TracesMonitor.stopTracing(context);
     }
 
     public static LeakListener getLeakListener() {

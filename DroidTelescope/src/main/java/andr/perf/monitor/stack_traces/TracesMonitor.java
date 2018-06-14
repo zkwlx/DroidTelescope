@@ -1,10 +1,10 @@
 package andr.perf.monitor.stack_traces;
 
+import android.content.Context;
 import android.os.SystemClock;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
@@ -43,14 +43,14 @@ public class TracesMonitor {
      *
      * @return
      */
-    public static String stopTracing() {
+    public static String stopTracing(Context context) {
         if (isTracing) {
             isTracing = false;
             JSONArray jsonArray = createJSONMethodTraces();
             if (jsonArray != null) {
                 String jsonString = jsonArray.toString();
-                File jsFile = TraceJSTemplate.createJSFile(jsonString);
-                return jsFile.getAbsolutePath();
+                File zipFile = TraceHtmlReporter.createTraceReportFile(context, jsonString);
+                return zipFile.getAbsolutePath();
             } else {
                 return null;
             }
