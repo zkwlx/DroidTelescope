@@ -1,7 +1,8 @@
 package andr.perf.monitor.stack_traces;
 
 import android.os.Trace;
-import android.util.Log;
+
+import andr.perf.monitor.utils.Logger;
 
 /**
  * 使用 Android 提供的 SysTrace 方法来收集调用栈耗时
@@ -22,12 +23,11 @@ public class SysTraceMethodSampler extends AbstractMethodSampler {
         if (isNotUIThread()) {
             return;
         }
-//        String signature = createSignature(cls, method, argTypes);
         String signature = cls + "." + method;
         if (signature.length() <= 127) {
             Trace.beginSection(signature);
         } else {
-            Log.i("zkw", "what!?  >>>>>>" + createSignature(cls, method, argTypes));
+            Logger.i("[ERROR:] On SysTrace, method signature > 127: " + createSignature(cls, method, argTypes));
         }
     }
 

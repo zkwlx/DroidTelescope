@@ -104,6 +104,7 @@ class JavassistHandler {
     }
 
     static void injectForCpu(CtClass clazz) {
+        long time = System.currentTimeMillis()
         CtMethod[] ctMethods = clazz.getDeclaredMethods();
         for (CtMethod ctMethod : ctMethods) {
             CpuCodeInject.insertCpuSampleCode(clazz, ctMethod);
@@ -116,6 +117,8 @@ class JavassistHandler {
         for (CtConstructor classInitializer : classInitializeres) {
             CpuCodeInject.insertCpuSampleCode(clazz, classInitializer)
         }
+        time = System.currentTimeMillis() - time
+        Logger.i("Inject cpu sample code in ${time}ms, class: ${clazz.name}")
     }
 
     private static void injectForMemory(CtClass clazz) {
@@ -123,6 +126,7 @@ class JavassistHandler {
             //不是内存监控模块关心的类，不注入
             return
         }
+        long time = System.currentTimeMillis()
         List<IMethodHandler> methodHandlers;
         if (MemoryCodeInject.isV4OrV7Class(clazz)) {
             methodHandlers = getV4MethodHandlers()
@@ -133,17 +137,17 @@ class JavassistHandler {
         CtMethod[] ctMethods = clazz.getDeclaredMethods();
         int successCount = 0
         for (CtMethod ctMethod : ctMethods) {
-            Logger.i("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
+            Logger.d("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
             int modifiers = ctMethod.getModifiers();
             if (Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)) {
-                Logger.i(
+                Logger.d(
                         "static or native!!!Don't inject>> ${clazz.name}.${ctMethod.name}")
                 continue
             }
             for (IMethodHandler handler : methodHandlers) {
                 if (handler.handleMethod(clazz, ctMethod)) {
                     //TODO 这里对一个方法处理成功，是否退出循环，开始下一个方法？
-                    Logger.i("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
+                    Logger.d("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
                     successCount++
                 }
             }
@@ -157,6 +161,8 @@ class JavassistHandler {
         for (IMethodHandler handler : methodHandlers) {
             handler.checkMethodAndAdd(clazz)
         }
+        time = System.currentTimeMillis() - time
+        Logger.i("Inject memory sample code duration: ${time}, class: ${clazz.name}")
     }
 
     private static void injectForInteractive(CtClass clazz) {
@@ -169,7 +175,7 @@ class JavassistHandler {
 //        }
         //TODO 暂时只判断 Config 的子类，注意！！
         if (clazz.superclass.name == "andr.perf.monitor.Config") {
-            Logger.i("Found Config subclass:>>>" + clazz.name)
+            Logger.d("Found Config subclass:>>>" + clazz.name)
             return true
         } else {
             return false

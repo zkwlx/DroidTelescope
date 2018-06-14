@@ -1,6 +1,5 @@
 package andr.perf.monitor.stack_traces;
 
-import android.util.Log;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -9,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.Config;
 import andr.perf.monitor.cpu.models.MethodInfo;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * 详细的方法采样器，记录内容包括各自线程的方法耗时、方法调用栈。
@@ -86,7 +86,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         //threadMethodStack无需remove，有两个原因：一是同线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         if (methodStack == null) {
-            Log.i("zkw", "[ERROR:]" + createSignature(cls, method, argTypes) + ", threadName:" + Thread.currentThread().getName());
+            Logger.i("zkw", "[ERROR:]" + createSignature(cls, method, argTypes) + ", threadName:" + Thread.currentThread().getName());
             Exception e = new Exception();
             e.printStackTrace();
         }

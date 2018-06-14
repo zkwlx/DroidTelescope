@@ -11,8 +11,8 @@ import monitor.plugin.utils.Logger
  */
 class CpuCodeInject {
 
-    public static void insertCpuSampleCode(CtClass clazz, CtBehavior ctBehavior) {
-        Logger.i("inject Cpu sample code:::>>>> ${clazz.name}.${ctBehavior.name}")
+    static void insertCpuSampleCode(CtClass clazz, CtBehavior ctBehavior) {
+        Logger.d("inject Cpu sample code:::>>>> ${clazz.name}.${ctBehavior.name}")
         if (ctBehavior.isEmpty() || Modifier.isNative(ctBehavior.getModifiers())) {
             return;
         }

@@ -32,12 +32,7 @@ class Injector {
 
     static void inject(File file) {
         if (file) {
-            String filePath = file.absolutePath;
-//            if (file.isDirectory()) {
-//                injectForDir(file)
-//            } else if (filePath.endsWith(".jar")) {
-//                injectForJar(file)
-//            }
+            String filePath = file.absolutePath
             if (filePath.endsWith(".jar")) {
                 injectForJar(file)
             } else {
@@ -92,11 +87,9 @@ class Injector {
             InputStream inputStream = jarFile.getInputStream(entry)
             output.putNextEntry(zipEntry)
             if (shouldInjectJarClass(entryName)) {
-//                Logger.i("---->handle jar:${entryName}")
                 def bytes = JavassistHandler.handleClass(entryName, inputStream)
                 output.write(bytes)
             } else {
-//                Logger.i("skip class:>> " + entryName)
                 output.write(inputStream.getBytes())
             }
             output.closeEntry()

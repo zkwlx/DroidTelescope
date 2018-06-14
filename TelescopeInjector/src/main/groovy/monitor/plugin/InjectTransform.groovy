@@ -21,7 +21,9 @@ class InjectTransform extends IncrementalTransform {
     private static Set<QualifiedContent.Scope> careScopes
     private static List<File> javassistClassPath
     private static List<File> toBeInjectFiles
-    boolean isDisable
+    private long timestamp
+    private boolean isDisable
+
 
     private List<String> mExcludePackages = ["andr.perf.monitor"]
     private List<String> mExcludeClasses = []
@@ -54,6 +56,7 @@ class InjectTransform extends IncrementalTransform {
 
     @Override
     void onTransformStart(TransformInvocation invocation) {
+        timestamp = System.currentTimeMillis()
         def config = ConfigProvider.config
         boolean isDebug = isDebug(invocation.context)
         isDisable = ((isDebug && !config.debugEnabled) || (!isDebug && !config.releaseEnabled))
@@ -114,6 +117,8 @@ class InjectTransform extends IncrementalTransform {
                 Injector.inject(file)
             }
         }
+        int duration = System.currentTimeMillis() - timestamp
+        Logger.i("-------InjectPluginTransform finish in ${duration} ms-------")
     }
 
     void setFilter(InjectConfig config) {

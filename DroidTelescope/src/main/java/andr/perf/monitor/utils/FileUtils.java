@@ -1,14 +1,11 @@
 package andr.perf.monitor.utils;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -35,7 +32,7 @@ public class FileUtils {
      */
     public static void copyFile(File fromFile, String toFilePath) {
         if (fromFile == null || TextUtils.isEmpty(toFilePath) || !fromFile.exists()) {
-            Log.i(TAG, "File copy failed!");
+            Logger.i(TAG, "File copy failed!");
             return;
         }
         File toFile = new File(toFilePath);
@@ -45,7 +42,7 @@ public class FileUtils {
         File fileParent = toFile.getParentFile();
         if (!fileParent.exists()) {
             if (!fileParent.mkdirs()) {
-                Log.e(TAG, "Make dirs false! dir:" + fileParent.getAbsolutePath());
+                Logger.e(TAG, "Make dirs false! dir:" + fileParent.getAbsolutePath());
             }
         }
         try {
@@ -72,7 +69,7 @@ public class FileUtils {
      */
     public static void copyFile(InputStream fromStream, String toFilePath, boolean force) {
         if (fromStream == null || TextUtils.isEmpty(toFilePath)) {
-            Log.i(TAG, "File copy failed!");
+            Logger.i(TAG, "File copy failed!");
             return;
         }
         File toFile = new File(toFilePath);
@@ -84,7 +81,7 @@ public class FileUtils {
         File fileParent = toFile.getParentFile();
         if (!fileParent.exists()) {
             if (!fileParent.mkdirs()) {
-                Log.e(TAG, "Make dirs false! dir:" + fileParent.getAbsolutePath());
+                Logger.e(TAG, "Make dirs false! dir:" + fileParent.getAbsolutePath());
             }
         }
         try {
@@ -181,7 +178,7 @@ public class FileUtils {
         }
         File dir = new File(dirPath);
         if (!dir.mkdirs()) {
-            Log.e(TAG, "Make dirs false! dir:" + dir.getAbsolutePath());
+            Logger.e(TAG, "Make dirs false! dir:" + dir.getAbsolutePath());
         }
         return dir;
     }
@@ -194,7 +191,7 @@ public class FileUtils {
         File fileParent = file.getParentFile();
         if (!fileParent.exists()) {
             if (!fileParent.mkdirs()) {
-                Log.e(TAG, "Make dirs false! dir:" + fileParent.getAbsolutePath());
+                Logger.e(TAG, "Make dirs false! dir:" + fileParent.getAbsolutePath());
             }
         }
         try {
