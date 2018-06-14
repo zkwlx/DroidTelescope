@@ -31,7 +31,7 @@ public class TracesMonitor {
     public static void startTracing() {
         if (isTracing) {
             //不允许重复追踪
-            return;
+            throw new StartTracingException("不允许多次启动[方法追踪]，请停止之后再启动！");
         }
         startWallClockTimeMs = System.currentTimeMillis();
         startCpuTimeMs = SystemClock.currentThreadTimeMillis();
