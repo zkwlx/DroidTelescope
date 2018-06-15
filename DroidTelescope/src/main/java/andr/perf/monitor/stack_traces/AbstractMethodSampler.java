@@ -15,6 +15,7 @@ public abstract class AbstractMethodSampler {
 
     /**
      * root方法列表，可以根据每个root方法解析出调用栈
+     * TODO 貌似是 DetailedMethodSampler 特有的数据，考虑放到子类
      */
     private final Collection<MethodInfo> rootMethodList;
 
@@ -76,7 +77,11 @@ public abstract class AbstractMethodSampler {
         return list;
     }
 
-    public void cleanRootMethodList() {
+    public void cleanStack() {
+        cleanRootMethodList();
+    }
+
+    private void cleanRootMethodList() {
         synchronized (rootMethodList) {
             rootMethodList.clear();
         }

@@ -46,6 +46,7 @@ public class TracesMonitor {
     public static String stopTracing(Context context) {
         if (isTracing) {
             isTracing = false;
+            //TODO 加个判断比较好，因为有些 Sampler 没有栈数据，比如 SysTrace
             JSONArray jsonArray = createJSONMethodTraces();
             if (jsonArray != null) {
                 String jsonString = jsonArray.toString();
@@ -78,7 +79,8 @@ public class TracesMonitor {
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
-            SamplerFactory.getMethodSampler().cleanRootMethodList();
+            // 调用栈使用完后清理！
+            SamplerFactory.getMethodSampler().cleanStack();
         }
         return result;
     }

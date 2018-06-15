@@ -10,6 +10,7 @@ import andr.perf.monitor.cpu.BlockMonitorManager;
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.memory.models.LeakInfo;
 import andr.perf.monitor.stack_traces.TracesMonitor;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -38,7 +39,9 @@ public class DroidTelescope {
     }
 
     public static void install(Config config) {
+        //TODO config 中很多配置可以改成 builder 模式的
         monitorConfig = (config == null ? new Config() : config);
+        Logger.isDebug = monitorConfig.debugLog();
         if (monitorConfig.useSysTrace()) {
             openSysTraceReleaseAllow();
         }

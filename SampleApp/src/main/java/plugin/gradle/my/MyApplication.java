@@ -12,8 +12,10 @@ import java.util.Random;
 import andr.perf.monitor.Config;
 import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.cpu.models.BlockInfo;
+import andr.perf.monitor.injected.TimeConsumingSample;
 import andr.perf.monitor.memory.models.LeakInfo;
 import andr.perf.monitor.persist.ConvertUtils;
+import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -27,20 +29,32 @@ public class MyApplication extends Application {
     private DroidTelescope.LeakListener leakListener = new MyLeakListener();
 
 
-    {
-        DroidTelescope.setBlockListener(blockListener);
-        DroidTelescope.setLeakListener(leakListener);
-        DroidTelescope.install(config);
-        DroidTelescope.startMethodTracing();
-    }
+//    {
+//        DroidTelescope.setBlockListener(blockListener);
+//        DroidTelescope.setLeakListener(leakListener);
+//        DroidTelescope.install(config);
+//        DroidTelescope.startMethodTracing();
+//    }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 //        DroidTelescope.setBlockListener(blockListener);
 //        DroidTelescope.setLeakListener(leakListener);
-//        DroidTelescope.install(config);
-//        DroidTelescope.startMethodTracing();
+        DroidTelescope.install(config);
+        DroidTelescope.startMethodTracing();
+//        TimeConsumingSample.methodEnter("plugin.gradle.my.MyApplication", "attachBaseContext", "android.content.Context");
+
+        fuck();
+    }
+
+    private void fuck() {
+        Logger.d("----");
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -62,6 +76,11 @@ public class MyApplication extends Application {
         @Override
         public boolean justRecordUIThread() {
             return false;
+        }
+
+        @Override
+        public boolean debugLog() {
+            return true;
         }
     }
 

@@ -9,15 +9,24 @@ public class Logger {
 
     private static final String TAG = "zkw";
 
-    private static boolean isDebug = true;
+    public static boolean isDebug = false;
 
     public static void i(String content) {
+        Log.i(TAG, content);
+    }
+
+    public static void i(String tag, String content) {
+        tag = TAG + "_" + tag;
+        Log.i(tag, content);
+    }
+
+    public static void d(String content) {
         if (isDebug) {
             Log.i(TAG, content);
         }
     }
 
-    public static void i(String tag, String content) {
+    public static void d(String tag, String content) {
         if (isDebug) {
             tag = TAG + "_" + tag;
             Log.i(tag, content);
@@ -25,16 +34,12 @@ public class Logger {
     }
 
     public static void e(String content) {
-        if (isDebug) {
-            Log.e(TAG, content);
-        }
+        Log.e(TAG, content);
     }
 
     public static void e(String tag, String content) {
-        if (isDebug) {
-            tag = TAG + "_" + tag;
-            Log.e(tag, content);
-        }
+        tag = TAG + "_" + tag;
+        Log.e(tag, content);
     }
 
 }

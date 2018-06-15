@@ -49,9 +49,19 @@ public class Config {
 
     /**
      * 使用框架自带的耗时收集模块，还是使用 Android 提供的 SysTrace 耗时检测模块
+     *
      * @return
      */
     public boolean useSysTrace() {
+        return false;
+    }
+
+    /**
+     * 是否打印 debug 日志
+     *
+     * @return
+     */
+    public boolean debugLog() {
         return false;
     }
 

@@ -71,7 +71,7 @@ public class LooperMonitor extends BlockMonitor {
                 }
 
                 //TODO 这里会影响性能，注意优化
-                SamplerFactory.getMethodSampler().cleanRootMethodList();
+                SamplerFactory.getMethodSampler().cleanStack();
             }
         }
     };

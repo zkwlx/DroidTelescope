@@ -1,6 +1,7 @@
 package andr.perf.monitor.stack_traces;
 
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,8 +38,13 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
     @Override
     public void onMethodEnter(final String cls, final String method, final String argTypes) {
         boolean isSkip = skipSampling();
+        boolean is = isSkip || !TracesMonitor.isTracing;
+        Logger.d("onEnter_skip:" + is + " -------" + createSignature(cls, method, argTypes));
         localSkip.set(isSkip);
         if (isSkip) {
+            return;
+        }
+        if (!TracesMonitor.isTracing) {
             return;
         }
         final long threadId = Thread.currentThread().getId();
@@ -65,46 +71,76 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         if (localSkip.get()) {
             return;
         }
+        if (!TracesMonitor.isTracing) {
+            return;
+        }
         final long threadId = Thread.currentThread().getId();
         //当方法非return语句退出时，不会回调onMethodExit()
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
-        //获取当前线程调用栈的栈顶方法，并更新记录数据
-        MethodInfo topMethod = methodStack.peekFirst();
-        topMethod.setWallClockTimeNs(wallClockTimeNs);
-        topMethod.setCpuTimeMs(cpuTimeMs);
-        //进入这里的方法都是正常退出的方法
-        topMethod.setNormalExit();
+        if (methodStack != null && !methodStack.isEmpty()) {
+            //获取当前线程调用栈的栈顶方法，并更新记录数据
+            MethodInfo topMethod = methodStack.peekFirst();
+            topMethod.setWallClockTimeNs(wallClockTimeNs);
+            topMethod.setCpuTimeMs(cpuTimeMs);
+            //进入这里的方法都是正常退出的方法
+            topMethod.setNormalExit();
+        } else {
+            //退出方法时，自己不在栈中，可能是因为DroidTelescope.startMethodTracing()方法在自己里面调用
+            Logger.d("onExit no stack,or stack is empty!-------" + createSignature(cls, method, argTypes));
+        }
     }
 
     @Override
     public void onMethodExitFinally(String cls, final String method, String argTypes) {
+        boolean isSkip = localSkip.get() || !TracesMonitor.isTracing;
+        Logger.d("onFinally_skip:" + isSkip + " -------" + createSignature(cls, method, argTypes));
         if (localSkip.get()) {
+            return;
+        }
+        if (!TracesMonitor.isTracing) {
             return;
         }
         final long threadId = Thread.currentThread().getId();
         //方法无论是return退出还是异常throw退出，都会回调onMethodExitFinally()
         //threadMethodStack无需remove，有两个原因：一是同线程可能再次记录调用栈，所以缓存调用栈结构；二是调用栈本身会清空。
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
-        if (methodStack == null) {
-            Logger.i("zkw", "[ERROR:]" + createSignature(cls, method, argTypes) + ", threadName:" + Thread.currentThread().getName());
-            Exception e = new Exception();
-            e.printStackTrace();
-        }
-        MethodInfo topMethod = methodStack.pop();
-        Config config = DroidTelescope.getConfig();
-        if (config.shouldRecordMethod(topMethod.getWallClockTimeNs(), topMethod.getCpuTimeMs())) {
-            //弹出当前线程的栈顶Method，如果栈为空了，说明这个栈顶Method是个rootMethod，保存到root列表
-            if (methodStack.isEmpty()) {
-                addRootMethod(topMethod);
-            } else {
-                //如果当前调用栈不为空，说明此方法是个子方法，于是添加到rootMethod的调用队列当中
-                MethodInfo rootMethod = methodStack.peekFirst();
-                rootMethod.addInnerMethod(topMethod);
+        if (methodStack != null && !methodStack.isEmpty()) {
+            MethodInfo topMethod = methodStack.pop();
+            Config config = DroidTelescope.getConfig();
+            if (config.shouldRecordMethod(topMethod.getWallClockTimeNs(), topMethod.getCpuTimeMs())) {
+                //弹出当前线程的栈顶Method，如果栈为空了，说明这个栈顶Method是个rootMethod，保存到root列表
+                if (methodStack.isEmpty()) {
+                    addRootMethod(topMethod);
+                } else {
+                    //如果当前调用栈不为空，说明此方法是个子方法，于是添加到rootMethod的调用队列当中
+                    MethodInfo rootMethod = methodStack.peekFirst();
+                    rootMethod.addInnerMethod(topMethod);
+                }
             }
+        } else {
+            //退出方法时，自己不在栈中，可能是因为DroidTelescope.startMethodTracing()方法在自己里面调用
+            Logger.d("onFinally no stack,or stack is empty!-------" + createSignature(cls, method, argTypes));
         }
     }
 
+    @Override
+    public void cleanStack() {
+        // TODO 这种判断方式不太好，其他功能想要 tracing 就尴尬了
+        if (!TracesMonitor.isTracing) {
+            //当停止追踪时，才允许 clean。
+            super.cleanStack();
+            synchronized (threadMethodStack) {
+                for (Deque<MethodInfo> stack : threadMethodStack.values()) {
+                    if (stack != null) {
+                        stack.clear();
+                    }
+                }
+            }
+        }
+
+    }
+
     private boolean skipSampling() {
-        return !TracesMonitor.isTracing || configJustRecordUiThread && isNotUIThread();
+        return configJustRecordUiThread && isNotUIThread();
     }
 }
