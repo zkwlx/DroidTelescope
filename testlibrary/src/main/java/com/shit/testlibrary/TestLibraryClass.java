@@ -7,12 +7,17 @@ import android.util.Log;
  */
 public class TestLibraryClass {
 
-    public void startTestt() {
-        Log.i("》》》》》》》》", "i am test!!!");
+    public synchronized void startTestt() {
+        Log.i("zkw", ">>>>>>i am test!!!");
+        try {
+            Thread.sleep(15000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void toding() {
-        Log.i("zkw", "tututu");
+    public synchronized void toding() {
+        Log.i("zkw", ">>>>>>> tututu");
     }
 
 //    public void toding2() {

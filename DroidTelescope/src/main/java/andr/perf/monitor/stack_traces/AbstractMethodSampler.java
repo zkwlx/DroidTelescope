@@ -4,6 +4,7 @@ import android.os.Looper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.List;
 
 import andr.perf.monitor.cpu.models.MethodInfo;
@@ -50,6 +51,14 @@ public abstract class AbstractMethodSampler {
      */
     public abstract void onMethodExitFinally(String cls, String method, String argTypes);
 
+    /**
+     * 获取当前调用线程的调用栈
+     * <p><b>注意要返回 clone 后的堆栈，因为 Sampler 会动态修改堆栈</b></p>
+     *
+     * @return
+     */
+    public abstract Deque<MethodInfo> cloneCurrentThreadStack();
+
     void addRootMethod(MethodInfo method) {
         synchronized (rootMethodList) {
             rootMethodList.add(method);
@@ -79,5 +88,4 @@ public abstract class AbstractMethodSampler {
             rootMethodList.clear();
         }
     }
-
 }

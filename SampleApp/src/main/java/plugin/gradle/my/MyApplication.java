@@ -95,7 +95,7 @@ public class MyApplication extends Application {
 
         @Override
         public boolean useSysTrace() {
-            return false;
+            return true;
         }
 
         @Override

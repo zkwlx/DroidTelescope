@@ -202,6 +202,10 @@ public class MainActivity extends AppCompatActivity {
         }
         gogo(87878787);
 
+        if (test == null) {
+            test = new TestLibraryClass();
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -211,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
+                test.startTestt();
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -219,19 +224,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
-        if (test == null) {
-            test = new TestLibraryClass();
-        }
-        test.startTestt();
-
-
         try {
             Thread.sleep(600);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new TestLibraryClass().startTestt();
+        test.toding();
 
+//        new TestLibraryClass().startTestt();
         stopTracing();
 
     }

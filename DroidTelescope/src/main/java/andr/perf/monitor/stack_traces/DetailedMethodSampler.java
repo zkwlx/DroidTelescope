@@ -141,7 +141,8 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
 
     }
 
-    public Deque<MethodInfo> getCurrentThreadStack() {
+    @Override
+    public Deque<MethodInfo> cloneCurrentThreadStack() {
         final long threadId = Thread.currentThread().getId();
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         Deque<MethodInfo> copy = new LinkedList<>();
