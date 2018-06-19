@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -23,11 +22,7 @@ import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
 
-import java.util.Random;
-
 import andr.perf.monitor.DroidTelescope;
-import andr.perf.monitor.injected.TimeConsumingSample;
-import andr.perf.monitor.utils.Logger;
 import plugin.gradle.my.concurrent_test.ExecutorManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -199,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 //        Intent i = new Intent(this, SecondActivity.class);
 //        startActivity(i);
         DroidTelescope.startMethodTracing();
-        TimeConsumingSample.methodEnter("plugin.gradle.my.MainActivity", "onSlowClick", "android.view.View");
+//        TimeConsumingSample.methodEnter("plugin.gradle.my.MainActivity", "onSlowClick", "android.view.View");
         try {
             g2();
         } catch (IllegalAccessException e) {
@@ -239,14 +234,6 @@ public class MainActivity extends AppCompatActivity {
 
         stopTracing();
 
-        TimeConsumingSample.methodExit(System.nanoTime() - 100000, SystemClock.currentThreadTimeMillis() - 100, "plugin.gradle.my.MainActivity", "onSlowClick", "android.view.View");
-        TimeConsumingSample.methodExitFinally("plugin.gradle.my.MainActivity", "onSlowClick", "android.view.View");
-        String path = DroidTelescope.stopMethodTracing(this);
-        if (!TextUtils.isEmpty(path)) {
-            Log.i("zkw", "加载完成。。。。。。。。:::>" + path);
-        } else {
-            Log.i("zkw", "path is null!!!!!!");
-        }
     }
 
     private void stopTracing() {
@@ -257,12 +244,16 @@ public class MainActivity extends AppCompatActivity {
         }
 //        TimeConsumingSample.methodExit(System.nanoTime() - 100000, SystemClock.currentThreadTimeMillis() - 100, "plugin.gradle.my.MainActivity", "stopTracing", "");
 //        TimeConsumingSample.methodExitFinally("plugin.gradle.my.MainActivity", "stopTracing", "");
-//        String path = DroidTelescope.stopMethodTracing(this);
-//        if (!TextUtils.isEmpty(path)) {
-//            Log.i("zkw", "加载完成。。。。。。。。:::>" + path);
-//        } else {
-//            Log.i("zkw", "path is null!!!!!!");
-//        }
+        stopTracing("nnn");
+    }
+
+    private void stopTracing(String string) {
+        String path = DroidTelescope.stopMethodTracing(this);
+        if (!TextUtils.isEmpty(path)) {
+            Log.i("zkw", "加载完成。。。。。。。。:::>" + path);
+        } else {
+            Log.i("zkw", "path is null!!!!!!");
+        }
     }
 
     public int gogo(int c) {
@@ -278,18 +269,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public Object g2() throws IllegalAccessException {
-        int a = new Random().nextInt(100);
         if (isT("")) {
             Log.i("g2", "isT() true");
-        } else if (a > 5) {
-            Log.i("g2", "isT() false>>> " + a);
             throw new IllegalAccessException();
-        }
-        if (a < 5) {
-            Log.i("g2", "a>>> " + a);
-            return "aaa";
-        } else {
-            Log.i("g2", "......." + a);
         }
         try {
             throw new NullPointerException();
@@ -298,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
         } finally {
             Log.i("g2", "finally");
         }
-        Log.i("g2", ">>>>>" + a);
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -314,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return new Random().nextInt(10) > 5;
+        return true;
     }
 
     private boolean stoped = false;
@@ -336,10 +317,6 @@ public class MainActivity extends AppCompatActivity {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-        StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
-        for (StackTraceElement s : stackArray) {
-            Logger.d(s.toString());
         }
         String path = DroidTelescope.stopMethodTracing(this.getApplicationContext());
         if (!TextUtils.isEmpty(path)) {

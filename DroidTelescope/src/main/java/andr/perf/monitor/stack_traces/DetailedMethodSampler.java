@@ -1,7 +1,6 @@
 package andr.perf.monitor.stack_traces;
 
 
-import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +38,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
     public void onMethodEnter(final String cls, final String method, final String argTypes) {
         boolean isSkip = skipSampling();
         boolean is = isSkip || !TracesMonitor.isTracing;
-        Logger.d("onEnter_skip:" + is + " -------" + createSignature(cls, method, argTypes));
+        Logger.d("onEnter_skip:" + is + " -------" + cls + "." + method + "(" + argTypes + ")");
         localSkip.set(isSkip);
         if (isSkip) {
             return;
@@ -58,16 +57,18 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         //TODO 考虑使用对象池！！！！
         //创建新的MethodInfo
         MethodInfo info = new MethodInfo();
+        info.startTimestamp();
         info.setThreadId(threadId);
         info.setThreadName(threadName);
-        info.setSignature(createSignature(cls, method, argTypes));
+        info.setClassName(cls);
+        info.setMethodName(method);
+        info.setArgTypes(argTypes);
         //将当前方法添加到线程的临时调用栈
         methodStack.push(info);
     }
 
     @Override
-    public void onMethodExit(final long wallClockTimeNs, final long cpuTimeMs, final String cls,
-                             final String method, String argTypes) {
+    public void onMethodExit(final String cls, final String method, String argTypes) {
         if (localSkip.get()) {
             return;
         }
@@ -80,20 +81,18 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         if (methodStack != null && !methodStack.isEmpty()) {
             //获取当前线程调用栈的栈顶方法，并更新记录数据
             MethodInfo topMethod = methodStack.peekFirst();
-            topMethod.setWallClockTimeNs(wallClockTimeNs);
-            topMethod.setCpuTimeMs(cpuTimeMs);
             //进入这里的方法都是正常退出的方法
             topMethod.setNormalExit();
         } else {
             //退出方法时，自己不在栈中，可能是因为DroidTelescope.startMethodTracing()方法在自己里面调用
-            Logger.d("onExit no stack,or stack is empty!-------" + createSignature(cls, method, argTypes));
+            Logger.d("onExit no stack,or stack is empty!-------" + cls + "." + method + "(" + argTypes + ")");
         }
     }
 
     @Override
     public void onMethodExitFinally(String cls, final String method, String argTypes) {
         boolean isSkip = localSkip.get() || !TracesMonitor.isTracing;
-        Logger.d("onFinally_skip:" + isSkip + " -------" + createSignature(cls, method, argTypes));
+        Logger.d("onFinally_skip:" + isSkip + " -------" + cls + "." + method + "(" + argTypes + ")");
         if (localSkip.get()) {
             return;
         }
@@ -106,8 +105,10 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
         if (methodStack != null && !methodStack.isEmpty()) {
             MethodInfo topMethod = methodStack.pop();
+            topMethod.calculateDuration();
             Config config = DroidTelescope.getConfig();
-            if (config.shouldRecordMethod(topMethod.getWallClockTimeNs(), topMethod.getCpuTimeMs())) {
+            //如果是非正常退出，例如抛异常，则强制入栈
+            if (!topMethod.isNormalExit() || config.shouldRecordMethod(topMethod.getWallClockTimeNs(), topMethod.getCpuTimeMs())) {
                 //弹出当前线程的栈顶Method，如果栈为空了，说明这个栈顶Method是个rootMethod，保存到root列表
                 if (methodStack.isEmpty()) {
                     addRootMethod(topMethod);
@@ -119,7 +120,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
             }
         } else {
             //退出方法时，自己不在栈中，可能是因为DroidTelescope.startMethodTracing()方法在自己里面调用
-            Logger.d("onFinally no stack,or stack is empty!-------" + createSignature(cls, method, argTypes));
+            Logger.d("onFinally no stack,or stack is empty!-------" + cls + "." + method + "(" + argTypes + ")");
         }
     }
 
@@ -138,6 +139,18 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
             }
         }
 
+    }
+
+    public Deque<MethodInfo> getCurrentThreadStack() {
+        final long threadId = Thread.currentThread().getId();
+        Deque<MethodInfo> methodStack = threadMethodStack.get(threadId);
+        Deque<MethodInfo> copy = new LinkedList<>();
+        if (methodStack != null && methodStack.size() > 0) {
+            for (MethodInfo info : methodStack) {
+                copy.addLast(info);
+            }
+        }
+        return copy;
     }
 
     private boolean skipSampling() {

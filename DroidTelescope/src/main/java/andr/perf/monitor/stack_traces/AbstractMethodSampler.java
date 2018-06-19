@@ -35,14 +35,11 @@ public abstract class AbstractMethodSampler {
     /**
      * 当方法正常return时，回调该接口
      *
-     * @param wallClockTimeNs
-     * @param cpuTimeMs
      * @param cls
      * @param method
      * @param argTypes
      */
-    public abstract void onMethodExit(long wallClockTimeNs, long cpuTimeMs, String cls, String method,
-                                      String argTypes);
+    public abstract void onMethodExit(String cls, String method, String argTypes);
 
     /**
      * 方法无论怎样退出（比如异常退出、throw等），都回调此接口
@@ -57,10 +54,6 @@ public abstract class AbstractMethodSampler {
         synchronized (rootMethodList) {
             rootMethodList.add(method);
         }
-    }
-
-    String createSignature(String className, String methodName, String argTypes) {
-        return className + "." + methodName + "(" + argTypes + ")";
     }
 
     boolean isNotUIThread() {

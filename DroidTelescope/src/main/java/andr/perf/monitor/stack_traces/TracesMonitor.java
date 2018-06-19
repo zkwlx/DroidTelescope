@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
+import java.util.Deque;
 import java.util.List;
 
 import andr.perf.monitor.SamplerFactory;
@@ -44,6 +45,7 @@ public class TracesMonitor {
      * @return
      */
     public static String stopTracing(Context context) {
+        finishRemainMethod();
         if (isTracing) {
             isTracing = false;
             //TODO 加个判断比较好，因为有些 Sampler 没有栈数据，比如 SysTrace
@@ -57,6 +59,19 @@ public class TracesMonitor {
             }
         } else {
             return null;
+        }
+    }
+
+    private static void finishRemainMethod() {
+        AbstractMethodSampler methodSampler = SamplerFactory.getMethodSampler();
+        if (methodSampler instanceof DetailedMethodSampler) {
+            //遍历当前线程的方法栈，回调他们的 Exit
+            Deque<MethodInfo> methodStack = ((DetailedMethodSampler) methodSampler).getCurrentThreadStack();
+            for (MethodInfo info : methodStack) {
+                Logger.d("exit---- " + info.getSignature());
+                SamplerFactory.getMethodSampler().onMethodExit(info.getClassName(), info.getMethodName(), info.getArgTypes());
+                SamplerFactory.getMethodSampler().onMethodExitFinally(info.getClassName(), info.getMethodName(), info.getArgTypes());
+            }
         }
     }
 

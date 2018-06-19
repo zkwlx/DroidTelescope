@@ -1,8 +1,13 @@
 package andr.perf.monitor.cpu.models;
 
+import android.os.SystemClock;
+import android.text.TextUtils;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+
+import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 17/3/24.
@@ -33,9 +38,16 @@ public class MethodInfo implements Serializable {
      */
     private String signature;
 
+    private String className;
+
+    private String methodName;
+
+    private String argTypes;
+
     /**
      * 标示方法非正常return返回，比如throw、或者发生Exception
      * 如果true，说明正常return
+     * TODO 当使用对象池时，要初始化！
      */
     private boolean isNormalExit = false;
 
@@ -52,6 +64,12 @@ public class MethodInfo implements Serializable {
     private LinkedList<MethodInfo> invokeTrace;
 
     /**
+     * 记录开始的时间戳
+     */
+    private long startNanoTime;
+    private long startThreadMsTime;
+
+    /**
      * 返回当前方法的所有子方法，按其调用顺序排序,
      * 注意，可能返回NULL！
      *
@@ -59,6 +77,19 @@ public class MethodInfo implements Serializable {
      */
     public List<MethodInfo> getInvokeTraceList() {
         return invokeTrace;
+    }
+
+    public void startTimestamp() {
+        startNanoTime = java.lang.System.nanoTime();
+        startThreadMsTime = SystemClock.currentThreadTimeMillis();
+    }
+
+    public void calculateDuration() {
+        if (startNanoTime == 0 || startThreadMsTime == 0) {
+            Logger.e("On calculateDuration(), times is 0! method: " + signature);
+        }
+        this.wallClockTimeNs = System.nanoTime() - startNanoTime;
+        this.cpuTimeMs = SystemClock.currentThreadTimeMillis() - startThreadMsTime;
     }
 
     public void addInnerMethod(MethodInfo innerMethod) {
@@ -69,27 +100,19 @@ public class MethodInfo implements Serializable {
     }
 
     public String getSignature() {
+        if (TextUtils.isEmpty(signature)) {
+            signature = createSignature(className, methodName, argTypes);
+        }
+        //TODO 当使用对象池时，签名要初始化！
         return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
     }
 
     public long getCpuTimeMs() {
         return cpuTimeMs;
     }
 
-    public void setCpuTimeMs(long cpuTimeMs) {
-        this.cpuTimeMs = cpuTimeMs;
-    }
-
     public long getWallClockTimeNs() {
         return wallClockTimeNs;
-    }
-
-    public void setWallClockTimeNs(long wallClockTimeNs) {
-        this.wallClockTimeNs = wallClockTimeNs;
     }
 
     @Override
@@ -129,5 +152,33 @@ public class MethodInfo implements Serializable {
 
     public void setThreadName(String threadName) {
         this.threadName = threadName;
+    }
+
+    private String createSignature(String className, String methodName, String argTypes) {
+        return className + "." + methodName + "(" + argTypes + ")";
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public String getArgTypes() {
+        return argTypes;
+    }
+
+    public void setArgTypes(String argTypes) {
+        this.argTypes = argTypes;
     }
 }

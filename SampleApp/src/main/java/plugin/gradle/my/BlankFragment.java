@@ -102,8 +102,7 @@ public class BlankFragment extends Fragment {
                 for (int i = 0; i < 20000; i++) {
                     SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
                     SamplerFactory.getMethodSampler()
-                            .onMethodExit(System.nanoTime(), System.currentTimeMillis(), "Classssss", "goooo",
-                                    "int,String");
+                            .onMethodExit("Classssss", "goooo", "int,String");
                     SamplerFactory.getMethodSampler().onMethodExitFinally("Classssss", "goooo", "int,String");
                 }
                 //                try {
@@ -173,8 +172,7 @@ public class BlankFragment extends Fragment {
                     for (int j = 0; j < 10; j++) {
                         SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
                         SamplerFactory.getMethodSampler()
-                                .onMethodExit(System.nanoTime(), System.currentTimeMillis(), "Classssss",
-                                        "goooo", "int,String");
+                                .onMethodExit("Classssss", "goooo", "int,String");
                         SamplerFactory.getMethodSampler()
                                 .onMethodExitFinally("Classssss", "goooo", "int,String");
                     }

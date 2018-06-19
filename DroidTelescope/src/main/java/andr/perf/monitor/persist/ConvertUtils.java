@@ -149,7 +149,7 @@ public class ConvertUtils {
     private static JSONObject createMethodJSONObject(MethodInfo method) throws JSONException {
         count++;
         JSONObject methodJson = new JSONObject();
-        methodJson.put("method_signature", method.getSignature());
+        methodJson.put("method_signature", getSignature(method));
         methodJson.put("id", count);
         methodJson.put("thread_id", method.getThreadId());
         methodJson.put("thread_name", method.getThreadName());
@@ -212,7 +212,7 @@ public class ConvertUtils {
     private static JSONObject createMethodWebJson(MethodInfo method) throws JSONException {
         web_count++;
         JSONObject methodJson = new JSONObject();
-        methodJson.put("method_signature", method.getSignature());
+        methodJson.put("method_signature", getSignature(method));
         methodJson.put("id", web_count);
         methodJson.put("thread_id", method.getThreadId());
         methodJson.put("thread_name", method.getThreadName());
@@ -231,6 +231,20 @@ public class ConvertUtils {
             }
         }
         return methodJson;
+    }
+
+    /**
+     * 根据方法是否正常退出修改签名，为了不增加字段的临时方案
+     *
+     * @param methodInfo
+     * @return
+     */
+    private static String getSignature(MethodInfo methodInfo) {
+        if (methodInfo.isNormalExit()) {
+            return methodInfo.getSignature();
+        } else {
+            return methodInfo.getSignature() + " --> throw exception!";
+        }
     }
 
 }

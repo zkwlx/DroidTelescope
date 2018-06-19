@@ -1,7 +1,5 @@
 package andr.perf.monitor.injected;
 
-import android.os.SystemClock;
-
 import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.SamplerFactory;
 
@@ -34,14 +32,11 @@ public class TimeConsumingSample {
         SamplerFactory.getMethodSampler().onMethodEnter(cls, method, argTypes);
     }
 
-    public static void methodExit(long startTimeNano, long startThreadTime, String cls, String method,
-                                  String argTypes) {
+    public static void methodExit(String cls, String method, String argTypes) {
         if (!isInited) {
             return;
         }
-        long wallClockTimeNs = System.nanoTime() - startTimeNano;
-        long cpuTimeMs = SystemClock.currentThreadTimeMillis() - startThreadTime;
-        SamplerFactory.getMethodSampler().onMethodExit(wallClockTimeNs, cpuTimeMs, cls, method, argTypes);
+        SamplerFactory.getMethodSampler().onMethodExit(cls, method, argTypes);
     }
 
     public static void methodExitFinally(String cls, String method, String argTypes) {

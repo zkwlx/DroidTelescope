@@ -27,13 +27,12 @@ public class SysTraceMethodSampler extends AbstractMethodSampler {
         if (signature.length() <= 127) {
             Trace.beginSection(signature);
         } else {
-            Logger.i("[ERROR:] On SysTrace, method signature > 127: " + createSignature(cls, method, argTypes));
+            Logger.i("[ERROR:] On SysTrace, method signature > 127: " + cls + "." + method + "(" + argTypes + ")");
         }
     }
 
     @Override
-    public void onMethodExit(long wallClockTimeNs, long cpuTimeMs, String cls, String method, String argTypes) {
-
+    public void onMethodExit(String cls, String method, String argTypes) {
     }
 
     @Override

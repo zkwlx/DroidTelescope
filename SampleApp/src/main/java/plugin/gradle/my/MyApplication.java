@@ -41,17 +41,37 @@ public class MyApplication extends Application {
         super.attachBaseContext(base);
 //        DroidTelescope.setBlockListener(blockListener);
 //        DroidTelescope.setLeakListener(leakListener);
-        DroidTelescope.install(config);
-        DroidTelescope.startMethodTracing();
+
 //        TimeConsumingSample.methodEnter("plugin.gradle.my.MyApplication", "attachBaseContext", "android.content.Context");
 
         fuck();
+        b();
     }
 
     private void fuck() {
         Logger.d("----");
         try {
             Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        DroidTelescope.install(config);
+        DroidTelescope.startMethodTracing();
+        a();
+    }
+
+    private void a() {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void b() {
+        try {
+            Thread.sleep(400);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -65,6 +85,11 @@ public class MyApplication extends Application {
     private static class AndrPerfMonitorConfig extends Config {
         @Override
         public boolean isBlock(long wallClockTimeMs, long cpuTimeMs) {
+            return true;
+        }
+
+        @Override
+        public boolean shouldRecordMethod(long wallClockTimeNs, long cpuTimeMs) {
             return true;
         }
 

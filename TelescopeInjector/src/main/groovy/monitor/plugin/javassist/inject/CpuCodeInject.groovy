@@ -17,17 +17,11 @@ class CpuCodeInject {
             return;
         }
 
-        ctBehavior.addLocalVariable("__cpu_use_ns", CtClass.longType);
-        ctBehavior.addLocalVariable("__cpu_use_thread_ms", CtClass.longType);
         ctBehavior.addLocalVariable("__cpu_switch", CtClass.booleanType);
         ctBehavior.insertBefore(
                 """
-                  __cpu_use_ns = 0L;
-                  __cpu_use_thread_ms = 0L;
                   __cpu_switch = andr.perf.monitor.injected.TimeConsumingSample.shouldMonitor();
                   if(__cpu_switch) {
-                      __cpu_use_ns = java.lang.System.nanoTime();
-                      __cpu_use_thread_ms = android.os.SystemClock.currentThreadTimeMillis();
                       andr.perf.monitor.injected.TimeConsumingSample.methodEnter("${
                     clazz.name
                 }", "${
@@ -39,7 +33,7 @@ class CpuCodeInject {
         ctBehavior.insertAfter(
                 """
                    if(__cpu_switch) {
-                       andr.perf.monitor.injected.TimeConsumingSample.methodExit(__cpu_use_ns, __cpu_use_thread_ms, "${
+                       andr.perf.monitor.injected.TimeConsumingSample.methodExit("${
                     clazz.name
                 }", "${
                     ctBehavior.name
