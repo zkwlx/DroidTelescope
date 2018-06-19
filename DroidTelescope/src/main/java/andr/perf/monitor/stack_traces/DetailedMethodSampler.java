@@ -1,8 +1,11 @@
 package andr.perf.monitor.stack_traces;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import andr.perf.monitor.DroidTelescope;
@@ -21,6 +24,11 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
      */
     private final ConcurrentHashMap<Long, Deque<MethodInfo>> threadMethodStack;
 
+    /**
+     * root方法列表，可以根据每个root方法解析出调用栈
+     */
+    private final Collection<MethodInfo> rootMethodList;
+
     private final ThreadLocal<Boolean> localSkip = new ThreadLocal<>();
 
     private final boolean configJustRecordUiThread;
@@ -29,6 +37,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         super();
         configJustRecordUiThread = DroidTelescope.getConfig().justRecordUIThread();
         threadMethodStack = new ConcurrentHashMap<>();
+        rootMethodList = new ArrayList<>();
     }
 
     //==============一次post任务到Looper要消耗1ms左右，所以当任务执行时间小于1ms，则不适用异步==============
@@ -129,7 +138,7 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
         // TODO 这种判断方式不太好，其他功能想要 tracing 就尴尬了
         if (!TracesMonitor.isTracing) {
             //当停止追踪时，才允许 clean。
-            super.cleanStack();
+            cleanRootMethodList();
             synchronized (threadMethodStack) {
                 for (Deque<MethodInfo> stack : threadMethodStack.values()) {
                     if (stack != null) {
@@ -152,6 +161,26 @@ public class DetailedMethodSampler extends AbstractMethodSampler {
             }
         }
         return copy;
+    }
+
+    public List<MethodInfo> getRootMethodList() {
+        ArrayList<MethodInfo> list;
+        synchronized (rootMethodList) {
+            list = new ArrayList<>(rootMethodList);
+        }
+        return list;
+    }
+
+    private void addRootMethod(MethodInfo method) {
+        synchronized (rootMethodList) {
+            rootMethodList.add(method);
+        }
+    }
+
+    private void cleanRootMethodList() {
+        synchronized (rootMethodList) {
+            rootMethodList.clear();
+        }
     }
 
     private boolean skipSampling() {

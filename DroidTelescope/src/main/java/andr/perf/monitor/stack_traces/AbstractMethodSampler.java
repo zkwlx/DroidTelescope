@@ -2,10 +2,7 @@ package andr.perf.monitor.stack_traces;
 
 import android.os.Looper;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
-import java.util.List;
 
 import andr.perf.monitor.cpu.models.MethodInfo;
 
@@ -14,14 +11,7 @@ import andr.perf.monitor.cpu.models.MethodInfo;
  */
 public abstract class AbstractMethodSampler {
 
-    /**
-     * root方法列表，可以根据每个root方法解析出调用栈
-     * TODO 貌似是 DetailedMethodSampler 特有的数据，考虑放到子类
-     */
-    private final Collection<MethodInfo> rootMethodList;
-
     AbstractMethodSampler() {
-        rootMethodList = new ArrayList<>();
     }
 
     /**
@@ -59,11 +49,10 @@ public abstract class AbstractMethodSampler {
      */
     public abstract Deque<MethodInfo> cloneCurrentThreadStack();
 
-    void addRootMethod(MethodInfo method) {
-        synchronized (rootMethodList) {
-            rootMethodList.add(method);
-        }
-    }
+    /**
+     * 清理内部数据结构
+     */
+    public abstract void cleanStack();
 
     boolean isNotUIThread() {
         final long mainThreadId = Looper.getMainLooper().getThread().getId();
@@ -71,21 +60,4 @@ public abstract class AbstractMethodSampler {
         return mainThreadId != currentId;
     }
 
-    public List<MethodInfo> getRootMethodList() {
-        ArrayList<MethodInfo> list;
-        synchronized (rootMethodList) {
-            list = new ArrayList<>(rootMethodList);
-        }
-        return list;
-    }
-
-    public void cleanStack() {
-        cleanRootMethodList();
-    }
-
-    private void cleanRootMethodList() {
-        synchronized (rootMethodList) {
-            rootMethodList.clear();
-        }
-    }
 }

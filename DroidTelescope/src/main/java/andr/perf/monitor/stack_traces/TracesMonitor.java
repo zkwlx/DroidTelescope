@@ -89,8 +89,11 @@ public class TracesMonitor {
         long wallClockTimeMs = System.currentTimeMillis() - startWallClockTimeMs;
         long cpuTimeMs = SystemClock.currentThreadTimeMillis() - startCpuTimeMs;
         AbstractMethodSampler methodSampler = SamplerFactory.getMethodSampler();
-        List<MethodInfo> methodInfoList = methodSampler.getRootMethodList();
-        if (methodInfoList.isEmpty()) {
+        List<MethodInfo> methodInfoList = null;
+        if (methodSampler instanceof DetailedMethodSampler) {
+            methodInfoList = ((DetailedMethodSampler) methodSampler).getRootMethodList();
+        }
+        if (methodInfoList == null || methodInfoList.isEmpty()) {
             Logger.i(TAG, "On tracing, but method list is empty!");
             return null;
         }

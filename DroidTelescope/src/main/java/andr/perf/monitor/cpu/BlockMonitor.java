@@ -6,6 +6,8 @@ import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.SamplerFactory;
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.cpu.models.MethodInfo;
+import andr.perf.monitor.stack_traces.AbstractMethodSampler;
+import andr.perf.monitor.stack_traces.DetailedMethodSampler;
 import andr.perf.monitor.utils.Logger;
 
 /**
@@ -20,8 +22,13 @@ public abstract class BlockMonitor {
     public abstract void stopBlockMonitoring();
 
     void onBlock(long wallClockTimeMs, long cpuTimeMs) {
-        List<MethodInfo> methodInfoList = SamplerFactory.getMethodSampler().getRootMethodList();
-        if (methodInfoList.isEmpty()) {
+        //TODO 卡顿监控不能使用 SysTrace 的采样方式！
+        List<MethodInfo> methodInfoList = null;
+        AbstractMethodSampler methodSampler = SamplerFactory.getMethodSampler();
+        if (methodSampler instanceof DetailedMethodSampler) {
+            methodInfoList = ((DetailedMethodSampler) methodSampler).getRootMethodList();
+        }
+        if (methodInfoList == null || methodInfoList.isEmpty()) {
             Logger.i(TAG, "On block, but method list is empty!");
             return;
         }

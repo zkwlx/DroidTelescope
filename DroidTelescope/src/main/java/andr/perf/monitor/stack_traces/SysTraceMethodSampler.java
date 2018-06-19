@@ -16,7 +16,7 @@ import andr.perf.monitor.utils.Logger;
  */
 public class SysTraceMethodSampler extends AbstractMethodSampler {
 
-    private Deque<MethodInfo> traceStack = new LinkedList<>();
+    private final Deque<MethodInfo> traceStack = new LinkedList<>();
 
     @Override
     public void onMethodEnter(String cls, String method, String argTypes) {
@@ -93,7 +93,6 @@ public class SysTraceMethodSampler extends AbstractMethodSampler {
         // TODO 这种判断方式不太好，其他功能想要 tracing 就尴尬了
         if (!TracesMonitor.isTracing) {
             //当停止追踪时，才允许 clean。
-            super.cleanStack();
             //理论上到这里 traceStack 应该是空的
             traceStack.clear();
         }
