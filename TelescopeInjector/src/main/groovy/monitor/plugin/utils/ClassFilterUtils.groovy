@@ -20,7 +20,7 @@ import org.gradle.util.TextUtil
 
 class ClassFilterUtils {
 
-    public static boolean skipThisClassForJar(String entryName) {
+    static boolean skipThisClassForJar(String entryName) {
         if (!entryName.endsWith(".class"))
             return true
         if (entryName.contains("/R\$") || entryName.endsWith("/R.class") || entryName.endsWith("/BuildConfig.class"))
@@ -29,7 +29,7 @@ class ClassFilterUtils {
         return false
     }
 
-    public static boolean skipThisClassForFile(String filePath) {
+    static boolean skipThisClassForFile(String filePath) {
         if (!filePath.endsWith(".class"))
             return true
         if (filePath.contains("${File.separator}R\$") || filePath.endsWith("${File.separator}R.class") ||
@@ -39,7 +39,7 @@ class ClassFilterUtils {
         return false
     }
 
-    public static Set<String> formatPath(Collection<String> paths) {
+    static Set<String> formatPath(Collection<String> paths) {
         Set<String> theNew = new HashSet<>()
         for (String path : paths) {
             if (path != null && !path.isEmpty()) {
@@ -49,7 +49,7 @@ class ClassFilterUtils {
         return theNew
     }
 
-    public static Set<String> formatClass(Collection<String> classes) {
+    static Set<String> formatClass(Collection<String> classes) {
         Set<String> theNew = new HashSet<>()
         for (String classStr : classes) {
             if (classStr == null || classStr.length() <= 0) {
@@ -65,7 +65,13 @@ class ClassFilterUtils {
         return theNew
     }
 
-    public
+    /**
+     * 只要 path 包含 excludePackage 中的一项，或者 path.endsWith() excludeClass 中的一项，返回 true
+     * @param path
+     * @param excludePackage
+     * @param excludeClass
+     * @return
+     */
     static boolean isExcluded(String path, Collection<String> excludePackage, Collection<String> excludeClass) {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             path = path.replaceAll("\\\\", "/");
@@ -85,7 +91,13 @@ class ClassFilterUtils {
         return false;
     }
 
-    public static boolean isIncluded(String path, Collection<String> includePackage) {
+    /**
+     * 只要 path 包含 includePackage 中的一项，返回 true
+     * @param path
+     * @param includePackage
+     * @return
+     */
+    static boolean isIncluded(String path, Collection<String> includePackage) {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             path = path.replaceAll("\\\\", "/");
         }
