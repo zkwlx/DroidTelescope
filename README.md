@@ -62,8 +62,7 @@ public class MainActivity extends Activity {
 * 高度可定制，可以根据 App 特点定制框架（例如想监控 Fragment 的创建耗时）；
 
 ### 使用 SysTrace 追踪效果
-详细使用方式请参考[官方文档](https://developer.android.com/studio/command-line/systrace)
-框架中使用 SysTrace 方式如下：
+详细使用方式请参考[官方文档](https://developer.android.com/studio/command-line/systrace)，框架中使用 SysTrace 方式如下：
 ```java
     public void init() {
         DroidTelescope.install(new MyConfig());
@@ -82,7 +81,7 @@ public class MainActivity extends Activity {
 ```shell
 systrace.py -o output.html --app=app进程名 app
 ```
-然后用浏览器打开 output.html，效果如下图所示。
+结束后用浏览器打开 output.html，效果如下图所示。
 <br>![](https://github.com/zkwlx/DroidTelescope/blob/master/wiki/systrace_demo.png)
 
 ### 卡顿监控
