@@ -78,6 +78,12 @@ public class MainActivity extends Activity {
     ...
 ```
 使用 SysTrace 后，DT 框架会在每个方法的开始和结束调用 Trace.beginSection(方法签名) 和 Trace.endSection()，并维护调用栈关系。
+在开始追踪之前，运行命令：
+```shell
+systrace.py -o output.html --app=app进程名 app
+```
+然后用浏览器打开 output.html，效果如下图所示。
+<br>![](https://github.com/zkwlx/DroidTelescope/blob/master/wiki/systrace_demo.png)
 
 ### 卡顿监控
 当发生卡顿时，框架会记录相关方法的调用时间和调用栈，并生成BlockInfo对象，使用框架提供的ConvertUtils工具将BlockInfo对象转换成JSON格式的日志，如下例子，每个字段的意义请看注释：
