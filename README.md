@@ -3,6 +3,7 @@ DroidTelescope
 这是一套Android端线上应用性能监控框架，目前支持卡顿监控、内存泄露监控；后续还会增加更多监控对象。此项目参考自开源项目[BlockCanaryEx](https://github.com/seiginonakama/BlockCanaryEx)。
 
 ## 框架简介
+* 支持方法耗时追踪，提供 startXX 和 endXX 接口，并支持框架自研和 Android SysTrace 两种实现
 * 框架支持卡顿监控，当发生卡顿时会记录所有方法的调用耗时和调用栈
 * 框架支持内存泄露监控，当发生内存泄露时会记录用户的交互行为和页面的创建关系（为了提高性能，内存泄露并不会dump内存）
 * 框架支持用户交互行为的监控，为其他监控提供支持，比如内存泄露（交互监控还未开发完全）
@@ -32,21 +33,21 @@ public class MainActivity extends Activity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        String traces = DroidTelescope.stopMethodTracing();
-        //将 traces 日志写入文件
-        if (traces != null) {
-            FileUtils fileUtils = new FileUtils();
-            String fileName = "apm_method.json";
-            fileUtils.write2SDFromInput("", fileName, traces);
+        String path = DroidTelescope.stopMethodTracing(this.getApplicationContext());
+        // 打印日志路径。使用 SysTrace 时框架不会主动生成日志文件，由 Android 提供的 systrace.py 工具生成
+        if (!TextUtils.isEmpty(path)) {
+            Log.i("zkw", "加载完成:::>" + path);
+        } else {
+            Log.i("zkw", "Path is null, maybe use Systrace.");
         }
     }
     ...
 }
 ```
+### 使用框架自研模块追踪效果
 之后按如下几部打开报告文件：
-* 将生成的文件放到项目目录：trace_html_report/data/下，文件名为：apm_method.json
+* 生成的日志文件 trace_html_report.zip 从设备中取出并解压
 * 用浏览器打开 trace_html_report/index.html 文件
-* 如果页面空白，可能因为浏览器禁用了跨域访问（报告页面会访问本地日志文件），可以打开浏览器相应开关。拿 MAC 系统的 Chrome 浏览器举例：1.先退出 Chrome 浏览器的进程，2.使用命令启动：open -a "Google Chrome" --args --disable-web-security --user-data-dir
 
 报告的效果和分析方法如下：
 
@@ -59,6 +60,9 @@ public class MainActivity extends Activity {
 * 报告规模、方法数量可控，不会被大量系统方法干扰；
 * 性能损耗较小，可针对某些需求应用到线上；
 * 高度可定制，可以根据 App 特点定制框架（例如想监控 Fragment 的创建耗时）；
+
+### 使用 SysTrace 追踪效果
+详细使用方式请参考[官方文档](https://developer.android.com/studio/command-line/systrace)
 
 ### 卡顿监控
 当发生卡顿时，框架会记录相关方法的调用时间和调用栈，并生成BlockInfo对象，使用框架提供的ConvertUtils工具将BlockInfo对象转换成JSON格式的日志，如下例子，每个字段的意义请看注释：
