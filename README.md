@@ -63,6 +63,21 @@ public class MainActivity extends Activity {
 
 ### 使用 SysTrace 追踪效果
 详细使用方式请参考[官方文档](https://developer.android.com/studio/command-line/systrace)
+框架中使用 SysTrace 方式如下：
+```java
+    public void init() {
+        DroidTelescope.install(new MyConfig());
+    }
+    ...
+    class MyConfig extends Config {
+        @Override
+        public boolean useSysTrace() {
+            return true;
+        }
+    }
+    ...
+```
+使用 SysTrace 后，DT 框架会在每个方法的开始和结束调用 Trace.beginSection(方法签名) 和 Trace.endSection()，并维护调用栈关系。
 
 ### 卡顿监控
 当发生卡顿时，框架会记录相关方法的调用时间和调用栈，并生成BlockInfo对象，使用框架提供的ConvertUtils工具将BlockInfo对象转换成JSON格式的日志，如下例子，每个字段的意义请看注释：
