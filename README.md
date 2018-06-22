@@ -1,4 +1,4 @@
-DroidTelescope
+DroidTelescope（DT）
 =======
 这是一套Android端线上应用性能监控框架，目前支持卡顿监控、内存泄露监控；后续还会增加更多监控对象。此项目参考自开源项目[BlockCanaryEx](https://github.com/seiginonakama/BlockCanaryEx)。
 
