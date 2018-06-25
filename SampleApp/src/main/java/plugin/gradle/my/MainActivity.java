@@ -326,4 +326,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void empty1() {
+    }
+
+    private void empty2(String s) {
+    }
+
+    private boolean empty3(String s) {
+        return true;
+    }
+
+    private String empty4(String s) {
+        return s;
+    }
+
+    private String a = "sss";
+
+    private String emptyGet() {
+        return a;
+    }
+
+    private void emptySet(String m) {
+        a = m;
+    }
+
 }

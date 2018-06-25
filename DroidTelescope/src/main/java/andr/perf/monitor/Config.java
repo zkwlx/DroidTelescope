@@ -44,7 +44,7 @@ public class Config {
      * @return
      */
     public boolean justRecordUIThread() {
-        return false;
+        return true;
     }
 
     /**

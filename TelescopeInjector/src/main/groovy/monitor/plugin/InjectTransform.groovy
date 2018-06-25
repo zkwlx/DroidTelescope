@@ -10,6 +10,8 @@ import monitor.plugin.config.Scope
 import monitor.plugin.utils.Logger
 import org.gradle.api.Project
 
+import java.util.function.Consumer
+
 /**
  * Created by ZhouKeWen on 17/3/17.
  */
@@ -113,9 +115,16 @@ class InjectTransform extends IncrementalTransform {
             //进行代码注入
             Injector.setClassPathForJavassist(javassistClassPath)
             Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses)
-            toBeInjectFiles.each { File file ->
-                Injector.inject(file)
-            }
+            toBeInjectFiles.parallelStream().forEach(new Consumer<File>() {
+                @Override
+                void accept(File file) {
+                    Logger.i(">>>>>>>>>>>>inject!!!")
+                    Injector.inject(file)
+                }
+            })
+//            toBeInjectFiles.each { File file ->
+//                Injector.inject(file)
+//            }
         }
         int duration = System.currentTimeMillis() - timestamp
         Logger.i("-------InjectPluginTransform finish in ${duration} ms-------")

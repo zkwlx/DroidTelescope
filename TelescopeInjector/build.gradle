@@ -9,8 +9,8 @@ dependencies {
 }
 
 compileGroovy {
-    sourceCompatibility = "1.7"
-    targetCompatibility = "1.7"
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
     options.encoding = "UTF-8"
 }
 
@@ -18,7 +18,7 @@ apply plugin: 'maven'
 
 group = "andr.perf.monitor"
 archivesBaseName = "TelescopeInjector"
-version = "1.0.3"
+version = "1.0.4"
 
 if (rootProject.file("local").exists()) {
     version = 'local'
@@ -35,8 +35,11 @@ if (rootProject.file("local").exists()) {
     uploadArchives {
         repositories {
             mavenDeployer {
-                repository(url: 'http://xxx') {
-                    authentication(userName: 'xxx', password: 'xxx')
+//                repository(url: 'http://xxx') {
+//                    authentication(userName: 'xxx', password: 'xxx')
+//                }
+                repository(url: 'http://android-maven.in.zhihu.com/repository/maven-releases/') {
+                    authentication(userName: 'android-deployment', password: 'android-dev-123')
                 }
             }
         }

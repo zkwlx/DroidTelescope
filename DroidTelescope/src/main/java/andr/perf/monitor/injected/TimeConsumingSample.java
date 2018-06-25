@@ -13,10 +13,6 @@ public class TimeConsumingSample {
 
     private static volatile boolean isInited = false;
 
-    public static boolean shouldMonitor() {
-        return true;
-    }
-
     public static void methodEnter(String cls, String method, String argTypes) {
         if (!isInited) {
             if (DroidTelescope.getConfig() == null) {
