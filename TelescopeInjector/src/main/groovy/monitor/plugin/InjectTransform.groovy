@@ -118,7 +118,6 @@ class InjectTransform extends IncrementalTransform {
             toBeInjectFiles.parallelStream().forEach(new Consumer<File>() {
                 @Override
                 void accept(File file) {
-                    Logger.i(">>>>>>>>>>>>inject!!!")
                     Injector.inject(file)
                 }
             })

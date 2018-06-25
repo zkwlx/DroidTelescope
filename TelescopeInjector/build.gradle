@@ -18,7 +18,7 @@ apply plugin: 'maven'
 
 group = "andr.perf.monitor"
 archivesBaseName = "TelescopeInjector"
-version = "1.0.4"
+version = "1.0.6"
 
 if (rootProject.file("local").exists()) {
     version = 'local'
@@ -31,13 +31,13 @@ if (rootProject.file("local").exists()) {
         finalizedBy(clean)
     }
 } else {
-    System.out.println("============uploadArchives for Release!!!!")
+    System.out.println("============uploadArchives for Release! ver=${version}")
     uploadArchives {
         repositories {
             mavenDeployer {
-                repository(url: 'http://xxx') {
-                    authentication(userName: 'xxx', password: 'xxx')
-                }
+//                repository(url: 'http://xxx') {
+//                    authentication(userName: 'xxx', password: 'xxx')
+//                }
 
             }
         }
