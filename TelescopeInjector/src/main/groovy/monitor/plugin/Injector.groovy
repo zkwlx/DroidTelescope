@@ -1,5 +1,7 @@
 package monitor.plugin
 
+import com.google.common.io.Files
+import com.google.common.io.ByteStreams
 import monitor.plugin.javassist.JavassistHandler
 import monitor.plugin.utils.ClassFilterUtils
 import monitor.plugin.utils.Logger
@@ -8,6 +10,8 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 /**
  * 代码注入器
@@ -48,11 +52,20 @@ class Injector {
     }
 
     private static void injectForFile(File file) {
-        Closure handleFileClosure = { File f ->
-            String filePath = f.absolutePath
+        Closure handleFileClosure = { File innerFile ->
+            String filePath = innerFile.absolutePath
             if (shouldInjectFile(filePath)) {
 //                Logger.i("---->handle file:${file.absolutePath}")
-                JavassistHandler.handleClass(f)
+                def outputFile = new File(buildDir, TMP_DIR + innerFile.name)
+                Files.createParentDirs(outputFile)
+                FileInputStream inputStream = new FileInputStream(innerFile)
+                FileOutputStream outputStream = new FileOutputStream(outputFile)
+                byte[] modified = injectForInputStream(innerFile.name, inputStream)
+                outputStream.write(modified)
+                inputStream.close()
+                outputStream.close()
+
+                Files.copy(outputFile, innerFile)
             } else {
 //                Logger.i("skip class file:>> " + filePath)
             }
@@ -66,35 +79,35 @@ class Injector {
         }
     }
 
-    private static void injectForJar(File file) {
-//        Logger.i("[process jar]============" + file.absolutePath)
-        JarFile jarFile = new JarFile(file)
-        Enumeration enumeration = jarFile.entries()
-        File tempOutJar = new File(file.getParent(), file.getName() + ".tmp")
-        JarOutputStream output = new JarOutputStream(new FileOutputStream(tempOutJar))
-        while (enumeration.hasMoreElements()) {
-            JarEntry entry = enumeration.nextElement()
-            String entryName = entry.getName();
-            ZipEntry zipEntry = new ZipEntry(entryName)
-            InputStream inputStream = jarFile.getInputStream(entry)
-            output.putNextEntry(zipEntry)
-            if (shouldInjectJarEntry(entryName)) {
-                def bytes = JavassistHandler.handleClass(entryName, inputStream)
-                output.write(bytes)
-            } else {
-                output.write(inputStream.getBytes())
+    private static void injectForJar(File outJarFile) {
+        final def tmpFile = new File(buildDir, TMP_DIR + outJarFile.name)
+        Files.createParentDirs(tmpFile)
+
+        new ZipInputStream(new FileInputStream(outJarFile)).withCloseable { zis ->
+            new ZipOutputStream(new FileOutputStream(tmpFile)).withCloseable { zos ->
+
+                ZipEntry entry
+                while ((entry = zis.getNextEntry()) != null) {
+                    if (shouldInjectJarEntry(entry.name)) {
+                        byte[] modified = injectForInputStream(entry.name, zis)
+                        zos.putNextEntry(new ZipEntry(entry.name))
+                        zos.write(modified)
+                    } else {
+                        zos.putNextEntry(entry)
+                        ByteStreams.copy(zis, zos)
+                    }
+                    zos.closeEntry()
+                    zis.closeEntry()
+                }
             }
-            output.closeEntry()
         }
-        output.close()
-        jarFile.close()
-        if (file.exists()) {
-            file.delete()
-        }
-        tempOutJar.renameTo(file)
-        if (tempOutJar.exists()) {
-            tempOutJar.delete()
-        }
+
+        Files.copy(tmpFile, outJarFile)
+    }
+
+    private static byte[] injectForInputStream(String className, InputStream inputStream) {
+        //TODO 可以在这里替换字节码修改框架的实现
+        return JavassistHandler.handleClass(className, inputStream)
     }
 
     //过滤Jar包中的Class实体

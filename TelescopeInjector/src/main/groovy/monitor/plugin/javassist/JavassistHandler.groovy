@@ -51,21 +51,6 @@ class JavassistHandler {
         }
     }
 
-    static byte[] handleClass(File file) {
-        def optClass = new File(file.getParent(), file.name + ".opt")
-        FileInputStream inputStream = new FileInputStream(file);
-        FileOutputStream outputStream = new FileOutputStream(optClass)
-        def bytes = handleClass(file.name, inputStream);
-        outputStream.write(bytes)
-        inputStream.close()
-        outputStream.close()
-        if (file.exists()) {
-            file.delete()
-        }
-        optClass.renameTo(file)
-        return bytes
-    }
-
     static byte[] handleClass(String className, InputStream inputStream) {
         CtClass clazz
         try {
