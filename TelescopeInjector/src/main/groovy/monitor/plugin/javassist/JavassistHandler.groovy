@@ -5,6 +5,12 @@ import monitor.plugin.ConfigProvider
 import monitor.plugin.config.InjectConfig
 import monitor.plugin.javassist.inject.*
 import monitor.plugin.javassist.inject.interactive.InteractiveCodeInject
+import monitor.plugin.javassist.inject.reference_leak.IMethodHandler
+import monitor.plugin.javassist.inject.reference_leak.ReferenceLeakCodeInject
+import monitor.plugin.javassist.inject.reference_leak.OnCreateHandler
+import monitor.plugin.javassist.inject.reference_leak.OnDestroyHandler
+import monitor.plugin.javassist.inject.reference_leak.OnLowMemoryHandler
+import monitor.plugin.javassist.inject.reference_leak.OnTrimMemoryHandler
 import monitor.plugin.utils.Logger
 
 /**
@@ -13,28 +19,6 @@ import monitor.plugin.utils.Logger
 class JavassistHandler {
 
     private static ClassPool classPool
-    private static final ArrayList<IMethodHandler> methodHandlers
-    private static final ArrayList<IMethodHandler> v4MethodHandlers
-
-    static {
-        methodHandlers = new ArrayList<>()
-        methodHandlers.add(new OnCreateHandler())
-        methodHandlers.add(new OnDestroyHandler())
-        methodHandlers.add(new OnTrimMemoryHandler())
-
-        v4MethodHandlers = new ArrayList<>()
-        v4MethodHandlers.add(new OnCreateHandler())
-        v4MethodHandlers.add(new OnDestroyHandler())
-        v4MethodHandlers.add(new OnLowMemoryHandler())
-    }
-
-    private static ArrayList<IMethodHandler> getMethodHandlers() {
-        return methodHandlers
-    }
-
-    private static ArrayList<IMethodHandler> getV4MethodHandlers() {
-        return v4MethodHandlers
-    }
 
     static void addClassPath(List<File> files) {
         classPool = new ClassPool(true)
@@ -62,7 +46,11 @@ class JavassistHandler {
             return inputStream.getBytes()
         }
 
-        if (clazz.isInterface() || clazz.isAnnotation() || clazz.isEnum() || clazz.isArray() || isMonitorSubclass(clazz)) {
+        if (clazz.isInterface()
+                || clazz.isAnnotation()
+                || clazz.isEnum()
+                || clazz.isArray()
+                || isMonitorSubclass(clazz)) {
             //跳过
             return clazz.toBytecode()
         }
@@ -70,7 +58,7 @@ class JavassistHandler {
         //TODO 通过开关控制开启哪些监控模块的注入
         InjectConfig config = ConfigProvider.config
         if (config.memoryLeakEnable) {
-            injectForMemory(clazz)
+            injectForReferenceLeak(clazz)
         }
         if (config.cpuTimeEnable) {
             injectForCpu(clazz)
@@ -105,51 +93,8 @@ class JavassistHandler {
         Logger.i("Inject cpu sample code in ${time}ms, class: ${clazz.name}")
     }
 
-    private static void injectForMemory(CtClass clazz) {
-        if (MemoryCodeInject.classNotCare(clazz)) {
-            //不是内存监控模块关心的类，不注入
-            return
-        }
-        long time = System.currentTimeMillis()
-        List<IMethodHandler> methodHandlers
-        if (MemoryCodeInject.isV4OrV7Class(clazz)) {
-            methodHandlers = getV4MethodHandlers().clone()
-        } else {
-            methodHandlers = getMethodHandlers().clone()
-        }
-
-        CtMethod[] ctMethods = clazz.getDeclaredMethods()
-        //遍历这个类的所有方法
-        for (CtMethod ctMethod : ctMethods) {
-            Logger.d("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
-            int modifiers = ctMethod.getModifiers()
-            if (Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)) {
-                Logger.d(
-                        "static or native!!!Don't inject>> ${clazz.name}.${ctMethod.name}")
-                continue
-            }
-            //对该方法遍历调用 modifyMethod
-            Iterator<IMethodHandler> iterator = methodHandlers.iterator()
-            while (iterator.hasNext()) {
-                IMethodHandler handler = iterator.next()
-                if (handler.modifyMethod(clazz, ctMethod)) {
-                    Logger.d("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
-                    iterator.remove()
-                    break
-                }
-            }
-            if (methodHandlers.isEmpty()) {
-                //所有关键方法注入成功，不再处理后续方法
-                break
-            }
-        }
-
-        //剩下的 handlers 说明对应的关键 method 没有实现，则add这个method
-        for (IMethodHandler handler : methodHandlers) {
-            handler.addMethod(clazz)
-        }
-        time = System.currentTimeMillis() - time
-        Logger.i("Inject memory sample code duration: ${time}, class: ${clazz.name}")
+    private static void injectForReferenceLeak(CtClass clazz) {
+        ReferenceLeakCodeInject.injectForReferenceLeak(clazz)
     }
 
     private static void injectForInteractive(CtClass clazz) {

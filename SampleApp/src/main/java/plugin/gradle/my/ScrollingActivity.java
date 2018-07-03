@@ -55,6 +55,11 @@ public class ScrollingActivity extends Activity implements ItemFragment.OnListFr
     }
 
     @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
     }

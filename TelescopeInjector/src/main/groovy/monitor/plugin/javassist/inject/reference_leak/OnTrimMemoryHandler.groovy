@@ -1,4 +1,4 @@
-package monitor.plugin.javassist.inject
+package monitor.plugin.javassist.inject.reference_leak
 
 import javassist.CtClass
 import javassist.CtMethod
@@ -13,7 +13,7 @@ class OnTrimMemoryHandler implements IMethodHandler {
     boolean modifyMethod(CtClass clazz, CtMethod ctMethod) {
         if ("onTrimMemory" == ctMethod.name && ctMethod.parameterTypes.size() == 1 &&
                 ctMethod.parameterTypes[0] == CtClass.intType) {
-            MemoryCodeInject.insertTrimMemoryCode(clazz, ctMethod)
+            ReferenceLeakCodeInject.insertTrimMemoryCode(clazz, ctMethod)
             return true
         } else {
             return false
@@ -22,7 +22,7 @@ class OnTrimMemoryHandler implements IMethodHandler {
 
     @Override
     void addMethod(CtClass clazz) {
-        Logger.i("没有trimMemory方法, add>>>>>> ${clazz.name}")
-        MemoryCodeInject.addTrimMemoryCode(clazz)
+        Logger.d("没有trimMemory方法, add>>>>>> ${clazz.name}")
+        ReferenceLeakCodeInject.addTrimMemoryCode(clazz)
     }
 }

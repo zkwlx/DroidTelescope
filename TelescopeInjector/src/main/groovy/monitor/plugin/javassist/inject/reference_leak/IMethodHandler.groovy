@@ -1,4 +1,4 @@
-package monitor.plugin.javassist.inject;
+package monitor.plugin.javassist.inject.reference_leak;
 
 import javassist.CtClass;
 import javassist.CtMethod;
