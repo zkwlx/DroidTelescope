@@ -105,7 +105,7 @@ class MemoryCodeInject {
 
     static void addLowMemoryCode(CtClass clazz) {
         CtMethod m = CtNewMethod.make(
-                """  void onLowMemory() {
+                """public void onLowMemory() {
                        super.onLowMemory();
                        andr.perf.monitor.injected.ObjectLeakSample.objectLowMemory(\$0);
                    }
@@ -116,7 +116,7 @@ class MemoryCodeInject {
 
     static void addTrimMemoryCode(CtClass clazz) {
         CtMethod m = CtNewMethod.make(
-                """  void onTrimMemory(int level) {
+                """public void onTrimMemory(int level) {
                        super.onTrimMemory(level);
                        andr.perf.monitor.injected.ObjectLeakSample.objectTrimMemory(\$0, level);
                    }

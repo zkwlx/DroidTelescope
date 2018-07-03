@@ -8,12 +8,12 @@ class Logger {
     static boolean isDebug = false
 
     static void i(String content) {
-        System.out.println("[===injector===] " + content)
+        System.out.println("[==injector==] " + content)
     }
 
     static d(String s) {
         if (isDebug) {
-            System.out.println("[===injector===debug===] " + s)
+            System.out.println("[==injector==d== t:${Thread.currentThread().name}] | " + s)
         }
     }
 

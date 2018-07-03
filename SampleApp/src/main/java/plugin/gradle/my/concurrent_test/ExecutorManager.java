@@ -65,7 +65,7 @@ public class ExecutorManager {
             FutureTask<?> uploadTask = uploadTaskMap.valueAt(i);
             try {
                 // just need block here
-                Objects result = (Objects) uploadTask.get();
+                Integer result = (Integer) uploadTask.get();
                 Logger.i("get index:" + i + " result>>>>>>" + result);
             } catch (InterruptedException | ExecutionException e) { // executorService shut down
                 throw e;

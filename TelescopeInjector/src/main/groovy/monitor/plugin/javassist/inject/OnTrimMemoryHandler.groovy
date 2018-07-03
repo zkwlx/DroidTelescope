@@ -9,14 +9,11 @@ import monitor.plugin.utils.Logger
  */
 class OnTrimMemoryHandler implements IMethodHandler {
 
-    private boolean hasTrimMemoryMethod = false
-
     @Override
-    boolean handleMethod(CtClass clazz, CtMethod ctMethod) {
+    boolean modifyMethod(CtClass clazz, CtMethod ctMethod) {
         if ("onTrimMemory" == ctMethod.name && ctMethod.parameterTypes.size() == 1 &&
                 ctMethod.parameterTypes[0] == CtClass.intType) {
             MemoryCodeInject.insertTrimMemoryCode(clazz, ctMethod)
-            hasTrimMemoryMethod = true
             return true
         } else {
             return false
@@ -24,12 +21,8 @@ class OnTrimMemoryHandler implements IMethodHandler {
     }
 
     @Override
-    void checkMethodAndAdd(CtClass clazz) {
-        if (hasTrimMemoryMethod) {
-            hasTrimMemoryMethod = false
-        } else {
-            Logger.i("没有trimMemory方法？？？？>>>>>> ${clazz.name}")
-            MemoryCodeInject.addTrimMemoryCode(clazz)
-        }
+    void addMethod(CtClass clazz) {
+        Logger.i("没有trimMemory方法, add>>>>>> ${clazz.name}")
+        MemoryCodeInject.addTrimMemoryCode(clazz)
     }
 }

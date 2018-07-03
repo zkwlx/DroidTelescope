@@ -8,13 +8,10 @@ import javassist.CtMethod
  */
 class OnDestroyHandler implements IMethodHandler {
 
-    private boolean hasDestroyMethod = false
-
     @Override
-    boolean handleMethod(CtClass clazz, CtMethod ctMethod) {
+    boolean modifyMethod(CtClass clazz, CtMethod ctMethod) {
         if ("onDestroy" == ctMethod.name && ctMethod.parameterTypes.size() == 0) {
             MemoryCodeInject.insertDestroySampleCode(clazz, ctMethod)
-            hasDestroyMethod = true
             return true
         } else {
             return false
@@ -22,12 +19,8 @@ class OnDestroyHandler implements IMethodHandler {
     }
 
     @Override
-    void checkMethodAndAdd(CtClass clazz) {
-        if (hasDestroyMethod) {
-            hasDestroyMethod = false
-        } else {
-            System.out.println("没有destroy方法？？？？>>>>>> ${clazz.name}")
-            MemoryCodeInject.addObjectDestroyMethod(clazz)
-        }
+    void addMethod(CtClass clazz) {
+        System.out.println("没有destroy方法，add>>>>>> ${clazz.name}")
+        MemoryCodeInject.addObjectDestroyMethod(clazz)
     }
 }

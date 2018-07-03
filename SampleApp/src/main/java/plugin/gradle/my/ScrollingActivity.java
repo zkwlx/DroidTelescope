@@ -53,4 +53,9 @@ public class ScrollingActivity extends Activity implements ItemFragment.OnListFr
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

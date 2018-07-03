@@ -13,8 +13,8 @@ import monitor.plugin.utils.Logger
 class JavassistHandler {
 
     private static ClassPool classPool
-    private static ArrayList<IMethodHandler> methodHandlers
-    private static ArrayList<IMethodHandler> v4MethodHandlers
+    private static final ArrayList<IMethodHandler> methodHandlers
+    private static final ArrayList<IMethodHandler> v4MethodHandlers
 
     static {
         methodHandlers = new ArrayList<>()
@@ -53,7 +53,6 @@ class JavassistHandler {
 
     static byte[] handleClass(File file) {
         def optClass = new File(file.getParent(), file.name + ".opt")
-
         FileInputStream inputStream = new FileInputStream(file);
         FileOutputStream outputStream = new FileOutputStream(optClass)
         def bytes = handleClass(file.name, inputStream);
@@ -129,13 +128,12 @@ class JavassistHandler {
         long time = System.currentTimeMillis()
         List<IMethodHandler> methodHandlers
         if (MemoryCodeInject.isV4OrV7Class(clazz)) {
-            methodHandlers = getV4MethodHandlers()
+            methodHandlers = getV4MethodHandlers().clone()
         } else {
-            methodHandlers = getMethodHandlers()
+            methodHandlers = getMethodHandlers().clone()
         }
 
         CtMethod[] ctMethods = clazz.getDeclaredMethods()
-        int successCount = 0
         //遍历这个类的所有方法
         for (CtMethod ctMethod : ctMethods) {
             Logger.d("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
@@ -145,23 +143,25 @@ class JavassistHandler {
                         "static or native!!!Don't inject>> ${clazz.name}.${ctMethod.name}")
                 continue
             }
-            //对该方法遍历调用 handleMethod
-            for (IMethodHandler handler : methodHandlers) {
-                if (handler.handleMethod(clazz, ctMethod)) {
-                    //TODO 这里对一个方法处理成功，是否退出循环，开始下一个方法？
+            //对该方法遍历调用 modifyMethod
+            Iterator<IMethodHandler> iterator = methodHandlers.iterator()
+            while (iterator.hasNext()) {
+                IMethodHandler handler = iterator.next()
+                if (handler.modifyMethod(clazz, ctMethod)) {
                     Logger.d("inject memory code:::>>>> ${clazz.name}.${ctMethod.name}")
-                    successCount++
+                    iterator.remove()
+                    break
                 }
             }
-            if (successCount == methodHandlers.size()) {
+            if (methodHandlers.isEmpty()) {
                 //所有关键方法注入成功，不再处理后续方法
                 break
             }
         }
 
-        //如果发现关键method没有实现，则add这个method
+        //剩下的 handlers 说明对应的关键 method 没有实现，则add这个method
         for (IMethodHandler handler : methodHandlers) {
-            handler.checkMethodAndAdd(clazz)
+            handler.addMethod(clazz)
         }
         time = System.currentTimeMillis() - time
         Logger.i("Inject memory sample code duration: ${time}, class: ${clazz.name}")

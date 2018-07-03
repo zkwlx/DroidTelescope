@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by ZhouKeWen on 2017/7/13.
  */
-public class TaskCallable implements Callable {
+public class TaskCallable implements Callable<Integer> {
 
     private int index = -1;
 
@@ -14,9 +14,9 @@ public class TaskCallable implements Callable {
     }
 
     @Override
-    public Object call() throws Exception {
+    public Integer call() throws Exception {
 
-        Thread.sleep(30000);
+        Thread.sleep(300);
 
         return index;
     }
