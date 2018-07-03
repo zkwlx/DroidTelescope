@@ -44,18 +44,19 @@ class MemoryCodeInject {
                                                       "android.support.v4.app.ListFragment"]
 
 
-    public static boolean classNotCare(CtClass ctClass) {
-        CtClass superClazz = ctClass.getSuperclass();
+    static boolean classNotCare(CtClass ctClass) {
+        //TODO 这里只监控一层
+        CtClass superClazz = ctClass.getSuperclass()
         //TODO 类过滤代码在这里添加，注意Activity、Fragment、Service等都要考虑
         return !ACTIVITY_CLASSES.contains(superClazz.name) && !FRAGMENT_CLASSES.contains(superClazz.name)
     }
 
-    public static boolean isV4OrV7Class(CtClass ctClass) {
-        CtClass superClazz = ctClass.getSuperclass();
+    static boolean isV4OrV7Class(CtClass ctClass) {
+        CtClass superClazz = ctClass.getSuperclass()
         return superClazz.name.startsWith("android.support.v4") || superClazz.name.startsWith("android.support.v7")
     }
 
-    public static void addObjectCreateMethod(CtClass clazz) {
+    static void addObjectCreateMethod(CtClass clazz) {
         CtMethod m = CtNewMethod.make(
                 """protected void onCreate(android.os.Bundle s) {
                        super.onCreate(s);
@@ -66,7 +67,7 @@ class MemoryCodeInject {
         clazz.addMethod(m)
     }
 
-    public static void addObjectDestroyMethod(CtClass clazz) {
+    static void addObjectDestroyMethod(CtClass clazz) {
         CtMethod m = CtNewMethod.make(
                 """protected void onDestroy() {
                        super.onDestroy();
@@ -77,50 +78,34 @@ class MemoryCodeInject {
         clazz.addMethod(m)
     }
 
-    public static void insertCreateSampleCode(CtClass clazz, CtMethod ctMethod) {
+    static void insertCreateSampleCode(CtClass clazz, CtMethod ctMethod) {
         //TODO 这些shouldMonitor判断是否可以放到类的属性里，每个方法调用一次不太好
-        ctMethod.addLocalVariable("__memory_switch", CtClass.booleanType);
         ctMethod.insertBefore("""
-                  __memory_switch = andr.perf.monitor.injected.ObjectLeakSample.shouldMonitor();
-                  if(__memory_switch) {
                       andr.perf.monitor.injected.ObjectLeakSample.objectCreate(\$0);
-                  }
                 """)
     }
 
-    public static void insertDestroySampleCode(CtClass clazz, CtMethod ctMethod) {
-        ctMethod.addLocalVariable("__memory_switch", CtClass.booleanType);
+    static void insertDestroySampleCode(CtClass clazz, CtMethod ctMethod) {
         ctMethod.insertBefore("""
-                  __memory_switch = andr.perf.monitor.injected.ObjectLeakSample.shouldMonitor();
-                  if(__memory_switch) {
                       andr.perf.monitor.injected.ObjectLeakSample.objectDestroy(\$0);
-                  }
                 """)
     }
 
-    public static void insertLowMemoryCode(CtClass clazz, CtMethod ctMethod) {
-        ctMethod.addLocalVariable("__memory_switch", CtClass.booleanType);
+    static void insertLowMemoryCode(CtClass clazz, CtMethod ctMethod) {
         ctMethod.insertBefore("""
-                  __memory_switch = andr.perf.monitor.injected.ObjectLeakSample.shouldMonitor();
-                  if(__memory_switch) {
                       andr.perf.monitor.injected.ObjectLeakSample.objectLowMemory(\$0);
-                  }
                 """)
     }
 
-    public static void insertTrimMemoryCode(CtClass clazz, CtMethod ctMethod) {
-        ctMethod.addLocalVariable("__memory_switch", CtClass.booleanType);
+    static void insertTrimMemoryCode(CtClass clazz, CtMethod ctMethod) {
         ctMethod.insertBefore("""
-                  __memory_switch = andr.perf.monitor.injected.ObjectLeakSample.shouldMonitor();
-                  if(__memory_switch) {
                       andr.perf.monitor.injected.ObjectLeakSample.objectTrimMemory(\$0, \$1);
-                  }
                 """)
     }
 
-    public static void addLowMemoryCode(CtClass clazz) {
+    static void addLowMemoryCode(CtClass clazz) {
         CtMethod m = CtNewMethod.make(
-                """public void onLowMemory() {
+                """  void onLowMemory() {
                        super.onLowMemory();
                        andr.perf.monitor.injected.ObjectLeakSample.objectLowMemory(\$0);
                    }
@@ -129,9 +114,9 @@ class MemoryCodeInject {
         clazz.addMethod(m)
     }
 
-    public static void addTrimMemoryCode(CtClass clazz) {
+    static void addTrimMemoryCode(CtClass clazz) {
         CtMethod m = CtNewMethod.make(
-                """public void onTrimMemory(int level) {
+                """  void onTrimMemory(int level) {
                        super.onTrimMemory(level);
                        andr.perf.monitor.injected.ObjectLeakSample.objectTrimMemory(\$0, level);
                    }

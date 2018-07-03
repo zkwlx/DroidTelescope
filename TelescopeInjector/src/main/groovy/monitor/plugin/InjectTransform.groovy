@@ -109,10 +109,11 @@ class InjectTransform extends IncrementalTransform {
 
     @Override
     void onTransformEnd(TransformInvocation invocation) {
-        ApplicationVariantImpl applicationVariant = project.android.applicationVariants.getAt(0);
+        ApplicationVariantImpl applicationVariant = project.android.applicationVariants[0]
         javassistClassPath.addAll(applicationVariant.androidBuilder.computeFullBootClasspath())
         if (!isDisable) {
             //进行代码注入
+            Injector.setBuildDir(project.buildDir)
             Injector.setClassPathForJavassist(javassistClassPath)
             Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses)
             toBeInjectFiles.parallelStream().forEach(new Consumer<File>() {
@@ -121,9 +122,6 @@ class InjectTransform extends IncrementalTransform {
                     Injector.inject(file)
                 }
             })
-//            toBeInjectFiles.each { File file ->
-//                Injector.inject(file)
-//            }
         }
         int duration = System.currentTimeMillis() - timestamp
         Logger.i("-------InjectPluginTransform finish in ${duration} ms-------")

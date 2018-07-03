@@ -9,7 +9,7 @@ import monitor.plugin.utils.Logger
  */
 class InteractiveCodeInject {
 
-    private final static HashMap<String, IInterfaceHandler> handlerMap;
+    private final static HashMap<String, IInterfaceHandler> handlerMap
 
     static {
         handlerMap = new HashMap<>()
@@ -21,10 +21,10 @@ class InteractiveCodeInject {
         handlerMap.put(ItemOnSelectedHandler.NAME, new ItemOnSelectedHandler())
     }
 
-    public static void injectForViewEvent(CtClass clazz) {
-        CtClass[] interfaces = clazz.interfaces;
+    static void injectForViewEvent(CtClass clazz) {
+        CtClass[] interfaces = clazz.interfaces
         if (interfaces == null || interfaces.length == 0) {
-            return;
+            return
         }
 
         for (CtClass face : interfaces) {

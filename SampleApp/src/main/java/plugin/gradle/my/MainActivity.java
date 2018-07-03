@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             g2();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         gogo(87878787);
 

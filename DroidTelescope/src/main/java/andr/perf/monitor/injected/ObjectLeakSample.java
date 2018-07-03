@@ -9,10 +9,6 @@ import andr.perf.monitor.utils.Logger;
  */
 public class ObjectLeakSample {
 
-    public static boolean shouldMonitor() {
-        return true;
-    }
-
     public static void objectCreate(Object object) {
         SamplerFactory.getReferenceSampler().onKeyObjectCreate(object);
     }

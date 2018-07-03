@@ -19,12 +19,8 @@ class ViewOnClickHandler implements IInterfaceHandler {
             if (method.name == METHOD_NAME && method.parameterTypes.length == 1 && method.parameterTypes[0].name ==
                     "android.view.View") {
                 Logger.i("inject onClick---------->" + clazz.name)
-                method.addLocalVariable("__interactive_switch", CtClass.booleanType)
                 method.insertBefore("""
-                  __interactive_switch = andr.perf.monitor.injected.InteractiveSample.shouldMonitor();
-                  if(__interactive_switch) {
                       andr.perf.monitor.injected.InteractiveSample.onViewClick(\$0,\$1);
-                  }
                 """)
                 return true
             }

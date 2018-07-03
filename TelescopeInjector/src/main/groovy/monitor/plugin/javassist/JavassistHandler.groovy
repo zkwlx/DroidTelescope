@@ -12,31 +12,31 @@ import monitor.plugin.utils.Logger
  */
 class JavassistHandler {
 
-    private static ClassPool classPool;
-    private static ArrayList<IMethodHandler> methodHandlers;
-    private static ArrayList<IMethodHandler> v4MethodHandlers;
+    private static ClassPool classPool
+    private static ArrayList<IMethodHandler> methodHandlers
+    private static ArrayList<IMethodHandler> v4MethodHandlers
+
+    static {
+        methodHandlers = new ArrayList<>()
+        methodHandlers.add(new OnCreateHandler())
+        methodHandlers.add(new OnDestroyHandler())
+        methodHandlers.add(new OnTrimMemoryHandler())
+
+        v4MethodHandlers = new ArrayList<>()
+        v4MethodHandlers.add(new OnCreateHandler())
+        v4MethodHandlers.add(new OnDestroyHandler())
+        v4MethodHandlers.add(new OnLowMemoryHandler())
+    }
 
     private static ArrayList<IMethodHandler> getMethodHandlers() {
-        if (!methodHandlers) {
-            methodHandlers = new ArrayList<>()
-            methodHandlers.add(new OnCreateHandler())
-            methodHandlers.add(new OnDestroyHandler())
-            methodHandlers.add(new OnTrimMemoryHandler())
-        }
         return methodHandlers
     }
 
     private static ArrayList<IMethodHandler> getV4MethodHandlers() {
-        if (!v4MethodHandlers) {
-            v4MethodHandlers = new ArrayList<>()
-            v4MethodHandlers.add(new OnCreateHandler())
-            v4MethodHandlers.add(new OnDestroyHandler())
-            v4MethodHandlers.add(new OnLowMemoryHandler())
-        }
         return v4MethodHandlers
     }
 
-    static void setClassPath(List<File> files) {
+    static void addClassPath(List<File> files) {
         classPool = new ClassPool(true)
         //节省编译时的内存消耗
         ClassPool.doPruning = true
@@ -98,20 +98,20 @@ class JavassistHandler {
         def bytes = clazz.toBytecode()
         //TODO javasisst不允许对一个class做两次writeFile()、toClass()、toBytecode()操作
         //TODO 以上操作会冻结class，可以强行解冻，但是这种方式不太好
-        //TODO 当发生修改冻结class时，说明同包名同类名的类有两个
+        //TODO 当发生修改冻结class时，说明有重复类
 //        clazz.defrost()
         return bytes
     }
 
     static void injectForCpu(CtClass clazz) {
         long time = System.currentTimeMillis()
-        CtMethod[] ctMethods = clazz.getDeclaredMethods();
+        CtMethod[] ctMethods = clazz.getDeclaredMethods()
         for (CtMethod ctMethod : ctMethods) {
-            CpuCodeInject.insertCpuSampleCode(clazz, ctMethod);
+            CpuCodeInject.insertCpuSampleCode(clazz, ctMethod)
         }
         CtConstructor[] ctConstructors = clazz.getConstructors()
         for (CtConstructor ctConstructor : ctConstructors) {
-            CpuCodeInject.insertCpuSampleCode(clazz, ctConstructor);
+            CpuCodeInject.insertCpuSampleCode(clazz, ctConstructor)
         }
         CtConstructor[] classInitializeres = clazz.getClassInitializer()
         for (CtConstructor classInitializer : classInitializeres) {
@@ -127,23 +127,25 @@ class JavassistHandler {
             return
         }
         long time = System.currentTimeMillis()
-        List<IMethodHandler> methodHandlers;
+        List<IMethodHandler> methodHandlers
         if (MemoryCodeInject.isV4OrV7Class(clazz)) {
             methodHandlers = getV4MethodHandlers()
         } else {
             methodHandlers = getMethodHandlers()
         }
 
-        CtMethod[] ctMethods = clazz.getDeclaredMethods();
+        CtMethod[] ctMethods = clazz.getDeclaredMethods()
         int successCount = 0
+        //遍历这个类的所有方法
         for (CtMethod ctMethod : ctMethods) {
             Logger.d("scan memory method:::>>>> ${clazz.name}.${ctMethod.name}")
-            int modifiers = ctMethod.getModifiers();
+            int modifiers = ctMethod.getModifiers()
             if (Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)) {
                 Logger.d(
                         "static or native!!!Don't inject>> ${clazz.name}.${ctMethod.name}")
                 continue
             }
+            //对该方法遍历调用 handleMethod
             for (IMethodHandler handler : methodHandlers) {
                 if (handler.handleMethod(clazz, ctMethod)) {
                     //TODO 这里对一个方法处理成功，是否退出循环，开始下一个方法？
@@ -167,6 +169,17 @@ class JavassistHandler {
 
     private static void injectForInteractive(CtClass clazz) {
         InteractiveCodeInject.injectForViewEvent(clazz)
+    }
+
+    /**
+     *  View 生命周期，测试功能
+     * @param clazz
+     */
+    private static void injectForView(CtClass clazz) {
+        if (ViewInject.isNotView(clazz)) {
+            return
+        }
+        ViewInject.injectForView(clazz)
     }
 
     private static boolean isMonitorSubclass(CtClass clazz) {

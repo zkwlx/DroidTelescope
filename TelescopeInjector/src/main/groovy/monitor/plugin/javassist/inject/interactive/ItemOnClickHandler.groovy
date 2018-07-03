@@ -23,12 +23,8 @@ class ItemOnClickHandler implements IInterfaceHandler {
                     "long") {
                 Logger.i(
                         "inject onItemClick---------->" + clazz.name)
-                method.addLocalVariable("__interactive_switch", CtClass.booleanType)
                 method.insertBefore("""
-                  __interactive_switch = andr.perf.monitor.injected.InteractiveSample.shouldMonitor();
-                  if(__interactive_switch) {
                       andr.perf.monitor.injected.InteractiveSample.onItemClick(\$0,\$1,\$2,\$3,\$4);
-                  }
                 """)
                 return true
             }

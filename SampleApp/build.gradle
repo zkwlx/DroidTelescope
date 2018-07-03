@@ -66,6 +66,8 @@ injectConfig {
 //    debugEnabled = true //enable MethodSampler when debug mode, default true
 //    releaseEnabled = false //enable MethodSampler when release mode, default false
     cpuTimeEnable = true
+    memoryLeakEnable = true
+    interactiveEnable = true
 //    //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
 //    excludePackages = [""]
 //    //exclude the class you don't want to inject MethodSampler, eg:['com.android.view.TextView']

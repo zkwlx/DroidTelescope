@@ -14,6 +14,10 @@ import java.util.zip.ZipEntry
  * Created by ZhouKeWen on 17/3/17.
  */
 class Injector {
+
+    static final String TMP_DIR = "tmp/Telescope_Inject/"
+    static File buildDir
+
     private static Set<String> excludePackage
     private static Set<String> includePackage
     private static Set<String> excludeClass
@@ -27,7 +31,7 @@ class Injector {
     }
 
     static void setClassPathForJavassist(List<File> files) {
-        JavassistHandler.setClassPath(files)
+        JavassistHandler.addClassPath(files)
     }
 
     static void inject(File file) {
@@ -43,22 +47,10 @@ class Injector {
         }
     }
 
-    private static void injectForDir(File dirFile) {
-        dirFile.eachFileRecurse { File file ->
-            String filePath = file.absolutePath
-            if (shouldInjectFileClass(filePath)) {
-//                Logger.i("---->handle file:${file.absolutePath}")
-                JavassistHandler.handleClass(file)
-            } else {
-//                Logger.i("skip class file:>> " + filePath)
-            }
-        }
-    }
-
     private static void injectForFile(File file) {
         Closure handleFileClosure = { File f ->
             String filePath = f.absolutePath
-            if (shouldInjectFileClass(filePath)) {
+            if (shouldInjectFile(filePath)) {
 //                Logger.i("---->handle file:${file.absolutePath}")
                 JavassistHandler.handleClass(f)
             } else {
@@ -86,7 +78,7 @@ class Injector {
             ZipEntry zipEntry = new ZipEntry(entryName)
             InputStream inputStream = jarFile.getInputStream(entry)
             output.putNextEntry(zipEntry)
-            if (shouldInjectJarClass(entryName)) {
+            if (shouldInjectJarEntry(entryName)) {
                 def bytes = JavassistHandler.handleClass(entryName, inputStream)
                 output.write(bytes)
             } else {
@@ -106,7 +98,7 @@ class Injector {
     }
 
     //过滤Jar包中的Class实体
-    private static boolean shouldInjectJarClass(String entryName) {
+    private static boolean shouldInjectJarEntry(String entryName) {
         if (ClassFilterUtils.skipThisClassForJar(entryName)) {
             return false
         }
@@ -115,7 +107,7 @@ class Injector {
     }
 
     //过滤Class文件
-    private static boolean shouldInjectFileClass(String filePath) {
+    private static boolean shouldInjectFile(String filePath) {
         if (ClassFilterUtils.skipThisClassForFile(filePath)) {
             return false
         }

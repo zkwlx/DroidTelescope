@@ -15,10 +15,6 @@ import andr.perf.monitor.SamplerFactory;
  */
 public class InteractiveSample {
 
-    public static boolean shouldMonitor() {
-        return true;
-    }
-
     //android.view.View$OnClickListener
     public static void onViewClick(Object object, View view) {
         SamplerFactory.getInteractiveSampler().onViewClick(object, view);
@@ -33,20 +29,20 @@ public class InteractiveSample {
 
     //AdapterView.OnItemClickListener
     public static void onItemClick(Object object, AdapterView<?> parent, View view, int position, long id) {
-        SamplerFactory.getInteractiveSampler().onItemClick(object,parent, view, position, id);
+        SamplerFactory.getInteractiveSampler().onItemClick(object, parent, view, position, id);
 
     }
 
     //AdapterView.OnItemLongClickListener
     public static void onItemLongClick(Object object, AdapterView<?> parent, View view, int position,
-            long id) {
-        SamplerFactory.getInteractiveSampler().onItemLongClick(object,parent, view, position, id);
+                                       long id) {
+        SamplerFactory.getInteractiveSampler().onItemLongClick(object, parent, view, position, id);
     }
 
     //AdapterView.OnItemSelectedListener
     public static void onItemSelected(Object object, AdapterView<?> parent, View view, int position,
-            long id) {
-        SamplerFactory.getInteractiveSampler().onItemSelected(object,parent, view, position, id);
+                                      long id) {
+        SamplerFactory.getInteractiveSampler().onItemSelected(object, parent, view, position, id);
 
     }
 
