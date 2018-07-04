@@ -32,9 +32,10 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
+
     dexOptions {
         //是否支持大工程模式
         jumboMode = true
@@ -88,8 +89,9 @@ if (isRelease) {
         debugLog = true
         forRelease = false
         cpuTimeEnable = true
-        memoryLeakEnable = true
-        interactiveEnable = true
+        parallelCompile = true
+        memoryLeakEnable = false
+        interactiveEnable = false
         includePackages = ["plugin.gradle", "com.shit.testlibrary"]
     }
 }

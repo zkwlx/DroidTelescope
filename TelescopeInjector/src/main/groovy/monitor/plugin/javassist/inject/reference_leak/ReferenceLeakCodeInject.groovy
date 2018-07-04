@@ -4,6 +4,8 @@ import javassist.CtClass
 import javassist.CtMethod
 import javassist.CtNewMethod
 import javassist.Modifier
+import javassist.NotFoundException
+import monitor.plugin.utils.JavassistUtils
 import monitor.plugin.utils.Logger
 
 /**
@@ -178,14 +180,24 @@ class ReferenceLeakCodeInject {
 
     private static boolean classNotCare(CtClass ctClass) {
         //TODO 这里只监控一层
-        CtClass superClazz = ctClass.getSuperclass()
-        //TODO 类过滤代码在这里添加，注意Activity、Fragment、Service等都要考虑
-        return !ACTIVITY_CLASSES.contains(superClazz.name) && !FRAGMENT_CLASSES.contains(superClazz.name)
+        CtClass superClazz = JavassistUtils.getSuperclass(ctClass)
+        if (superClazz == null || superClazz == CtClass.voidType) {
+            //父类为 Object 或父类抛出 NotFoundException
+            return true
+        } else {
+            //TODO 类过滤代码在这里添加，注意Activity、Fragment、Service等都要考虑
+            return !ACTIVITY_CLASSES.contains(superClazz.name) && !FRAGMENT_CLASSES.contains(superClazz.name)
+        }
     }
 
     private static boolean isV4OrV7Class(CtClass ctClass) {
-        CtClass superClazz = ctClass.getSuperclass()
-        return superClazz.name.startsWith("android.support.v4") || superClazz.name.startsWith("android.support.v7")
+        CtClass superClazz = JavassistUtils.getSuperclass(ctClass)
+        if (superClazz == null || superClazz == CtClass.voidType) {
+            //父类为 Object 或父类抛出 NotFoundException
+            return false
+        } else {
+            return superClazz.name.startsWith("android.support.v4") || superClazz.name.startsWith("android.support.v7")
+        }
     }
 
 }

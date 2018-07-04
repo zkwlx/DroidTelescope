@@ -73,10 +73,12 @@ public class FileUtils {
             return;
         }
         File toFile = new File(toFilePath);
-        if (toFile.exists() && force) {
-            toFile.delete(); // delete file
-        } else {
-            return;
+        if (toFile.exists()) {
+            if (force) {
+                toFile.delete();
+            } else {
+                return;
+            }
         }
         File fileParent = toFile.getParentFile();
         if (!fileParent.exists()) {

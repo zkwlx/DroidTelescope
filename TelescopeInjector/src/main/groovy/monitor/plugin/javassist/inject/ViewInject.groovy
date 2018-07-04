@@ -8,6 +8,7 @@ import javassist.Modifier
 import javassist.NotFoundException
 import javassist.bytecode.Descriptor
 import monitor.plugin.javassist.JavassistHandler
+import monitor.plugin.utils.JavassistUtils
 import monitor.plugin.utils.Logger;
 
 /**
@@ -23,20 +24,20 @@ class ViewInject {
     static int hasConViewCount
 
     static boolean isNotView(CtClass ctClass) {
-        CtClass superClazz = ctClass.superclass
+        CtClass superClazz = JavassistUtils.getSuperclass(ctClass)
         boolean isView
         int c = 0
         long time = System.currentTimeMillis()
         while (true) {
             c++
-            if (superClazz == null) {
+            if (superClazz == null || superClazz == CtClass.voidType) {
                 isView = false
                 break
             } else if (superClazz.name == "android.view.View" || superClazz.name == "android.view.ViewGroup") {
                 isView = true
                 break
             }
-            superClazz = superClazz.superclass
+            superClazz = JavassistUtils.getSuperclass(superClazz)
         }
         time = System.currentTimeMillis() - time
         if (isView) {
@@ -75,9 +76,9 @@ class ViewInject {
             super(\$1,\$2,\$3,\$4);
         }
         """, viewClass)
-        viewClass.addConstructor(ct)
+            viewClass.addConstructor(ct)
+        }
     }
-}
 
     private static void injectLifeCycleMethod(CtClass viewClass) {
         //TODO 测一下有参数的同名方法是否被返回
@@ -92,13 +93,18 @@ class ViewInject {
                         "static or native!!!Don't inject>> ${viewClass.name}.${method.name}")
                 continue
             }
-            if ("onFinishInflate" == method.name && method.parameterTypes.size() == 0) {
+            CtClass[] types = JavassistUtils.getBehaviorParameterTypes(method)
+            if (types == null) {
+                Logger.i("Method error: ${viewClass.name}.${method.name}")
+                continue
+            }
+            if ("onFinishInflate" == method.name && types.size() == 0) {
                 finishInflateMethod = method
             }
-            if ("onDetachedFromWindow" == method.name && method.parameterTypes.size() == 0) {
+            if ("onDetachedFromWindow" == method.name && types.size() == 0) {
                 detachedFromWindowMethod = method
             }
-            if ("onAttachedToWindow" == method.name && method.parameterTypes.size() == 0) {
+            if ("onAttachedToWindow" == method.name && types.size() == 0) {
                 attachedToWindowMethod = method
             }
             if (finishInflateMethod && detachedFromWindowMethod && attachedToWindowMethod) {

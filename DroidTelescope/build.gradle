@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 group = "andr.perf.monitor"
 archivesBaseName = "DroidTelescope"
-version = "1.0.7.1"
+version = "1.0.8.1"
 
 if (rootProject.file("local").exists()) {
     version = 'local'

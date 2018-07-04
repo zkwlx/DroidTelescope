@@ -11,6 +11,7 @@ import monitor.plugin.javassist.inject.reference_leak.OnCreateHandler
 import monitor.plugin.javassist.inject.reference_leak.OnDestroyHandler
 import monitor.plugin.javassist.inject.reference_leak.OnLowMemoryHandler
 import monitor.plugin.javassist.inject.reference_leak.OnTrimMemoryHandler
+import monitor.plugin.utils.JavassistUtils
 import monitor.plugin.utils.Logger
 
 /**
@@ -113,11 +114,15 @@ class JavassistHandler {
     }
 
     private static boolean isMonitorSubclass(CtClass clazz) {
-        //TODO 暂时只判断一层超类，注意！！！
+        //TODO 暂时只判断一层超类
 //        if (clazz.superclass.packageName.startsWith("andr.perf.monitor")) {
 //        }
-        //TODO 暂时只判断 Config 的子类，注意！！
-        if (clazz.superclass.name == "andr.perf.monitor.Config") {
+        //TODO 暂时只判断 Config 的子类
+        CtClass superClazz = JavassistUtils.getSuperclass(clazz)
+        if (superClazz == null || superClazz == CtClass.voidType) {
+            //父类为 Object 或父类抛出 NotFoundException
+            return false
+        } else if (superClazz.name == "andr.perf.monitor.Config") {
             Logger.d("Found Config subclass:>>>" + clazz.name)
             return true
         } else {
