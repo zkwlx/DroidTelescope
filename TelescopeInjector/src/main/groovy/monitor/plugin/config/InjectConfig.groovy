@@ -10,6 +10,7 @@ class InjectConfig {
 //    boolean releaseEnabled = true
 //    boolean debugEnabled = true
     boolean forRelease = false
+    boolean parallelCompile = true
     boolean memoryLeakEnable = false
     boolean cpuTimeEnable = false
     boolean interactiveEnable = false
@@ -33,6 +34,7 @@ class InjectConfig {
     String toString() {
         return "InjectConfig{" +
                 "forRelease=" + forRelease +
+                ", parallelCompile=" + parallelCompile +
                 ", memoryLeakEnable=" + memoryLeakEnable +
                 ", cpuTimeEnable=" + cpuTimeEnable +
                 ", interactiveEnable=" + interactiveEnable +

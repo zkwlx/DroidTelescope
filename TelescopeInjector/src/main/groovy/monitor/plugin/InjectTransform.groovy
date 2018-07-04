@@ -111,12 +111,17 @@ class InjectTransform extends IncrementalTransform {
             Injector.setBuildDir(project.buildDir)
             Injector.setClassPathForJavassist(javassistClassPath)
             Injector.setPackagesConfig(mExcludePackages, mIncludePackages, mExcludeClasses)
-            toBeInjectFiles.parallelStream().forEach(new Consumer<File>() {
+            Consumer<File> injectConsumer = new Consumer<File>() {
                 @Override
                 void accept(File file) {
                     Injector.inject(file)
                 }
-            })
+            }
+            if (ConfigProvider.config.parallelCompile) {
+                toBeInjectFiles.parallelStream().forEach(injectConsumer)
+            } else {
+                toBeInjectFiles.stream().forEach(injectConsumer)
+            }
         }
         int duration = System.currentTimeMillis() - timestamp
         Logger.i("-------InjectPluginTransform finish in ${duration} ms-------")

@@ -47,3 +47,4 @@ repo/
 
 InjectPlugin/publish.cmd
 /*/.maven/
+SampleApp/release/

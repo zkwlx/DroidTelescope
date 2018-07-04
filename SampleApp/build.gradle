@@ -12,8 +12,17 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            storeFile file("./release.keystore")
+            keyAlias "key0"
+            keyPassword "123456"
+            storePassword "123456"
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -21,6 +30,7 @@ android {
             minifyEnabled false
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -99,9 +109,9 @@ if (isRelease) {
 ////    //only include the package you want to inject MethodSampler, packages which don't included will not be injected
 //    includePackages = ["plugin.gradle", "com.shit.testlibrary"]
 ////
-////    scope {
-////        project = true //inject MethodSampler for app project, default true
-////        subProject = true //inject MethodSampler for subProject of app project, default true
-////        externalLibraries = true //inject MethodSampler external libs, default false
-////    }
+//    scope {
+//        project = true //inject MethodSampler for app project, default true
+//        subProject = true //inject MethodSampler for subProject of app project, default true
+//        externalLibraries = true //inject MethodSampler external libs, default false
+//    }
 //}
