@@ -14,7 +14,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -44,9 +44,8 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:25.1.1'
     implementation 'com.android.support:design:24.2.1'
     implementation 'com.android.support:recyclerview-v7:24.2.1'
-    implementation 'junit:junit:4.12'
-    //    implementation 'andr.perf.monitor:DroidTelescope:local'
-    implementation project(':DroidTelescope')
+    debugImplementation project(':DroidTelescope')
+    implementation project(':DTRelease')
 }
 
 apply plugin: 'telescope.injector'
@@ -61,23 +60,48 @@ buildscript {
     }
 }
 
-injectConfig {
-    debugLog = true
-//    debugEnabled = true //enable MethodSampler when debug mode, default true
-//    releaseEnabled = false //enable MethodSampler when release mode, default false
-    cpuTimeEnable = true
-    memoryLeakEnable = true
-    interactiveEnable = true
-//    //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
-//    excludePackages = [""]
-//    //exclude the class you don't want to inject MethodSampler, eg:['com.android.view.TextView']
-//    excludeClasses = [""]
-//    //only include the package you want to inject MethodSampler, packages which don't included will not be injected
-    includePackages = ["plugin.gradle", "com.shit.testlibrary"]
-//
-//    scope {
-//        project = true //inject MethodSampler for app project, default true
-//        subProject = true //inject MethodSampler for subProject of app project, default true
-//        externalLibraries = true //inject MethodSampler external libs, default false
-//    }
+//是否启动的Task中包含 Telescope，通常来说 意味着启动的是一个 Telescope Task，比如 assembleTelescopeDebug
+boolean isRelease = gradle.startParameter.taskNames.any { it.contains("Release") }
+
+if (isRelease) {
+    System.out.println("for release!")
+    injectConfig {
+        debugLog = true
+        forRelease = true
+        cpuTimeEnable = true
+        interactiveEnable = true
+        includePackages = ["plugin.gradle", "com.shit.testlibrary"]
+    }
+} else {
+    System.out.println("for debug!")
+    injectConfig {
+        debugLog = true
+        forRelease = false
+        cpuTimeEnable = true
+        memoryLeakEnable = true
+        interactiveEnable = true
+        includePackages = ["plugin.gradle", "com.shit.testlibrary"]
+    }
 }
+
+//injectConfig {
+//    debugLog = true
+//    forRelease = false
+////    debugEnabled = true //enable MethodSampler when debug mode, default true
+////    releaseEnabled = false //enable MethodSampler when release mode, default false
+//    cpuTimeEnable = true
+//    memoryLeakEnable = true
+//    interactiveEnable = true
+////    //exclude the package you don't want to inject MethodSampler, eg: ['com.android', 'android.support']
+////    excludePackages = [""]
+////    //exclude the class you don't want to inject MethodSampler, eg:['com.android.view.TextView']
+////    excludeClasses = [""]
+////    //only include the package you want to inject MethodSampler, packages which don't included will not be injected
+//    includePackages = ["plugin.gradle", "com.shit.testlibrary"]
+////
+////    scope {
+////        project = true //inject MethodSampler for app project, default true
+////        subProject = true //inject MethodSampler for subProject of app project, default true
+////        externalLibraries = true //inject MethodSampler external libs, default false
+////    }
+//}

@@ -2,6 +2,7 @@ package monitor.plugin.javassist.inject.interactive
 
 import javassist.CtClass
 import javassist.CtMethod
+import monitor.plugin.ConfigProvider
 import monitor.plugin.utils.Logger
 
 /**
@@ -12,6 +13,16 @@ class ViewOnClickHandler implements IInterfaceHandler {
     public static final String NAME = "android.view.View\$OnClickListener"
     private static final String METHOD_NAME = "onClick"
 
+    private final String injectedMethod
+
+    ViewOnClickHandler() {
+        if (ConfigProvider.config.forRelease) {
+            injectedMethod = "dt.monitor.injected.InteractiveSample.onViewClick"
+        } else {
+            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onViewClick"
+        }
+    }
+
     @Override
     boolean handleInterface(CtClass clazz) {
         CtMethod[] declaredMethods = clazz.getDeclaredMethods()
@@ -20,7 +31,7 @@ class ViewOnClickHandler implements IInterfaceHandler {
                     "android.view.View") {
                 Logger.i("inject onClick---------->" + clazz.name)
                 method.insertBefore("""
-                      andr.perf.monitor.injected.InteractiveSample.onViewClick(\$0,\$1);
+                      ${injectedMethod}(\$0,\$1);
                 """)
                 return true
             }

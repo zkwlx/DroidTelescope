@@ -16,10 +16,6 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.List;
 
-import andr.perf.monitor.SamplerFactory;
-import andr.perf.monitor.cpu.LooperMonitor;
-import andr.perf.monitor.memory.ObjectReferenceSampler;
-import andr.perf.monitor.reflect_utils.FieldUtils;
 import plugin.gradle.my.dummy.DummyThread;
 
 /**
@@ -100,10 +96,10 @@ public class BlankFragment extends Fragment {
                 long n = System.nanoTime();
                 long m = SystemClock.currentThreadTimeMillis();
                 for (int i = 0; i < 20000; i++) {
-                    SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
-                    SamplerFactory.getMethodSampler()
-                            .onMethodExit("Classssss", "goooo", "int,String");
-                    SamplerFactory.getMethodSampler().onMethodExitFinally("Classssss", "goooo", "int,String");
+//                    SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
+//                    SamplerFactory.getMethodSampler()
+//                            .onMethodExit("Classssss", "goooo", "int,String");
+//                    SamplerFactory.getMethodSampler().onMethodExitFinally("Classssss", "goooo", "int,String");
                 }
                 //                try {
                 //                    new DummyThread().start();
@@ -131,9 +127,9 @@ public class BlankFragment extends Fragment {
                 long m = SystemClock.currentThreadTimeMillis();
                 for (int i = 0; i < 20000; i++) {
                     Object o = new Object();
-                    SamplerFactory.getReferenceSampler().onKeyObjectCreate(o);
-                    SamplerFactory.getReferenceSampler().onKeyObjectDestroy(o);
-                    SamplerFactory.getReferenceSampler().onLowMemory(o);
+//                    SamplerFactory.getReferenceSampler().onKeyObjectCreate(o);
+//                    SamplerFactory.getReferenceSampler().onKeyObjectDestroy(o);
+//                    SamplerFactory.getReferenceSampler().onLowMemory(o);
                 }
 
                 n = System.nanoTime() - n;
@@ -150,7 +146,7 @@ public class BlankFragment extends Fragment {
                 long n = System.nanoTime();
                 long m = SystemClock.currentThreadTimeMillis();
                 for (int i = 0; i < 20000; i++) {
-                    SamplerFactory.getInteractiveSampler().onViewClick(BlankFragment.this, v);
+//                    SamplerFactory.getInteractiveSampler().onViewClick(BlankFragment.this, v);
                 }
 
                 n = System.nanoTime() - n;
@@ -170,11 +166,11 @@ public class BlankFragment extends Fragment {
                 for (int i = 0; i < 200; i++) {
                     long no = System.nanoTime();
                     for (int j = 0; j < 10; j++) {
-                        SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
-                        SamplerFactory.getMethodSampler()
-                                .onMethodExit("Classssss", "goooo", "int,String");
-                        SamplerFactory.getMethodSampler()
-                                .onMethodExitFinally("Classssss", "goooo", "int,String");
+//                        SamplerFactory.getMethodSampler().onMethodEnter("Classssss", "goooo", "int,String");
+//                        SamplerFactory.getMethodSampler()
+//                                .onMethodExit("Classssss", "goooo", "int,String");
+//                        SamplerFactory.getMethodSampler()
+//                                .onMethodExitFinally("Classssss", "goooo", "int,String");
                     }
                     ex += System.nanoTime() - no;
                 }

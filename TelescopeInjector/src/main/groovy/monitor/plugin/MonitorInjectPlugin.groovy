@@ -20,6 +20,10 @@ class MonitorInjectPlugin implements Plugin<Project> {
         InjectConfig config = project.extensions.create("injectConfig", InjectConfig)
         project.afterEvaluate {
             //要在 gradle Configure 步骤完成之后，config 的值才生效
+            if (config.forRelease) {
+                //DTRelease 不支持 cpu 耗时监控，强制关闭
+                config.cpuTimeEnable = false
+            }
             ConfigProvider.config = config
             Logger.isDebug = config.debugLog
         }

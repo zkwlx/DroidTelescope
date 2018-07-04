@@ -1,1 +1,1 @@
-include ':SampleApp', ':TelescopeInjector', ':DroidTelescope', ':testlibrary'
+include ':SampleApp', ':TelescopeInjector', ':DroidTelescope', ':testlibrary', ':DTRelease'

@@ -9,8 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import plugin.gradle.my.dummy.DummyContent;
 import plugin.gradle.my.test.ItemFragment;
-import plugin.gradle.my.test.dummy.DummyContent;
 
 public class ScrollingActivity extends Activity implements ItemFragment.OnListFragmentInteractionListener {
 

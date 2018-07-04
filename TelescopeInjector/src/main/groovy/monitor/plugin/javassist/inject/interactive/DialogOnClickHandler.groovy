@@ -2,6 +2,7 @@ package monitor.plugin.javassist.inject.interactive
 
 import javassist.CtClass
 import javassist.CtMethod
+import monitor.plugin.ConfigProvider
 import monitor.plugin.utils.Logger
 
 /**
@@ -12,15 +13,27 @@ class DialogOnClickHandler implements IInterfaceHandler {
     public static final String NAME = "android.content.DialogInterface\$OnClickListener"
     private static final String METHOD_NAME = "onClick"
 
+    private final String injectedMethod
+
+    DialogOnClickHandler() {
+        if (ConfigProvider.config.forRelease) {
+            injectedMethod = "dt.monitor.injected.InteractiveSample.onDialogClick"
+        } else {
+            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onDialogClick"
+        }
+    }
+
     @Override
     boolean handleInterface(CtClass clazz) {
         CtMethod[] declaredMethods = clazz.getDeclaredMethods()
         for (CtMethod method : declaredMethods) {
-            if (method.name == METHOD_NAME && method.parameterTypes.length == 2 && method.parameterTypes[0].name ==
-                    "android.content.DialogInterface" && method.parameterTypes[1].name == "int") {
+            if (method.name == METHOD_NAME
+                    && method.parameterTypes.length == 2
+                    && method.parameterTypes[0].name == "android.content.DialogInterface"
+                    && method.parameterTypes[1].name == "int") {
                 Logger.i("inject dialog onClick---------->" + clazz.name)
                 method.insertBefore("""
-                      andr.perf.monitor.injected.InteractiveSample.onDialogClick(\$0,\$1,\$2);
+                      ${injectedMethod}(\$0,\$1,\$2);
                 """)
                 return true
             }

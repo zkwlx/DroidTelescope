@@ -60,16 +60,11 @@ class InjectTransform extends IncrementalTransform {
     void onTransformStart(TransformInvocation invocation) {
         timestamp = System.currentTimeMillis()
         def config = ConfigProvider.config
-        boolean isDebug = isDebug(invocation.context)
-        isDisable = ((isDebug && !config.debugEnabled) || (!isDebug && !config.releaseEnabled))
-        if (isDisable) {
-            //TODO 这里有个 disable 功能，重构时注意啊！！！！！！！！！！！！！！！！！！
-            Logger.i("================DroidTelescope disabled!================")
-        } else {
-            Logger.i("================开始注入监控代码（新版！）================")
-            setFilter(config)
-            setCareScope(config.getScope())
-        }
+//        boolean isDebug = isDebug(invocation.context)
+        Logger.i("================开始注入监控代码================")
+        Logger.i("================${config.toString()}================")
+        setFilter(config)
+        setCareScope(config.getScope())
     }
 
     @Override

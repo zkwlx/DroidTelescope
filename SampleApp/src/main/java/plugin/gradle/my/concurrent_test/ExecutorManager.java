@@ -12,7 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
-import andr.perf.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 2017/7/13.
@@ -31,7 +30,7 @@ public class ExecutorManager {
             submitTasks(executorService, tasks);
             waitAllTaskComplete(tasks);
         } catch (InterruptedException | ExecutionException e) {
-            Logger.i("ex!!!!!>>>>>>>>" + e);
+            Log.i("zkw", "ex!!!!!>>>>>>>>" + e);
             e.printStackTrace();
         } finally {
             executorService.shutdown();
@@ -66,7 +65,7 @@ public class ExecutorManager {
             try {
                 // just need block here
                 Integer result = (Integer) uploadTask.get();
-                Logger.i("get index:" + i + " result>>>>>>" + result);
+                Log.i("zkw", "get index:" + i + " result>>>>>>" + result);
             } catch (InterruptedException | ExecutionException e) { // executorService shut down
                 throw e;
             }

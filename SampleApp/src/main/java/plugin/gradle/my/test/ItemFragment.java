@@ -11,8 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import plugin.gradle.my.R;
-import plugin.gradle.my.test.dummy.DummyContent;
-import plugin.gradle.my.test.dummy.DummyContent.DummyItem;
+import plugin.gradle.my.dummy.DummyContent;
 
 import java.util.List;
 
@@ -103,6 +102,6 @@ public class ItemFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(DummyContent.DummyItem item);
     }
 }

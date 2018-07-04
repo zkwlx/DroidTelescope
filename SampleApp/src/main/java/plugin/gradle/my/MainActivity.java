@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
 
-import andr.perf.monitor.DroidTelescope;
 import plugin.gradle.my.concurrent_test.ExecutorManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -193,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     public void onSlowClick(View view) {
 //        Intent i = new Intent(this, SecondActivity.class);
 //        startActivity(i);
-        DroidTelescope.startMethodTracing();
+        DroidTelescopeProxy.startMethodTracing();
 //        TimeConsumingSample.methodEnter("plugin.gradle.my.MainActivity", "onSlowClick", "android.view.View");
         try {
             g2();
@@ -248,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopTracing(String string) {
-        String path = DroidTelescope.stopMethodTracing(this);
+        String path = DroidTelescopeProxy.stopMethodTracing(this);
         if (!TextUtils.isEmpty(path)) {
             Log.i("zkw", "加载完成。。。。。。。。:::>" + path);
         } else {
@@ -318,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        String path = DroidTelescope.stopMethodTracing(this.getApplicationContext());
+        String path = DroidTelescopeProxy.stopMethodTracing(this.getApplicationContext());
         if (!TextUtils.isEmpty(path)) {
             Log.i("zkw", "加载完成。。。。。。。。:::>" + path);
         } else {
