@@ -1,6 +1,7 @@
 package monitor.plugin.javassist.inject.interactive
 
 import javassist.CtClass
+import monitor.plugin.utils.JavassistUtils
 import monitor.plugin.utils.Logger
 
 /**
@@ -22,7 +23,7 @@ class InteractiveCodeInject {
     }
 
     static void injectForViewEvent(CtClass clazz) {
-        CtClass[] interfaces = clazz.interfaces
+        CtClass[] interfaces = JavassistUtils.getInterfaces(clazz)
         if (interfaces == null || interfaces.length == 0) {
             return
         }

@@ -36,6 +36,29 @@ public class JavassistUtils {
         return null;
     }
 
+    /**
+     * 获取 ctClass 的 interface 列表
+     *
+     * @param ctClass
+     * @return 如果 NotFoundException 则返回 null
+     */
+    public static CtClass[] getInterfaces(CtClass ctClass) {
+        CtClass[] interfaces = null;
+        try {
+            interfaces = ctClass.getInterfaces();
+        } catch (NotFoundException e) {
+            //不要崩溃直接跳过
+            Logger.i("Interfaces class not found!!!! Exception msg:" + e.getMessage() + ", class:" + ctClass.getName());
+        }
+        return interfaces;
+    }
+
+    /**
+     * 获取 CtBehavior 的参数列表
+     *
+     * @param ctBehavior
+     * @return 如果 NotFoundException 则返回 null
+     */
     public static CtClass[] getBehaviorParameterTypes(CtBehavior ctBehavior) {
         CtClass[] types = null;
         try {

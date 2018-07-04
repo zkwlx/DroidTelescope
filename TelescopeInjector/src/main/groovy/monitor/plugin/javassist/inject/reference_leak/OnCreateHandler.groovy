@@ -2,6 +2,7 @@ package monitor.plugin.javassist.inject.reference_leak;
 
 import javassist.CtClass;
 import javassist.CtMethod
+import monitor.plugin.utils.JavassistUtils
 import monitor.plugin.utils.Logger
 
 /**
@@ -16,14 +17,14 @@ class OnCreateHandler implements IMethodHandler {
 
     @Override
     boolean modifyMethod(CtClass clazz, CtMethod ctMethod) {
-        if ("onCreate" == ctMethod.name && ctMethod.parameterTypes.size() == 1 &&
-                ctMethod.parameterTypes[0].name == BUNDLE) {
-            ReferenceLeakCodeInject.insertCreateSampleCode(clazz, ctMethod)
-            return true
-        } else {
-            return false
+        if ("onCreate" == ctMethod.name) {
+            CtClass[] types = JavassistUtils.getBehaviorParameterTypes(ctMethod)
+            if (types != null && types.size() == 1 && types[0].name == BUNDLE) {
+                ReferenceLeakCodeInject.insertCreateSampleCode(clazz, ctMethod)
+                return true
+            }
         }
-
+        return false
     }
 
     @Override

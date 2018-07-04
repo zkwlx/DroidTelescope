@@ -11,7 +11,7 @@ class Logger {
         System.out.println("[==injector==] " + content)
     }
 
-    static d(String s) {
+    static void d(String s) {
         if (isDebug) {
             System.out.println("[==injector==d== t:${Thread.currentThread().name}] | " + s)
         }
