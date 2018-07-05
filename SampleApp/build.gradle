@@ -46,6 +46,18 @@ android {
         //最大进程数
         maxProcessCount 8
     }
+//    flavorDimensions "default"
+//    productFlavors {
+//        local {
+//            versionNameSuffix "-Local-" + System.getenv("BUILD_NUMBER") as String ?: "null"
+//            buildConfigField "String", "INSTALLER_ID", "\"Local\""
+//        }
+//
+//        online {
+//            versionNameSuffix "-Online-" + System.getenv("BUILD_NUMBER") as String ?: "null"
+//            buildConfigField "String", "INSTALLER_ID", "\"Online\""
+//        }
+//    }
 }
 
 dependencies {
@@ -79,20 +91,19 @@ if (isRelease) {
     injectConfig {
         debugLog = true
         forRelease = true
-        cpuTimeEnable = true
         interactiveEnable = true
-        includePackages = ["plugin.gradle", "com.shit.testlibrary"]
+//        includePackages = ["plugin.gradle", "com.shit.testlibrary"]
     }
 } else {
     System.out.println("for debug!")
     injectConfig {
         debugLog = true
         forRelease = false
-        cpuTimeEnable = true
         parallelCompile = true
-        memoryLeakEnable = false
-        interactiveEnable = false
-        includePackages = ["plugin.gradle", "com.shit.testlibrary"]
+        cpuTimeEnable = true
+        memoryLeakEnable = true
+        interactiveEnable = true
+//        includePackages = ["plugin.gradle", "com.shit.testlibrary"]
     }
 }
 

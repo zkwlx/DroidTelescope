@@ -12,6 +12,17 @@ class InteractiveCodeInject {
 
     private final static HashMap<String, IInterfaceHandler> handlerMap
 
+    //TODO 要做的，在做之前要看看是否有继承关系，避免重复监控
+    //TODO android.content.DialogInterface$OnKeyListener
+    //TODO android.view.View$OnKeyListener
+    //TODO android.view.MenuItem$OnMenuItemClickListener
+    //TODO android.support.v7.widget.RecyclerView$OnItemTouchListener
+    //TODO ?? android.widget.AbsListView$OnScrollListener
+    //TODO ?? android.view.View$OnTouchListener
+    //TODO android.support.v7.widget.ActionMenuView$OnMenuItemClickListener
+
+    //TODO Activity 的交互在 app 的 BaseActivity 里写
+
     static {
         handlerMap = new HashMap<>()
         handlerMap.put(ViewOnClickHandler.NAME, new ViewOnClickHandler())

@@ -2,59 +2,56 @@ package plugin.gradle.my;
 
 import android.content.Context;
 
-import andr.perf.monitor.Config;
-import andr.perf.monitor.DroidTelescope;
-
 /**
  * @author zhoukewen
  * @since 2018/7/3
  */
 public class DroidTelescopeProxy {
 
-    private static Config config = new AndrPerfMonitorConfig();
+//    private static Config config = new AndrPerfMonitorConfig();
 
 //    private DroidTelescope.BlockListener blockListener = new MyBlockListener();
 //    private DroidTelescope.LeakListener leakListener = new MyLeakListener();
 
     public static void init() {
-        DroidTelescope.install(config);
+//        DroidTelescope.install(config);
     }
 
     public static void startMethodTracing() {
-        DroidTelescope.startMethodTracing();
+//        DroidTelescope.startMethodTracing();
     }
 
     public static String stopMethodTracing(Context context) {
-       return DroidTelescope.stopMethodTracing(context);
-//        return "";
+//       return DroidTelescope.stopMethodTracing(context);
+        return "";
     }
 
-    private static class AndrPerfMonitorConfig extends Config {
-        @Override
-        public boolean isBlock(long wallClockTimeMs, long cpuTimeMs) {
-            return true;
-        }
-
-        @Override
-        public boolean shouldRecordMethod(long wallClockTimeNs, long cpuTimeMs) {
-            return true;
-        }
-
-        @Override
-        public boolean useSysTrace() {
-            return false;
-        }
-
-        @Override
-        public boolean justRecordUIThread() {
-            return true;
-        }
-
-        @Override
-        public boolean debugLog() {
-            return true;
-        }
-    }
+//    private static class AndrPerfMonitorConfig extends Config {
+//        @Override
+//        public boolean isBlock(long wallClockTimeMs, long cpuTimeMs) {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean shouldRecordMethod(long wallClockTimeNs, long cpuTimeMs) {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean useSysTrace() {
+//            return false;
+//        }
+//
+//        @Override
+//        public boolean justRecordUIThread() {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean debugLog() {
+//            return true;
+//        }
+//    }
 //
 //
 //    private static class MyBlockListener implements DroidTelescope.BlockListener {
