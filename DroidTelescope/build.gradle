@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
-group = "andr.perf.monitor"
+group = "dt.monitor"
 archivesBaseName = "DroidTelescope"
 version = "1.0.8.1"
 

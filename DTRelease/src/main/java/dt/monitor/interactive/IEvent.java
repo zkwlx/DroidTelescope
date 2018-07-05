@@ -8,4 +8,5 @@ import org.json.JSONObject;
 public interface IEvent {
 
     JSONObject toJson();
+
 }

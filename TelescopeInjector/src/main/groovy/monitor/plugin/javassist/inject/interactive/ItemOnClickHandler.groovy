@@ -16,12 +16,8 @@ class ItemOnClickHandler implements IInterfaceHandler {
 
     private final String injectedMethod
 
-    ItemOnClickHandler() {
-        if (ConfigProvider.config.forRelease) {
-            injectedMethod = "dt.monitor.injected.InteractiveSample.onItemClick"
-        } else {
-            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onItemClick"
-        }
+    ItemOnClickHandler(String className) {
+            injectedMethod = "${className}.onItemClick"
     }
 
     @Override

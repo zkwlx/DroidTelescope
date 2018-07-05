@@ -13,7 +13,7 @@ import andr.perf.monitor.utils.Logger;
 /**
  * Created by ZhouKeWen on 2017/5/15.
  */
-public class UserInteractiveSampler {
+public class UserInteractiveTracing {
 
     private static final String VIEW_CLICK_EVENT = "view_click";
     private static final String VIEW_LONG_CLICK_EVENT = "view_long_click";

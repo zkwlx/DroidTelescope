@@ -16,12 +16,8 @@ class ViewOnClickHandler implements IInterfaceHandler {
 
     private final String injectedMethod
 
-    ViewOnClickHandler() {
-        if (ConfigProvider.config.forRelease) {
-            injectedMethod = "dt.monitor.injected.InteractiveSample.onViewClick"
-        } else {
-            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onViewClick"
-        }
+    ViewOnClickHandler(String className) {
+        injectedMethod = "${className}.onViewClick"
     }
 
     @Override

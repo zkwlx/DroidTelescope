@@ -1,6 +1,7 @@
 package monitor.plugin.javassist.inject.interactive
 
 import javassist.CtClass
+import monitor.plugin.ConfigProvider
 import monitor.plugin.utils.JavassistUtils
 import monitor.plugin.utils.Logger
 
@@ -24,13 +25,19 @@ class InteractiveCodeInject {
     //TODO Activity 的交互在 app 的 BaseActivity 里写
 
     static {
+        String className
+        if (ConfigProvider.config.forRelease) {
+            className = "dt.monitor.injected.InteractiveInjected"
+        } else {
+            className = "andr.perf.monitor.injected.InteractiveInjected"
+        }
         handlerMap = new HashMap<>()
-        handlerMap.put(ViewOnClickHandler.NAME, new ViewOnClickHandler())
-        handlerMap.put(ViewOnLongClickHandler.NAME, new ViewOnLongClickHandler())
-        handlerMap.put(DialogOnClickHandler.NAME, new DialogOnClickHandler())
-        handlerMap.put(ItemOnClickHandler.NAME, new ItemOnClickHandler())
-        handlerMap.put(ItemOnLongClickHandler.NAME, new ItemOnLongClickHandler())
-        handlerMap.put(ItemOnSelectedHandler.NAME, new ItemOnSelectedHandler())
+        handlerMap.put(ViewOnClickHandler.NAME, new ViewOnClickHandler(className))
+        handlerMap.put(ViewOnLongClickHandler.NAME, new ViewOnLongClickHandler(className))
+        handlerMap.put(DialogOnClickHandler.NAME, new DialogOnClickHandler(className))
+        handlerMap.put(ItemOnClickHandler.NAME, new ItemOnClickHandler(className))
+        handlerMap.put(ItemOnLongClickHandler.NAME, new ItemOnLongClickHandler(className))
+        handlerMap.put(ItemOnSelectedHandler.NAME, new ItemOnSelectedHandler(className))
     }
 
     static void injectForViewEvent(CtClass clazz) {

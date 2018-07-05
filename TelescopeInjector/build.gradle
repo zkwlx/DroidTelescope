@@ -16,7 +16,8 @@ compileGroovy {
 
 apply plugin: 'maven'
 
-group = "andr.perf.monitor"
+//TODO 别忘了更新主工程
+group = "dt.monitor"
 archivesBaseName = "TelescopeInjector"
 version = "1.0.7"
 

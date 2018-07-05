@@ -79,7 +79,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'andr.perf.monitor:TelescopeInjector:local'
+        classpath 'dt.monitor:TelescopeInjector:local'
     }
 }
 

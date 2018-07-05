@@ -16,12 +16,8 @@ class ItemOnLongClickHandler implements IInterfaceHandler {
 
     private final String injectedMethod
 
-    ItemOnLongClickHandler() {
-        if (ConfigProvider.config.forRelease) {
-            injectedMethod = "dt.monitor.injected.InteractiveSample.onItemLongClick"
-        } else {
-            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onItemLongClick"
-        }
+    ItemOnLongClickHandler(String className) {
+        injectedMethod = "${className}.onItemLongClick"
     }
 
     @Override

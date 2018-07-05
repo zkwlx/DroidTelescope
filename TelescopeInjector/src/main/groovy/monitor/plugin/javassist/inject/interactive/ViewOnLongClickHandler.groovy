@@ -16,12 +16,8 @@ class ViewOnLongClickHandler implements IInterfaceHandler {
 
     private final String injectedMethod
 
-    ViewOnLongClickHandler() {
-        if (ConfigProvider.config.forRelease) {
-            injectedMethod = "dt.monitor.injected.InteractiveSample.onViewLongClick"
-        } else {
-            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onViewLongClick"
-        }
+    ViewOnLongClickHandler(String className) {
+        injectedMethod = "${className}.onViewLongClick"
     }
 
     @Override

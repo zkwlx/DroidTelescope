@@ -16,12 +16,8 @@ class DialogOnClickHandler implements IInterfaceHandler {
 
     private final String injectedMethod
 
-    DialogOnClickHandler() {
-        if (ConfigProvider.config.forRelease) {
-            injectedMethod = "dt.monitor.injected.InteractiveSample.onDialogClick"
-        } else {
-            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onDialogClick"
-        }
+    DialogOnClickHandler(String className) {
+        injectedMethod = "${className}.onDialogClick"
     }
 
     @Override

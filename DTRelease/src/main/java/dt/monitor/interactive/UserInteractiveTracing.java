@@ -5,14 +5,15 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
-import java.util.LinkedList;
+import org.json.JSONException;
 
+import dt.monitor.UIEventRecorder;
 import dt.monitor.utils.Logger;
 
 /**
  * Created by ZhouKeWen on 2017/5/15.
  */
-public class UserInteractiveSampler {
+public class UserInteractiveTracing {
 
     private static final String VIEW_CLICK_EVENT = "view_click";
     private static final String VIEW_LONG_CLICK_EVENT = "view_long_click";
@@ -20,14 +21,6 @@ public class UserInteractiveSampler {
     private static final String ITEM_CLICK_EVENT = "item_click_event";
     private static final String ITEM_LONG_CLICK_EVENT = "item_long_click_event";
     private static final String ITEM_SELECTED_EVENT = "item_selected_event";
-
-    private static final int MAX_EVENT_COUNT = 5;
-
-    private LinkedList<IEvent> eventList = new LinkedList<>();
-
-    public IEvent[] obtainCurrentEvents() {
-        return eventList.toArray(new IEvent[]{});
-    }
 
     //android.view.View$OnClickListener
     public void onViewClick(Object object, View view) {
@@ -94,7 +87,7 @@ public class UserInteractiveSampler {
     }
 
     private void onItemEvent(String eventType, Object object, AdapterView<?> parent, View view, int position,
-            long id) {
+                             long id) {
         ItemEvent itemEvent = new ItemEvent();
         itemEvent.setEventType(eventType);
         itemEvent.setListenerName(object.getClass().getName());
@@ -115,11 +108,11 @@ public class UserInteractiveSampler {
     }
 
     private void addToList(IEvent eventObject) {
-        int size = eventList.size();
-        if (size >= MAX_EVENT_COUNT) {
-            eventList.removeLast();
+        try {
+            UIEventRecorder.add(eventObject.toJson().toString(3));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        eventList.addFirst(eventObject);
     }
 
 }

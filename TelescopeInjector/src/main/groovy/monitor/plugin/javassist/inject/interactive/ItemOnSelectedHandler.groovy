@@ -16,12 +16,8 @@ class ItemOnSelectedHandler implements IInterfaceHandler {
 
     private final String injectedMethod
 
-    ItemOnSelectedHandler() {
-        if (ConfigProvider.config.forRelease) {
-            injectedMethod = "dt.monitor.injected.InteractiveSample.onItemSelected"
-        } else {
-            injectedMethod = "andr.perf.monitor.injected.InteractiveSample.onItemSelected"
-        }
+    ItemOnSelectedHandler(String className) {
+        injectedMethod = "${className}.onItemSelected"
     }
 
     @Override
