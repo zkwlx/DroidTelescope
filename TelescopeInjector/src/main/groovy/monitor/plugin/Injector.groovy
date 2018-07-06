@@ -52,11 +52,11 @@ class Injector {
     }
 
     private static void injectForFile(File file) {
+        final int index = file.absolutePath.indexOf(InjectTransform.NAME) + InjectTransform.NAME.length()
         Closure handleFileClosure = { File innerFile ->
             String filePath = innerFile.absolutePath
             if (shouldInjectFile(filePath)) {
-//                Logger.i("---->handle file:${file.absolutePath}")
-                def outputFile = new File(buildDir, TMP_DIR + innerFile.name)
+                def outputFile = new File(buildDir, TMP_DIR + innerFile.absolutePath.substring(index))
                 Files.createParentDirs(outputFile)
                 FileInputStream inputStream = new FileInputStream(innerFile)
                 FileOutputStream outputStream = new FileOutputStream(outputFile)
@@ -70,7 +70,10 @@ class Injector {
 //                Logger.i("skip class file:>> " + filePath)
             }
         }
+
+
         if (file.isDirectory()) {
+            Logger.d("################## is dir ${file.absolutePath} ################")
             file.eachFileRecurse {
                 handleFileClosure
             }
@@ -80,7 +83,8 @@ class Injector {
     }
 
     private static void injectForJar(File outJarFile) {
-        final def tmpFile = new File(buildDir, TMP_DIR + outJarFile.name)
+        final int index = outJarFile.absolutePath.indexOf(InjectTransform.NAME) + InjectTransform.NAME.length()
+        final def tmpFile = new File(buildDir, TMP_DIR + outJarFile.absolutePath.substring(index))
         Files.createParentDirs(tmpFile)
 
         new ZipInputStream(new FileInputStream(outJarFile)).withCloseable { zis ->

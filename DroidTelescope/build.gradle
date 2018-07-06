@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 group = "dt.monitor"
 archivesBaseName = "DroidTelescope"
-version = "1.0.8.1"
+version = "1.0.9"
 
 if (rootProject.file("local").exists()) {
     version = 'local'

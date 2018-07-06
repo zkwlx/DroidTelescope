@@ -47,7 +47,6 @@ class InteractiveCodeInject {
         }
 
         for (CtClass face : interfaces) {
-            Logger.i("--------interface name: " + face.name)
             IInterfaceHandler handler = handlerMap.get(face.name)
             if (handler != null) {
                 handler.handleInterface(clazz)

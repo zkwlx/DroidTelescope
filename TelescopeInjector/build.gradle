@@ -19,7 +19,7 @@ apply plugin: 'maven'
 //TODO 别忘了更新主工程
 group = "dt.monitor"
 archivesBaseName = "TelescopeInjector"
-version = "1.0.7"
+version = "1.0.8"
 
 if (rootProject.file("local").exists()) {
     version = 'local'

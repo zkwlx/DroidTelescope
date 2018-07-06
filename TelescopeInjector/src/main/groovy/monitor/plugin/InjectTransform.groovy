@@ -17,7 +17,7 @@ import java.util.function.Consumer
  */
 class InjectTransform extends IncrementalTransform {
 
-    private static final String NAME = "injectPlugin"
+    public static final String NAME = "injectPlugin"
 
     private Project project
     private static Set<QualifiedContent.Scope> careScopes
