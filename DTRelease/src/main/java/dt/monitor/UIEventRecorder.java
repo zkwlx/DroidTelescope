@@ -2,6 +2,8 @@ package dt.monitor;
 
 import java.util.LinkedList;
 
+import dt.monitor.utils.Logger;
+
 /**
  * @author zhoukewen
  * @since 2018/7/5
@@ -13,6 +15,7 @@ public class UIEventRecorder {
     private static LinkedList<String> eventList = new LinkedList<>();
 
     public static void add(String eventContent) {
+        Logger.i("event>>>---" + eventContent);
         int size = eventList.size();
         if (size >= MAX_EVENT_COUNT) {
             eventList.removeLast();

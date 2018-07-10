@@ -1,40 +1,35 @@
 package dt.monitor.interactive;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * View事件对象，用于记录一个View的Click和LongClick等事件
- * TODO 使用对象池！
+ * ViewPager 事件类
  * Created by ZhouKeWen on 2017/5/15.
  */
-public class ViewEvent implements IEvent {
+public class ViewPagerEvent implements IEvent {
 
     private String listenerName;
 
     private String eventType;
 
-    private String pageName;
+    private int position = -1;
 
-    private String viewObject;
-
-    private String[] parentArray;
+    private String state = null;
 
     public void setListenerName(String listenerName) {
         this.listenerName = listenerName;
     }
 
-    public void setPageName(String pageName) {
-        this.pageName = pageName;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
-    public void setViewObject(String viewObject) {
-        this.viewObject = viewObject;
-    }
-
-    public void setParentArray(String[] parentArray) {
-        this.parentArray = parentArray;
+    public void setState(String state) {
+        this.state = state;
     }
 
     public void setEventType(String eventType) {
@@ -53,15 +48,16 @@ public class ViewEvent implements IEvent {
         try {
             json.put("eventType", eventType);
             json.put("listenerName", listenerName);
-            json.put("pageName", pageName);
-            json.put("viewObject", viewObject);
-            if (parentArray != null && parentArray.length > 0) {
-                JSONArray jsonArray = new JSONArray(parentArray);
-                json.put("parents", jsonArray);
+            if (position != -1) {
+                json.put("position", position);
+            }
+            if (!TextUtils.isEmpty(state)) {
+                json.put("state", state);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
     }
+
 }

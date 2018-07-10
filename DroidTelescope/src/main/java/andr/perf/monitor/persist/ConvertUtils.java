@@ -1,7 +1,5 @@
 package andr.perf.monitor.persist;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +8,6 @@ import java.util.List;
 
 import andr.perf.monitor.cpu.models.BlockInfo;
 import andr.perf.monitor.cpu.models.MethodInfo;
-import andr.perf.monitor.interactive.IEvent;
 import andr.perf.monitor.memory.SuspectWeakReference;
 import andr.perf.monitor.memory.models.LeakInfo;
 import andr.perf.monitor.utils.Logger;
@@ -113,14 +110,14 @@ public class ConvertUtils {
             }
             referenceJson.put("object_create_chain", sb.toString());
         }
-        IEvent[] events = reference.getViewEventArray();
-        if (events != null && events.length > 0) {
-            JSONArray eventArray = new JSONArray();
-            for (IEvent event : events) {
-                eventArray.put(event.toJson());
-            }
-            referenceJson.put("user_event_stack", eventArray);
-        }
+//        IEvent[] events = reference.getViewEventArray();
+//        if (events != null && events.length > 0) {
+//            JSONArray eventArray = new JSONArray();
+//            for (IEvent event : events) {
+//                eventArray.put(event.toJson());
+//            }
+//            referenceJson.put("user_event_stack", eventArray);
+//        }
         return referenceJson;
     }
 

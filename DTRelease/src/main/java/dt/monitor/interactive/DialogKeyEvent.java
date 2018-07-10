@@ -1,4 +1,4 @@
-package andr.perf.monitor.interactive;
+package dt.monitor.interactive;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * TODO 使用对象池！
  * Created by ZhouKeWen on 2017/5/15.
  */
-public class DialogEvent implements IEvent {
+public class DialogKeyEvent implements IEvent {
 
     private String listenerName;
 
@@ -16,39 +16,20 @@ public class DialogEvent implements IEvent {
 
     private String dialogName;
 
-    private int which;
-
-    public String getEventType() {
-        return eventType;
-    }
+    private int keyCode;
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
-    }
-
-    public String getListenerName() {
-        return listenerName;
     }
 
     public void setListenerName(String listenerName) {
         this.listenerName = listenerName;
     }
 
-    public String getDialogName() {
-        return dialogName;
-    }
-
     public void setDialogName(String dialogName) {
         this.dialogName = dialogName;
     }
 
-    public int getWhich() {
-        return which;
-    }
-
-    public void setWhich(int which) {
-        this.which = which;
-    }
 
     @Override
     public String toString() {
@@ -63,10 +44,14 @@ public class DialogEvent implements IEvent {
             json.put("eventType", eventType);
             json.put("listenerName", listenerName);
             json.put("dialogName", dialogName);
-            json.put("which", which);
+            json.put("keyCode", keyCode);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
+    }
+
+    public void setKeyCode(int keyCode) {
+        this.keyCode = keyCode;
     }
 }

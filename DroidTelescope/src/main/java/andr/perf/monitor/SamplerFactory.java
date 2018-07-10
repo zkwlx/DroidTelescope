@@ -2,7 +2,6 @@ package andr.perf.monitor;
 
 import android.util.Log;
 
-import andr.perf.monitor.interactive.UserInteractiveTracing;
 import andr.perf.monitor.stack_traces.AbstractMethodSampler;
 import andr.perf.monitor.stack_traces.DetailedMethodSampler;
 import andr.perf.monitor.memory.ObjectReferenceSampler;
@@ -18,7 +17,7 @@ public class SamplerFactory {
 
     private static ObjectReferenceSampler objectRefSampler;
 
-    private static UserInteractiveTracing interactiveSampler;
+//    private static UserInteractiveTracing interactiveSampler;
 
     public static AbstractMethodSampler getMethodSampler() {
         if (methodSampler == null) {
@@ -42,11 +41,11 @@ public class SamplerFactory {
         return objectRefSampler;
     }
 
-    public static UserInteractiveTracing getInteractiveSampler() {
-        if (interactiveSampler == null) {
-            interactiveSampler = new UserInteractiveTracing();
-        }
-        return interactiveSampler;
-    }
+//    public static UserInteractiveTracing getInteractiveSampler() {
+//        if (interactiveSampler == null) {
+//            interactiveSampler = new UserInteractiveTracing();
+//        }
+//        return interactiveSampler;
+//    }
 
 }

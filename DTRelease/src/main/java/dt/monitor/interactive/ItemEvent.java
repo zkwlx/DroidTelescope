@@ -54,32 +54,16 @@ public class ItemEvent implements IEvent {
         return json;
     }
 
-    public String getListenerName() {
-        return listenerName;
-    }
-
     public void setListenerName(String listenerName) {
         this.listenerName = listenerName;
-    }
-
-    public String getEventType() {
-        return eventType;
     }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
-    public String getPageName() {
-        return pageName;
-    }
-
     public void setPageName(String pageName) {
         this.pageName = pageName;
-    }
-
-    public int getPosition() {
-        return position;
     }
 
     public void setPosition(int position) {
@@ -94,24 +78,12 @@ public class ItemEvent implements IEvent {
         this.id = id;
     }
 
-    public String getAdapterName() {
-        return adapterName;
-    }
-
     public void setAdapterName(String adapterName) {
         this.adapterName = adapterName;
     }
 
-    public String[] getParentArray() {
-        return parentArray;
-    }
-
     public void setParentArray(String[] parentArray) {
         this.parentArray = parentArray;
-    }
-
-    public String getViewObject() {
-        return viewObject;
     }
 
     public void setViewObject(String viewObject) {

@@ -1,6 +1,7 @@
 package plugin.gradle.my;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,12 +19,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
 
+import dt.monitor.injected.InteractiveInjected;
 import plugin.gradle.my.concurrent_test.ExecutorManager;
+import plugin.gradle.my.dummy.ScrollingActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,12 +37,25 @@ public class MainActivity extends AppCompatActivity {
     private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
     private AlertDialog dialog;
 
+//    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 //        gogo(100);
+
+        ImageView imageView = findViewById(R.id.imageView);
+        imageView.setClickable(true);
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Log.i("zkw", "onTouch java");
+                }
+                return false;
+            }
+        });
 
         Fragment f = new Fragment();
         android.app.Fragment ff = new android.app.Fragment();
@@ -177,16 +196,31 @@ public class MainActivity extends AppCompatActivity {
         Log.i("zkw", "----------------_>>>on trim memory:" + level);
     }
 
-    public void onGoListClick(View view) {
-//        Intent i = new Intent(this, ListActivity.class);
-//        startActivity(i);
-        ExecutorManager manager = new ExecutorManager();
-        manager.execut();
+    public void onInteractiveTest(View view) {
+        Intent i = new Intent(this, InteractiveTestActivity.class);
+        startActivity(i);
     }
 
     public void onGoClick(View view) {
         Intent i = new Intent(this, ScrollingActivity.class);
         startActivity(i);
+
+        TabLayout.OnTabSelectedListener listener = new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.i(tab.getText().toString(), "");
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Log.i(tab.getText().toString(), "");
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Log.i(tab.getText().toString(), "");
+            }
+        };
     }
 
     public void onSlowClick(View view) {

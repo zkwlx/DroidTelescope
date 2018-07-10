@@ -1,15 +1,15 @@
-package andr.perf.monitor.interactive;
+package dt.monitor.interactive;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * View事件对象，用于记录一个View的Click和LongClick等事件
- * TODO 使用对象池！
+ * CompoundButton的 check 事件类
+ * <p>
  * Created by ZhouKeWen on 2017/5/15.
  */
-public class ViewEvent implements IEvent {
+public class CheckedViewEvent implements IEvent {
 
     private String listenerName;
 
@@ -21,40 +21,22 @@ public class ViewEvent implements IEvent {
 
     private String[] parentArray;
 
-    public String getListenerName() {
-        return listenerName;
-    }
+    private boolean checked;
 
     public void setListenerName(String listenerName) {
         this.listenerName = listenerName;
-    }
-
-    public String getPageName() {
-        return pageName;
     }
 
     public void setPageName(String pageName) {
         this.pageName = pageName;
     }
 
-    public String getViewObject() {
-        return viewObject;
-    }
-
     public void setViewObject(String viewObject) {
         this.viewObject = viewObject;
     }
 
-    public String[] getParentArray() {
-        return parentArray;
-    }
-
     public void setParentArray(String[] parentArray) {
         this.parentArray = parentArray;
-    }
-
-    public String getEventType() {
-        return eventType;
     }
 
     public void setEventType(String eventType) {
@@ -75,6 +57,7 @@ public class ViewEvent implements IEvent {
             json.put("listenerName", listenerName);
             json.put("pageName", pageName);
             json.put("viewObject", viewObject);
+            json.put("checked", checked);
             if (parentArray != null && parentArray.length > 0) {
                 JSONArray jsonArray = new JSONArray(parentArray);
                 json.put("parents", jsonArray);
@@ -83,5 +66,9 @@ public class ViewEvent implements IEvent {
             e.printStackTrace();
         }
         return json;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }

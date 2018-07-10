@@ -19,7 +19,7 @@ apply plugin: 'maven'
 //TODO 别忘了更新主工程
 group = "dt.monitor"
 archivesBaseName = "TelescopeInjector"
-version = "1.0.8"
+version = "1.0.8.4"
 
 if (rootProject.file("local").exists()) {
     version = 'local'
@@ -39,7 +39,6 @@ if (rootProject.file("local").exists()) {
 //                repository(url: 'http://xxx') {
 //                    authentication(userName: 'xxx', password: 'xxx')
 //                }
-
             }
         }
         finalizedBy(clean)

@@ -64,7 +64,7 @@ class JavassistHandler {
         if (config.cpuTimeEnable) {
             injectForCpu(clazz)
         }
-        if (config.interactiveEnable) {
+        if (config.interactiveEnable && ConfigProvider.config.forRelease) {
             injectForInteractive(clazz)
         }
 

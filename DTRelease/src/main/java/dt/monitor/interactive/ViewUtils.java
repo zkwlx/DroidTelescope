@@ -13,7 +13,7 @@ public class ViewUtils {
 
     /**
      * 为了提高性能，使用一个boolean
-     * 注意多线程安全
+     * TODO 注意多线程安全
      */
     private static boolean isRootParent = false;
 

@@ -1,37 +1,26 @@
 package dt.monitor.interactive;
 
+import android.text.TextUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Dialog操作事件对象，用于记录一个Dialog的Click事件等
- * TODO 使用对象池！
+ * 简单事件类，说明事件方法没有参数
  * Created by ZhouKeWen on 2017/5/15.
  */
-public class DialogEvent implements IEvent {
+public class SimpleEvent implements IEvent {
 
     private String listenerName;
 
     private String eventType;
 
-    private String dialogName;
-
-    private int which;
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
     public void setListenerName(String listenerName) {
         this.listenerName = listenerName;
     }
 
-    public void setDialogName(String dialogName) {
-        this.dialogName = dialogName;
-    }
-
-    public void setWhich(int which) {
-        this.which = which;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
     @Override
@@ -46,8 +35,6 @@ public class DialogEvent implements IEvent {
         try {
             json.put("eventType", eventType);
             json.put("listenerName", listenerName);
-            json.put("dialogName", dialogName);
-            json.put("which", which);
         } catch (JSONException e) {
             e.printStackTrace();
         }

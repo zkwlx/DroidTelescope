@@ -7,6 +7,7 @@ import com.android.utils.FileUtils
 import com.google.common.io.Files
 import monitor.plugin.config.InjectConfig
 import monitor.plugin.config.Scope
+import monitor.plugin.javassist.inject.interactive.InteractiveCodeInject
 import monitor.plugin.utils.Logger
 import org.gradle.api.Project
 

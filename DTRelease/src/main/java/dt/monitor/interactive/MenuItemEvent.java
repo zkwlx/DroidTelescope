@@ -1,37 +1,44 @@
 package dt.monitor.interactive;
 
+import android.text.TextUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Dialog操作事件对象，用于记录一个Dialog的Click事件等
- * TODO 使用对象池！
+ * Menu item 相关事件
  * Created by ZhouKeWen on 2017/5/15.
  */
-public class DialogEvent implements IEvent {
+public class MenuItemEvent implements IEvent {
 
     private String listenerName;
 
     private String eventType;
 
-    private String dialogName;
+    private int itemId;
 
-    private int which;
+    private String itemIdStr;
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
+    private String title;
 
     public void setListenerName(String listenerName) {
         this.listenerName = listenerName;
     }
 
-    public void setDialogName(String dialogName) {
-        this.dialogName = dialogName;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
-    public void setWhich(int which) {
-        this.which = which;
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public void setItemIdStr(String itemIdStr) {
+        this.itemIdStr = itemIdStr;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
@@ -46,8 +53,12 @@ public class DialogEvent implements IEvent {
         try {
             json.put("eventType", eventType);
             json.put("listenerName", listenerName);
-            json.put("dialogName", dialogName);
-            json.put("which", which);
+            json.put("title", title);
+            if (TextUtils.isEmpty(itemIdStr)) {
+                json.put("id", itemId);
+            } else {
+                json.put("id", itemIdStr);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

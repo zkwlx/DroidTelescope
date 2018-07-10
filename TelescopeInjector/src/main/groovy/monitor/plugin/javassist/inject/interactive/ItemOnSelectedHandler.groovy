@@ -33,8 +33,8 @@ class ItemOnSelectedHandler implements IInterfaceHandler {
                     && types.length == 4
                     && types[0].name == "android.widget.AdapterView"
                     && types[1].name == "android.view.View"
-                    && types[2].name == "int"
-                    && types[3].name == "long") {
+                    && types[2] == CtClass.intType
+                    && types[3] == CtClass.longType) {
                 Logger.i("inject onItemClick---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1,\$2,\$3,\$4);

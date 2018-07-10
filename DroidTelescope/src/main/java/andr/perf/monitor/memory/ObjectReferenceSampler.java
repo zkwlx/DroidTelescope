@@ -1,6 +1,7 @@
 package andr.perf.monitor.memory;
 
 import android.content.ComponentCallbacks2;
+import android.os.Build;
 import android.os.Looper;
 import android.os.MessageQueue;
 
@@ -12,7 +13,6 @@ import java.util.List;
 import andr.perf.monitor.DroidTelescope;
 import andr.perf.monitor.JobManager;
 import andr.perf.monitor.SamplerFactory;
-import andr.perf.monitor.interactive.IEvent;
 import andr.perf.monitor.memory.models.LeakInfo;
 import andr.perf.monitor.utils.Logger;
 
@@ -77,7 +77,7 @@ public class ObjectReferenceSampler {
                 } else {
                     //增加对象的计数，当达到阈值时视为泄漏
                     reference.increaseLookUpTimes();
-                    Logger.i(TAG, "[---]times:"+reference.getMarkeTimes() );
+                    Logger.i(TAG, "[---]times:" + reference.getMarkeTimes());
                     if (reference.getMarkeTimes() > MAX_MARK_TIMES) {
                         //发生泄漏，记录泄漏Object
                         Logger.i(TAG, "[---]...............garbage!!!!!!!>> " + obj.toString());
@@ -109,8 +109,8 @@ public class ObjectReferenceSampler {
         SuspectWeakReference reference = new SuspectWeakReference(object);
         String[] objectIdStack = objectCreateStack.toArray(new String[objectCreateStack.size()]);
         reference.setCreateStack(objectIdStack);
-        IEvent[] events = SamplerFactory.getInteractiveSampler().obtainCurrentEvents();
-        reference.setViewEventArray(events);
+//        IEvent[] events = SamplerFactory.getInteractiveSampler().obtainCurrentEvents();
+//        reference.setViewEventArray(events);
         suspectObjects.add(reference);
         //防止堆栈混乱，索性直接用remove
         objectCreateStack.remove(object.toString());
