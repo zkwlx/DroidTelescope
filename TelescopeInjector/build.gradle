@@ -39,6 +39,7 @@ if (rootProject.file("local").exists()) {
 //                repository(url: 'http://xxx') {
 //                    authentication(userName: 'xxx', password: 'xxx')
 //                }
+                
             }
         }
         finalizedBy(clean)

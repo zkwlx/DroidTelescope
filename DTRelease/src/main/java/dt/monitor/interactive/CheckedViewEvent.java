@@ -1,5 +1,7 @@
 package dt.monitor.interactive;
 
+import android.view.View;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,32 +13,20 @@ import org.json.JSONObject;
  */
 public class CheckedViewEvent implements IEvent {
 
-    private String listenerName;
+    private Object listener;
 
     private String eventType;
 
-    private String pageName;
-
-    private String viewObject;
-
-    private String[] parentArray;
+    private View button;
 
     private boolean checked;
 
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
+    public void setListener(Object listener) {
+        this.listener = listener;
     }
 
-    public void setPageName(String pageName) {
-        this.pageName = pageName;
-    }
-
-    public void setViewObject(String viewObject) {
-        this.viewObject = viewObject;
-    }
-
-    public void setParentArray(String[] parentArray) {
-        this.parentArray = parentArray;
+    public void setButton(View button) {
+        this.button = button;
     }
 
     public void setEventType(String eventType) {
@@ -54,14 +44,19 @@ public class CheckedViewEvent implements IEvent {
         JSONObject json = new JSONObject();
         try {
             json.put("eventType", eventType);
-            json.put("listenerName", listenerName);
-            json.put("pageName", pageName);
-            json.put("viewObject", viewObject);
-            json.put("checked", checked);
-            if (parentArray != null && parentArray.length > 0) {
-                JSONArray jsonArray = new JSONArray(parentArray);
-                json.put("parents", jsonArray);
+            if (listener != null) {
+                json.put("listenerName", listener.getClass().getName());
             }
+            if (button != null) {
+                json.put("pageName", button.getContext().getClass().getName());
+                json.put("view", ViewUtils.getViewSign(button));
+                String[] parentArray = ViewUtils.getParentArray(button);
+                if (parentArray.length > 0) {
+                    JSONArray jsonArray = new JSONArray(parentArray);
+                    json.put("parents", jsonArray);
+                }
+            }
+            json.put("checked", checked);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -2,6 +2,8 @@ package dt.monitor.interactive;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.AdapterView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,79 +16,73 @@ import org.json.JSONObject;
  */
 public class ItemEvent implements IEvent {
 
-    private String listenerName;
+    private Object listener;
 
     private String eventType;
 
-    private String pageName;
+    private AdapterView<?> parent;
+
+    private View itemView;
 
     private int position;
 
     private long id;
-
-    @Nullable
-    private String adapterName;
-
-    private String[] parentArray;
-
-    private String viewObject;
 
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         try {
             json.put("eventType", eventType);
-            json.put("listenerName", listenerName);
-            json.put("pageName", pageName);
-            json.put("viewObject", viewObject);
+            if (listener != null) {
+                json.put("listenerName", listener.getClass().getName());
+            }
+            if (parent != null) {
+                json.put("pageName", parent.getContext().getClass().getName());
+                if (parent.getAdapter() != null) {
+                    json.put("adapterName", parent.getAdapter().getClass().getName());
+                }
+            } else if (itemView != null) {
+                json.put("pageName", itemView.getContext().getClass().getName());
+            }
+
+            if (itemView != null) {
+                json.put("itemView", ViewUtils.getViewSign(itemView));
+                String[] parentArray = ViewUtils.getParentArray(itemView);
+                if (parentArray.length > 0) {
+                    JSONArray jsonArray = new JSONArray(parentArray);
+                    json.put("parents", jsonArray);
+                }
+            }
             json.put("position", position);
             json.put("id", id);
-            if (!TextUtils.isEmpty(adapterName)) {
-                json.put("adapterName", adapterName);
-            }
-            if (parentArray != null && parentArray.length > 0) {
-                JSONArray jsonArray = new JSONArray(parentArray);
-                json.put("parents", jsonArray);
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
     }
 
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
-    }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
-    }
-
-    public void setPageName(String pageName) {
-        this.pageName = pageName;
     }
 
     public void setPosition(int position) {
         this.position = position;
     }
 
-    public long getId() {
-        return id;
-    }
-
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setAdapterName(String adapterName) {
-        this.adapterName = adapterName;
+    public void setParent(AdapterView<?> parent) {
+        this.parent = parent;
     }
 
-    public void setParentArray(String[] parentArray) {
-        this.parentArray = parentArray;
+    public void setItemView(View view) {
+        this.itemView = view;
     }
 
-    public void setViewObject(String viewObject) {
-        this.viewObject = viewObject;
+    public void setListener(Object listener) {
+        this.listener = listener;
     }
 }

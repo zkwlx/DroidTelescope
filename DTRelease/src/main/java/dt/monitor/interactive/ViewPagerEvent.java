@@ -12,28 +12,28 @@ import org.json.JSONObject;
  */
 public class ViewPagerEvent implements IEvent {
 
-    private String listenerName;
+    private Object listener;
 
     private String eventType;
 
     private int position = -1;
 
-    private String state = null;
-
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
-    }
+    private int state = -1;
 
     public void setPosition(int position) {
         this.position = position;
     }
 
-    public void setState(String state) {
+    public void setState(int state) {
         this.state = state;
     }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
+    }
+
+    public void setListener(Object listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -47,12 +47,24 @@ public class ViewPagerEvent implements IEvent {
         JSONObject json = new JSONObject();
         try {
             json.put("eventType", eventType);
-            json.put("listenerName", listenerName);
+            if (listener != null) {
+                json.put("listenerName", listener.getClass().getName());
+            }
             if (position != -1) {
                 json.put("position", position);
             }
-            if (!TextUtils.isEmpty(state)) {
-                json.put("state", state);
+            if (state != -1) {
+                switch (state) {
+                    case 0:
+                        json.put("state", "IDLE");
+                        break;
+                    case 1:
+                        json.put("state", "DRAGGING");
+                        break;
+                    case 2:
+                        json.put("state", "SETTLING");
+                        break;
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

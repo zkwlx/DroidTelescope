@@ -1,5 +1,6 @@
 package dt.monitor.interactive;
 
+import android.support.design.widget.TabLayout;
 import android.text.TextUtils;
 
 import org.json.JSONException;
@@ -11,28 +12,22 @@ import org.json.JSONObject;
  */
 public class TabEvent implements IEvent {
 
-    private String listenerName;
-
     private String eventType;
 
-    private int position = -1;
+    private Object listener;
 
-    private String text = null;
+    private TabLayout.Tab tab;
 
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
+    public void setListener(Object listener) {
+        this.listener = listener;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setTab(TabLayout.Tab tab) {
+        this.tab = tab;
     }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     @Override
@@ -46,18 +41,18 @@ public class TabEvent implements IEvent {
         JSONObject json = new JSONObject();
         try {
             json.put("eventType", eventType);
-            json.put("listenerName", listenerName);
-            if (position != -1) {
-                json.put("position", position);
+            if (listener != null) {
+                json.put("listenerName", listener.getClass().getName());
             }
-            if (!TextUtils.isEmpty(text)) {
-                json.put("text", text);
+            if (tab != null) {
+                json.put("position", tab.getPosition());
+                if (tab.getText() != null) {
+                    json.put("text", tab.getText().toString());
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
     }
-
-
 }

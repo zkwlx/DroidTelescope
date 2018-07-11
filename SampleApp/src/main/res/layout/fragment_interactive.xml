@@ -18,6 +18,12 @@
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:src="@drawable/common_full_open_on_phone" />
+
+        <CheckBox
+            android:id="@+id/check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="check 测试" />
     </LinearLayout>
 
 

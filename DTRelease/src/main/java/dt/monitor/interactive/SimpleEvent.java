@@ -1,7 +1,5 @@
 package dt.monitor.interactive;
 
-import android.text.TextUtils;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,12 +9,12 @@ import org.json.JSONObject;
  */
 public class SimpleEvent implements IEvent {
 
-    private String listenerName;
+    private Object listener;
 
     private String eventType;
 
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
+    public void setListener(Object listener) {
+        this.listener = listener;
     }
 
     public void setEventType(String eventType) {
@@ -34,10 +32,14 @@ public class SimpleEvent implements IEvent {
         JSONObject json = new JSONObject();
         try {
             json.put("eventType", eventType);
-            json.put("listenerName", listenerName);
+            if (listener != null) {
+                json.put("listenerName", listener.getClass().getName());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
     }
+
+
 }

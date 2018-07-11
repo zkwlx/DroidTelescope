@@ -21,7 +21,7 @@ if (rootProject.file("local").exists()) {
 } else {
     uploadArchives {
         doFirst {
-            System.out.println("============uploadArchives for Release!!!!")
+            System.out.println("============uploadArchives for Release!!!! ver=${version}")
         }
         repositories {
             mavenDeployer {

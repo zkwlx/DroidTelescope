@@ -1,5 +1,7 @@
 package dt.monitor.interactive;
 
+import android.content.DialogInterface;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,26 +12,25 @@ import org.json.JSONObject;
  */
 public class DialogKeyEvent implements IEvent {
 
-    private String listenerName;
+    private Object listener;
 
     private String eventType;
 
-    private String dialogName;
+    private DialogInterface dialog;
 
     private int keyCode;
+
+    public void setListener(Object listener) {
+        this.listener = listener;
+    }
+
+    public void setDialog(DialogInterface dialog) {
+        this.dialog = dialog;
+    }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
-
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
-    }
-
-    public void setDialogName(String dialogName) {
-        this.dialogName = dialogName;
-    }
-
 
     @Override
     public String toString() {
@@ -42,8 +43,12 @@ public class DialogKeyEvent implements IEvent {
         JSONObject json = new JSONObject();
         try {
             json.put("eventType", eventType);
-            json.put("listenerName", listenerName);
-            json.put("dialogName", dialogName);
+            if (listener != null) {
+                json.put("listenerName", listener.getClass().getName());
+            }
+            if (dialog != null) {
+                json.put("dialogName", dialog.getClass().getName());
+            }
             json.put("keyCode", keyCode);
         } catch (JSONException e) {
             e.printStackTrace();

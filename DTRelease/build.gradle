@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 group = "dt.monitor"
 archivesBaseName = "DTRelease"
-version = "0.0.4"
+version = "0.0.7"
 
 if (rootProject.file("local").exists()) {
     version = 'local'
@@ -21,7 +21,7 @@ if (rootProject.file("local").exists()) {
 } else {
     uploadArchives {
         doFirst {
-            System.out.println("============uploadArchives for Release!!!!")
+            System.out.println("============uploadArchives for Release!!!! ver=${version}")
         }
         repositories {
             mavenDeployer {

@@ -28,9 +28,6 @@ import kotlinx.android.synthetic.main.fragment_interactive.view.*
  * create an instance of this fragment.
  */
 class InteractiveFragment : Fragment() {
-    // The URL to +1.  Must be a valid URL.
-    private val PLUS_ONE_URL = "http://developer.android.com"
-    // TODO: Rename and change types of parameters
     private var mParam1: String? = null
     private var mParam2: String? = null
 
@@ -55,6 +52,9 @@ class InteractiveFragment : Fragment() {
                     true
                 }.create().show()
             }
+        }
+        view.check_box.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.i("zkw", "check::>${isChecked}")
         }
         val swipe = view as SwipeRefreshLayout
         swipe.setOnRefreshListener {

@@ -12,8 +12,14 @@ public class DT {
 
     public static WeakReference<Context> weakContext;
 
+    //TODO
+
     public static void init(Context context) {
         weakContext = new WeakReference<>(context.getApplicationContext());
+        clean();
     }
 
+    public static void clean() {
+        UIEventRecorder.clean();
+    }
 }

@@ -1,5 +1,7 @@
 package dt.monitor.interactive;
 
+import android.view.View;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,30 +13,18 @@ import org.json.JSONObject;
  */
 public class ViewEvent implements IEvent {
 
-    private String listenerName;
+    private Object listener;
 
     private String eventType;
 
-    private String pageName;
+    private View view;
 
-    private String viewObject;
-
-    private String[] parentArray;
-
-    public void setListenerName(String listenerName) {
-        this.listenerName = listenerName;
+    public void setListener(Object listener) {
+        this.listener = listener;
     }
 
-    public void setPageName(String pageName) {
-        this.pageName = pageName;
-    }
-
-    public void setViewObject(String viewObject) {
-        this.viewObject = viewObject;
-    }
-
-    public void setParentArray(String[] parentArray) {
-        this.parentArray = parentArray;
+    public void setView(View view) {
+        this.view = view;
     }
 
     public void setEventType(String eventType) {
@@ -52,12 +42,17 @@ public class ViewEvent implements IEvent {
         JSONObject json = new JSONObject();
         try {
             json.put("eventType", eventType);
-            json.put("listenerName", listenerName);
-            json.put("pageName", pageName);
-            json.put("viewObject", viewObject);
-            if (parentArray != null && parentArray.length > 0) {
-                JSONArray jsonArray = new JSONArray(parentArray);
-                json.put("parents", jsonArray);
+            if (listener != null) {
+                json.put("listenerName", listener.getClass().getName());
+            }
+            if (view != null) {
+                json.put("pageName", view.getContext().getClass().getName());
+                json.put("view", ViewUtils.getViewSign(view));
+                String[] parentArray = ViewUtils.getParentArray(view);
+                if (parentArray.length > 0) {
+                    JSONArray jsonArray = new JSONArray(parentArray);
+                    json.put("parents", jsonArray);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
