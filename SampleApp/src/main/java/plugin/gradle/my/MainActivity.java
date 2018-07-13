@@ -26,7 +26,9 @@ import android.widget.Toast;
 
 import com.shit.testlibrary.TestLibraryClass;
 
+import dt.monitor.UIEventRecorder;
 import dt.monitor.injected.InteractiveInjected;
+import dt.monitor.utils.Logger;
 import plugin.gradle.my.concurrent_test.ExecutorManager;
 import plugin.gradle.my.dummy.ScrollingActivity;
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
     private AlertDialog dialog;
 
-//    @SuppressLint("ClickableViewAccessibility")
+    //    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -202,6 +204,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onGoClick(View view) {
+        String[] events = UIEventRecorder.obtainEvents();
+        StringBuilder log = new StringBuilder();
+        for (String event : events) {
+            log.append(event).append("\n");
+        }
+        Log.i("zkw", log.toString());
+
         Intent i = new Intent(this, ScrollingActivity.class);
         startActivity(i);
 

@@ -5,29 +5,30 @@ import java.util.LinkedList;
 import dt.monitor.utils.Logger;
 
 /**
+ * UI 交互事件记录器
+ *
  * @author zhoukewen
  * @since 2018/7/5
  */
 public class UIEventRecorder {
 
-    private static final int MAX_EVENT_COUNT = 25;
+    private static final int MAX_EVENT_COUNT = 50;
 
-    private static long eventSize;
+    private static int maxCount = MAX_EVENT_COUNT;
 
+    //由于是 ui 线程调用，暂时不用考虑线程安全
     private static LinkedList<String> eventList = new LinkedList<>();
 
+    /**
+     * 添加一条交互事件
+     *
+     * @param eventContent
+     */
     public static void add(String eventContent) {
-        //TODO 关闭日志
-        Logger.i("别忘了关闭 event>>>---" + eventContent);
-        int size = eventList.size();
-        if (size >= MAX_EVENT_COUNT) {
-            String removed = eventList.removeLast();
-            eventSize -= removed.length();
+        if (eventList.size() >= maxCount) {
+            eventList.removeLast();
         }
-        eventSize += eventContent.length();
         eventList.addFirst(eventContent);
-
-        Logger.i("------event count:" + eventList.size() + ", size::" + eventSize);
     }
 
     /**
@@ -39,11 +40,16 @@ public class UIEventRecorder {
         return eventList.toArray(new String[]{});
     }
 
-    //TODO 别忘了清理！？！？？！
     public static void clean() {
-        eventSize = 0;
         eventList.clear();
     }
 
-
+    /**
+     * 设置记录的交互事件数量上限，超过上限则移除最旧的事件
+     *
+     * @param maxCount
+     */
+    public static void setMaxCount(int maxCount) {
+        UIEventRecorder.maxCount = maxCount;
+    }
 }

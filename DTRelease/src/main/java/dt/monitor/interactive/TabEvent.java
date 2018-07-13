@@ -32,8 +32,17 @@ public class TabEvent implements IEvent {
 
     @Override
     public String toString() {
-        JSONObject json = toJson();
-        return json.toString();
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        if (tab != null) {
+            str.append(", position=").append(tab.getPosition());
+            if (tab.getText() != null) {
+                str.append(", text=").append(tab.getText().toString());
+            }
+        }
+        return str.toString();
     }
 
     @Override

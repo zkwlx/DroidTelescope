@@ -36,8 +36,29 @@ public class MenuItemEvent implements IEvent {
 
     @Override
     public String toString() {
-        JSONObject json = toJson();
-        return json.toString();
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        if (item != null) {
+            CharSequence title = item.getTitle();
+            if (title != null) {
+                str.append(", title=").append(title);
+            }
+            String itemId = String.valueOf(item.getItemId());
+            if (DT.weakContext != null) {
+                Context context = DT.weakContext.get();
+                if (context != null) {
+                    // id 转成 String
+                    String resource = ViewUtils.getResourceId(context.getResources(), item.getItemId());
+                    if (!TextUtils.isEmpty(resource)) {
+                        itemId = resource;
+                    }
+                }
+            }
+            str.append(", id=").append(itemId);
+        }
+        return str.toString();
     }
 
     @Override

@@ -36,10 +36,25 @@ public class ViewPagerEvent implements IEvent {
         this.listener = listener;
     }
 
+    public void reInit() {
+        position = -1;
+        state = -1;
+    }
+
     @Override
     public String toString() {
-        JSONObject json = toJson();
-        return json.toString();
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        if (position != -1) {
+            str.append(", position=").append(position);
+        }
+        String stateName = getStateName(state);
+        if (!TextUtils.isEmpty(stateName)) {
+            str.append(", state=").append(stateName);
+        }
+        return str.toString();
     }
 
     @Override
@@ -53,23 +68,28 @@ public class ViewPagerEvent implements IEvent {
             if (position != -1) {
                 json.put("position", position);
             }
-            if (state != -1) {
-                switch (state) {
-                    case 0:
-                        json.put("state", "IDLE");
-                        break;
-                    case 1:
-                        json.put("state", "DRAGGING");
-                        break;
-                    case 2:
-                        json.put("state", "SETTLING");
-                        break;
-                }
+            String stateName = getStateName(state);
+            if (!TextUtils.isEmpty(stateName)) {
+                json.put("state", stateName);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
+    }
+
+    private String getStateName(int state) {
+        if (state != -1) {
+            switch (state) {
+                case 0:
+                    return "IDLE";
+                case 1:
+                    return "DRAGGING";
+                case 2:
+                    return "SETTLING";
+            }
+        }
+        return null;
     }
 
 }

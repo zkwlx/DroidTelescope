@@ -35,8 +35,16 @@ public class CheckedViewEvent implements IEvent {
 
     @Override
     public String toString() {
-        JSONObject json = toJson();
-        return json.toString();
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        str.append(", checked=").append(checked);
+        if (button != null) {
+            str.append(", page=").append(button.getContext().getClass().getName());
+            str.append(", view=").append(ViewUtils.getViewLightSign(button));
+        }
+        return str.toString();
     }
 
     @Override
@@ -49,12 +57,12 @@ public class CheckedViewEvent implements IEvent {
             }
             if (button != null) {
                 json.put("pageName", button.getContext().getClass().getName());
-                json.put("view", ViewUtils.getViewSign(button));
-                String[] parentArray = ViewUtils.getParentArray(button);
-                if (parentArray.length > 0) {
-                    JSONArray jsonArray = new JSONArray(parentArray);
-                    json.put("parents", jsonArray);
-                }
+                json.put("view", ViewUtils.getViewLightSign(button));
+//                String[] parentArray = ViewUtils.getParentArray(button);
+//                if (parentArray.length > 0) {
+//                    JSONArray jsonArray = new JSONArray(parentArray);
+//                    json.put("parents", jsonArray);
+//                }
             }
             json.put("checked", checked);
         } catch (JSONException e) {

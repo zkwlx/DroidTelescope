@@ -29,6 +29,28 @@ public class ItemEvent implements IEvent {
     private long id;
 
     @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        str.append(", position=").append(position);
+        str.append(", id=").append(id);
+        if (parent != null) {
+            str.append(", page=").append(parent.getContext().getClass().getName());
+            if (parent.getAdapter() != null) {
+                str.append(", adapter=").append(parent.getAdapter().getClass().getName());
+            }
+        } else if (itemView != null) {
+            str.append(", page=").append(itemView.getContext().getClass().getName());
+        }
+        if (itemView != null) {
+            str.append(", item=").append(ViewUtils.getViewLightSign(itemView));
+        }
+        return str.toString();
+    }
+
+    @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         try {
@@ -46,12 +68,12 @@ public class ItemEvent implements IEvent {
             }
 
             if (itemView != null) {
-                json.put("itemView", ViewUtils.getViewSign(itemView));
-                String[] parentArray = ViewUtils.getParentArray(itemView);
-                if (parentArray.length > 0) {
-                    JSONArray jsonArray = new JSONArray(parentArray);
-                    json.put("parents", jsonArray);
-                }
+                json.put("itemView", ViewUtils.getViewLightSign(itemView));
+//                String[] parentArray = ViewUtils.getParentArray(itemView);
+//                if (parentArray.length > 0) {
+//                    JSONArray jsonArray = new JSONArray(parentArray);
+//                    json.put("parents", jsonArray);
+//                }
             }
             json.put("position", position);
             json.put("id", id);

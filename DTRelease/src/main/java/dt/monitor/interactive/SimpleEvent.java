@@ -23,8 +23,11 @@ public class SimpleEvent implements IEvent {
 
     @Override
     public String toString() {
-        JSONObject json = toJson();
-        return json.toString();
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        return str.toString();
     }
 
     @Override

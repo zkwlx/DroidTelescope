@@ -1,6 +1,8 @@
 package dt.monitor.interactive;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewParent;
@@ -13,23 +15,20 @@ import java.util.ArrayList;
 public class ViewUtils {
 
     /**
-     * 为了提高性能，使用一个boolean
-     * TODO 注意多线程安全
-     */
-//    private static boolean isRootParent = false;
-
-    /**
      * 获取一个View的Parent列表
      *
      * @param view
      * @return
      */
+    @Nullable
     public static String[] getParentArray(View view) {
+        if (view == null) {
+            return null;
+        }
         ArrayList<String> arrayList = new ArrayList<>(8);
         ViewParent parent = view.getParent();
-//        isRootParent = false;
         while (parent != null && parent instanceof View) {
-            String parentSign = getViewSign((View) parent);
+            String parentSign = getViewLightSign((View) parent);
             arrayList.add(parentSign);
             if (parentSign.contains("android:id/content")) {
                 //找到android:id/content的父View，认为是根View了，不再查找
@@ -37,25 +36,50 @@ public class ViewUtils {
             } else {
                 parent = parent.getParent();
             }
-//            if (isRootParent) {
-//                //找到android:id/content的父View，认为是根View了，不再查找
-//                parent = null;
-//            } else {
-//                parent = parent.getParent();
-//            }
         }
         String[] result = new String[]{};
         return arrayList.toArray(result);
     }
 
     /**
-     * 获取View的签名
+     * 获取 View 的轻量级签名，类似：android.widget.CheckBox@7198df1 #app:id/check_box
+     *
+     * @param view
+     * @return
+     */
+    public static String getViewLightSign(View view) {
+        StringBuilder sign = new StringBuilder(128);
+        if (view == null) {
+            return sign.toString();
+        }
+        sign.append(view.getClass().getName());
+        sign.append("@");
+        sign.append(Integer.toHexString(System.identityHashCode(view)));
+        final int id = view.getId();
+        if (id != View.NO_ID) {
+            sign.append(" #");
+            String resourceId = getResourceId(view.getResources(), id);
+            if (!TextUtils.isEmpty(resourceId)) {
+                sign.append(resourceId);
+            } else {
+                sign.append(Integer.toHexString(id));
+            }
+        }
+
+        return sign.toString();
+    }
+
+    /**
+     * 获取View的签名，类似：android.widget.CheckBox{7198df1 875,39-1080,218 #7f08002f app:id\/check_box}
      *
      * @param view
      * @return
      */
     public static String getViewSign(View view) {
         StringBuilder sign = new StringBuilder(128);
+        if (view == null) {
+            return sign.toString();
+        }
         sign.append(view.getClass().getName());
         sign.append('{');
         sign.append(Integer.toHexString(System.identityHashCode(view)));
@@ -76,36 +100,6 @@ public class ViewUtils {
                 sign.append(" ");
                 sign.append(resourceId);
             }
-//            final Resources r = view.getResources();
-//            if (id > 0 && resourceHasPackage(id) && r != null) {
-//                try {
-//                    String pkgname;
-//                    switch (id & 0xff000000) {
-//                        case 0x7f000000:
-//                            pkgname = "app";
-//                            break;
-//                        case 0x01000000:
-//                            pkgname = "android";
-//                            break;
-//                        default:
-//                            pkgname = r.getResourcePackageName(id);
-//                            break;
-//                    }
-//                    String typename = r.getResourceTypeName(id);
-//                    String entryname = r.getResourceEntryName(id);
-//                    sign.append(" ");
-//                    sign.append(pkgname);
-//                    sign.append(":");
-//                    sign.append(typename);
-//                    sign.append("/");
-//                    sign.append(entryname);
-////                    if ("android".equals(pkgname) && "id".equals(typename) && "content".equals(entryname)) {
-////                        //找到android:id/content的父View，认为是根View了，不再查找
-////                        isRootParent = true;
-////                    }
-//                } catch (Resources.NotFoundException e) {
-//                }
-//            }
         }
         sign.append('}');
         return sign.toString();
@@ -137,7 +131,6 @@ public class ViewUtils {
                 }
                 String typename = r.getResourceTypeName(id);
                 String entryname = r.getResourceEntryName(id);
-//                sign.append(" ");
                 sign.append(pkgname);
                 sign.append(":");
                 sign.append(typename);

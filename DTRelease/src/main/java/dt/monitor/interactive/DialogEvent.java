@@ -38,8 +38,15 @@ public class DialogEvent implements IEvent {
 
     @Override
     public String toString() {
-        JSONObject json = toJson();
-        return json.toString();
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        str.append(", which=").append(which);
+        if (dialog != null) {
+            str.append(", dialog=").append(dialog.getClass().getName());
+        }
+        return str.toString();
     }
 
     @Override

@@ -20,6 +20,10 @@ public class InteractiveInjected {
 
     private static UserInteractiveTracing tracing = new UserInteractiveTracing();
 
+    public static void setInteractiveListener(UserInteractiveTracing.InteractiveListener listener) {
+        tracing.setInteractiveListener(listener);
+    }
+
     //android.view.View$OnClickListener
     public static void onViewClick(Object object, View view) {
         tracing.onViewClick(object, view);

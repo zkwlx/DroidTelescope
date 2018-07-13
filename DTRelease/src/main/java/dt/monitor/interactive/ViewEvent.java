@@ -33,8 +33,15 @@ public class ViewEvent implements IEvent {
 
     @Override
     public String toString() {
-        JSONObject json = toJson();
-        return json.toString();
+        StringBuilder str = new StringBuilder(eventType);
+        if (listener != null) {
+            str.append(", ").append(listener.getClass().getName());
+        }
+        if (view != null) {
+            str.append(", page=").append(view.getContext().getClass().getName());
+            str.append(", view=").append(ViewUtils.getViewLightSign(view));
+        }
+        return str.toString();
     }
 
     @Override
@@ -47,12 +54,12 @@ public class ViewEvent implements IEvent {
             }
             if (view != null) {
                 json.put("pageName", view.getContext().getClass().getName());
-                json.put("view", ViewUtils.getViewSign(view));
-                String[] parentArray = ViewUtils.getParentArray(view);
-                if (parentArray.length > 0) {
-                    JSONArray jsonArray = new JSONArray(parentArray);
-                    json.put("parents", jsonArray);
-                }
+                json.put("view", ViewUtils.getViewLightSign(view));
+//                String[] parentArray = ViewUtils.getParentArray(view);
+//                if (parentArray.length > 0) {
+//                    JSONArray jsonArray = new JSONArray(parentArray);
+//                    json.put("parents", jsonArray);
+//                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
