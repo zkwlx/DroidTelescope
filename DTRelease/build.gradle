@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 group = "dt.monitor"
 archivesBaseName = "DTRelease"
-version = "0.0.7"
+version = "0.0.9.1"
 
 if (rootProject.file("local").exists()) {
     version = 'local'
@@ -28,7 +28,6 @@ if (rootProject.file("local").exists()) {
 //                repository(url: 'http://xxx') {
 //                    authentication(userName: 'xxx', password: 'xxx')
 //                }
-
             }
         }
         finalizedBy(clean)
