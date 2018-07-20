@@ -31,7 +31,7 @@ class ViewOnTouchHandler implements IInterfaceHandler {
                     && types.length == 2
                     && types[0].name == "android.view.View"
                     && types[1].name == "android.view.MotionEvent") {
-                Logger.i("inject onViewTouch---------->" + clazz.name)
+                Logger.d("inject onViewTouch---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1,\$2);
                 """)

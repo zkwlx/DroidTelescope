@@ -51,7 +51,6 @@ abstract class IncrementalTransform extends Transform {
                                 break
                             case Status.ADDED:
                             case Status.CHANGED:
-                                Logger.i("change file::" + inputFile.absolutePath)
                                 //增量编译时改变包名的话，Input file 会出现 Directory
                                 if (!inputFile.isDirectory() && inputFile.name.endsWith(SdkConstants.DOT_CLASS)) {
                                     // 真正需要处理的文件
@@ -98,6 +97,7 @@ abstract class IncrementalTransform extends Transform {
                             onRealTransformJar(jarInput, outJarFile)
                             break
                         case Status.REMOVED:
+                            Logger.i("===========jar input: ${jarInput.file.absolutePath}")
                             Logger.i("===========jar removed: ${outJarFile.absolutePath}")
                             FileUtils.deleteIfExists(outJarFile)
                             break

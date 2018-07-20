@@ -36,7 +36,7 @@ class TabSelectedHandler implements IInterfaceHandler {
                 continue
             }
             if (method.name == METHOD_NAME && onlyTabArgs(types)) {
-                Logger.i("inject ${METHOD_NAME}---------->" + clazz.name)
+                Logger.d("inject ${METHOD_NAME}---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1);
                 """)

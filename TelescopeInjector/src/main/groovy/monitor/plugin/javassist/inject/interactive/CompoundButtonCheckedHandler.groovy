@@ -31,7 +31,7 @@ class CompoundButtonCheckedHandler implements IInterfaceHandler {
                     && types.length == 2
                     && types[0].name == "android.widget.CompoundButton"
                     && types[1] == CtClass.booleanType) {
-                Logger.i("inject ${METHOD_NAME}---------->" + clazz.name)
+                Logger.d("inject ${METHOD_NAME}---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1,\$2);
                 """)

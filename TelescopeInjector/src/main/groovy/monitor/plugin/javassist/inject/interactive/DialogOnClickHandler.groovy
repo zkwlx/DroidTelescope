@@ -32,7 +32,7 @@ class DialogOnClickHandler implements IInterfaceHandler {
                     && types.length == 2
                     && types[0].name == "android.content.DialogInterface"
                     && types[1].name == "int") {
-                Logger.i("inject dialog onClick---------->" + clazz.name)
+                Logger.d("inject dialog onClick---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1,\$2);
                 """)

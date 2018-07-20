@@ -33,7 +33,7 @@ class MenuItemClickHandler implements IInterfaceHandler {
             if (method.name == METHOD_NAME
                     && types.length == 1
                     && types[0].name == "android.view.MenuItem") {
-                Logger.i("inject ${METHOD_NAME}---------->" + clazz.name)
+                Logger.d("inject ${METHOD_NAME}---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1);
                 """)

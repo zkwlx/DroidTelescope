@@ -31,7 +31,7 @@ class ViewOnClickHandler implements IInterfaceHandler {
             if (method.name == METHOD_NAME
                     && types.length == 1
                     && types[0].name == "android.view.View") {
-                Logger.i("inject onClick---------->" + clazz.name)
+                Logger.d("inject onClick---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1);
                 """)

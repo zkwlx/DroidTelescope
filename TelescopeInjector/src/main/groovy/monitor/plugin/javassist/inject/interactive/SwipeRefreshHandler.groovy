@@ -30,7 +30,7 @@ class SwipeRefreshHandler implements IInterfaceHandler {
             }
             if (method.name == METHOD_NAME
                     && types.length == 0) {
-                Logger.i("inject ${METHOD_NAME}---------->" + clazz.name)
+                Logger.d("inject ${METHOD_NAME}---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0);
                 """)

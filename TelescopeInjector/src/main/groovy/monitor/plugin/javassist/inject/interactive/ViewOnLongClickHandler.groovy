@@ -31,7 +31,7 @@ class ViewOnLongClickHandler implements IInterfaceHandler {
             if (method.name == METHOD_NAME
                     && types.length == 1
                     && types[0].name == "android.view.View") {
-                Logger.i("inject onLongClick---------->" + clazz.name)
+                Logger.d("inject onLongClick---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1);
                 """)

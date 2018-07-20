@@ -33,7 +33,7 @@ class ViewPagerOnPageChangeHandler implements IInterfaceHandler {
             if (method.name == METHOD_NAME
                     && types.length == 1
                     && types[0] == CtClass.intType) {
-                Logger.i("inject ${METHOD_NAME}---------->" + clazz.name)
+                Logger.d("inject ${METHOD_NAME}---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1);
                 """)
@@ -41,7 +41,7 @@ class ViewPagerOnPageChangeHandler implements IInterfaceHandler {
             } else if (method.name == METHOD_NAME2
                     && types.length == 1
                     && types[0] == CtClass.intType) {
-                Logger.i("inject ${METHOD_NAME2}---------->" + clazz.name)
+                Logger.d("inject ${METHOD_NAME2}---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod2}(\$0,\$1);
                 """)

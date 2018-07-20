@@ -32,7 +32,7 @@ class DialogOnKeyHandler implements IInterfaceHandler {
                     && types[0].name == "android.content.DialogInterface"
                     && types[1] == CtClass.intType
                     && types[2].name == "android.view.KeyEvent") {
-                Logger.i("inject onDialogKey---------->" + clazz.name)
+                Logger.d("inject onDialogKey---------->" + clazz.name)
                 method.insertBefore("""
                       ${injectedMethod}(\$0,\$1,\$2,\$3);
                 """)
