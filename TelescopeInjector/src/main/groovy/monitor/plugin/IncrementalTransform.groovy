@@ -61,6 +61,7 @@ abstract class IncrementalTransform extends Transform {
                                 break
                             case Status.REMOVED:
                                 File outFile = toOutputFile(outputDir, dirInput.file, inputFile)
+                                Logger.i("===========class file removed: ${outFile.absolutePath}")
                                 FileUtils.deleteIfExists(outFile)
                                 break
                         }
@@ -97,7 +98,7 @@ abstract class IncrementalTransform extends Transform {
                             onRealTransformJar(jarInput, outJarFile)
                             break
                         case Status.REMOVED:
-                            Logger.i("===========removed: ${outJarFile.absolutePath}")
+                            Logger.i("===========jar removed: ${outJarFile.absolutePath}")
                             FileUtils.deleteIfExists(outJarFile)
                             break
                     }
