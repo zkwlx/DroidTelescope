@@ -2,14 +2,7 @@ package monitor.plugin
 
 import com.android.SdkConstants
 import com.android.annotations.NonNull
-import com.android.build.api.transform.DirectoryInput
-import com.android.build.api.transform.Format
-import com.android.build.api.transform.JarInput
-import com.android.build.api.transform.Status
-import com.android.build.api.transform.Transform
-import com.android.build.api.transform.TransformException
-import com.android.build.api.transform.TransformInput
-import com.android.build.api.transform.TransformInvocation
+import com.android.build.api.transform.*
 import com.android.utils.FileUtils
 import monitor.plugin.utils.Logger
 
@@ -28,13 +21,23 @@ abstract class IncrementalTransform extends Transform {
     @Override
     void transform(TransformInvocation invocation) throws IOException, TransformException, InterruptedException {
         //以下实现参考自com.android.build.gradle.internal.transforms.CustomClassTransform
+
+        final TransformOutputProvider outputProvider = invocation.outputProvider
+        assert outputProvider != null
+
+        // Output the resources, we only do this if this is not incremental,
+        // as the secondary file is will trigger a full build if modified.
+        if (!invocation.isIncremental()) {
+            outputProvider.deleteAll()
+        }
+
         //transform 开始回调
         onTransformStart(invocation)
         //遍历输入文件，初始化相应参数并复制目标文件
         invocation.inputs.each { TransformInput input ->
             // 遍历目录
             input.directoryInputs.each { DirectoryInput dirInput ->
-                final File outputDir = invocation.outputProvider.getContentLocation(
+                final File outputDir = outputProvider.getContentLocation(
                         dirInput.name,
                         dirInput.contentTypes,
                         dirInput.scopes,
@@ -76,12 +79,13 @@ abstract class IncrementalTransform extends Transform {
             //遍历jar
             input.jarInputs.each { JarInput jarInput ->
                 Logger.d(jarInput.name + " status: " + jarInput.status)
-                final File outJarFile = invocation.outputProvider.getContentLocation(
+                final File outJarFile = outputProvider.getContentLocation(
                         jarInput.name,
                         jarInput.contentTypes,
                         jarInput.scopes,
                         Format.JAR)
                 // 遍历Jar接口
+                //TODO 只添加非 Removed 的文件？
                 onEachJar(jarInput)
                 if (invocation.isIncremental()) {
                     switch (jarInput.getStatus()) {
@@ -93,7 +97,8 @@ abstract class IncrementalTransform extends Transform {
                             onRealTransformJar(jarInput, outJarFile)
                             break
                         case Status.REMOVED:
-                            FileUtils.delete(outJarFile)
+                            Logger.i("===========removed: ${outJarFile.absolutePath}")
+                            FileUtils.deleteIfExists(outJarFile)
                             break
                     }
                 } else {
