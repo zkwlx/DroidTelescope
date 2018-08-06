@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 group = "dt.monitor"
 archivesBaseName = "DTRelease"
-version = "0.0.9.1"
+version = "1.0.1"
 
 if (rootProject.file("local").exists()) {
     version = 'local'
@@ -66,7 +66,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation 'com.android.support:support-annotations:27.1.1'
-    implementation 'com.android.support:design:27.2.1'
+    compileOnly 'com.android.support:design:27.1.1'
 }
 
 // type显示指定任务类型或任务, 这里指定要执行Javadoc这个task,这个task在gradle中已经定义

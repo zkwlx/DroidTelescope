@@ -1,8 +1,8 @@
 package dt.monitor;
 
+import java.util.Deque;
 import java.util.LinkedList;
-
-import dt.monitor.utils.Logger;
+import java.util.NoSuchElementException;
 
 /**
  * UI 交互事件记录器
@@ -14,19 +14,23 @@ public class UIEventRecorder {
 
     private static final int MAX_EVENT_COUNT = 50;
 
-    private static int maxCount = MAX_EVENT_COUNT;
+    private volatile static int maxCount = MAX_EVENT_COUNT;
 
-    //由于是 ui 线程调用，暂时不用考虑线程安全
-    private static LinkedList<String> eventList = new LinkedList<>();
+    //出现了 removeLast 时 last node 为空的情况
+    private static Deque<String> eventList = new LinkedList<>();
 
     /**
      * 添加一条交互事件
      *
      * @param eventContent
      */
-    public static void add(String eventContent) {
+    public static synchronized void add(String eventContent) {
         if (eventList.size() >= maxCount) {
-            eventList.removeLast();
+            try {
+                eventList.removeLast();
+            } catch (NoSuchElementException e) {
+                throw new NoSuchElementException("On event: " + eventContent);
+            }
         }
         eventList.addFirst(eventContent);
     }
@@ -36,11 +40,11 @@ public class UIEventRecorder {
      *
      * @return
      */
-    public static String[] obtainEvents() {
+    public static synchronized String[] obtainEvents() {
         return eventList.toArray(new String[]{});
     }
 
-    public static void clean() {
+    public static synchronized void clean() {
         eventList.clear();
     }
 
