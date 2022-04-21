@@ -293,6 +293,12 @@ public class MyApplication extends Application {
 <br>Looper监控的测试比较特殊，测试时每次loop生成10个耗时方法，然后触发200次loop监控，耗时180ms左右。
 * __内存消耗：__ 同样是循环2万次调用，卡顿模块消耗2.38MB，内存模块消耗510.89KB，交互模块消耗400KB（该测试和实际差别较大，仅供参考）。
 
+* * *
+
+欢迎关注我的公众号 `二叉树根子`，在这里可以看到不曾见过的 Android 底层技术。
+
+<img width="258" height="258" alt="公众号" src="wiki/binary tree root.jpg">
+
 ## License
 DroidTelescope使用的GPL3.0协议，详细请参考[License](https://raw.githubusercontent.com/zkwlx/DroidTelescope/master/LICENSE)
 
